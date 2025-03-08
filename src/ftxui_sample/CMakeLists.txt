@@ -1,19 +1,19 @@
-add_executable(intro main.cpp)
+add_executable(vulktrt main.cpp)
+
+get_target_property(target_name vulktrt NAME)
+include("${CMAKE_SOURCE_DIR}/cmake/Simd.cmake")
+set_simd_instructions(${target_name})
 
 target_link_libraries(
-  intro
+  vulktrt
   PRIVATE Vulktrt::Vulktrt_options
           Vulktrt::Vulktrt_warnings)
 
 target_link_system_libraries(
-  intro
+  vulktrt
   PRIVATE
           CLI11::CLI11
           fmt::fmt
-          spdlog::spdlog
-          lefticus::tools
-          ftxui::screen
-          ftxui::dom
-          ftxui::component)
+          spdlog::spdlog)
 
-target_include_directories(intro PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
+target_include_directories(vulktrt PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
