@@ -37,67 +37,41 @@ endmacro()
 function(run_vcvarsall)
     # Check if using MSVC and vcvarsall has not been run yet
     if (MSVC AND NOT "$ENV{VSCMD_VER}")
-        message(STATUS "MSVC detected without VSCMD_VER - setting up environment...")
-        set(VCVARSALL_SUFFIXES
-                "VC/Auxiliary/Build"
-                "Common7/Tools"
-                "Tools"
-                "Enterprise/VC/Auxiliary/Build"  # VS Enterprise editions
-                "Professional/VC/Auxiliary/Build" # VS Professional editions
-                "Community/VC/Auxiliary/Build"    # VS Community editions
-        )
-        set(BASE_PATHS
-                "${MSVC_DIR}"
-                "${MSVC_DIR}/.."
-                "${MSVC_DIR}/../.."
-                "${MSVC_DIR}/../../../../../../.."
-                "${MSVC_DIR}/../../../../../../../.."
-        )
         # Find vcvarsall.bat
         get_filename_component(MSVC_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
         find_file(VCVARSALL_FILE
                 NAMES vcvarsall.bat
-                PATHS ${BASE_PATHS}
-                PATH_SUFFIXES ${VCVARSALL_SUFFIXES}
-                DOC "Path to Visual Studio environment configuration script"
-                NO_DEFAULT_PATH
-                NO_PACKAGE_ROOT_PATH
-                NO_CMAKE_ENVIRONMENT_PATH
-        )
+                PATHS "${MSVC_DIR}"
+                "${MSVC_DIR}/.."
+                "${MSVC_DIR}/../.."
+                "${MSVC_DIR}/../../../../../../../.."
+                "${MSVC_DIR}/../../../../../../.."
+                PATH_SUFFIXES "VC/Auxiliary/Build" "Common7/Tools" "Tools")
 
-    if (EXISTS "${VCVARSALL_FILE}")
-      # Detect the architecture
-      detect_architecture()
+        if (EXISTS "${VCVARSALL_FILE}")
+            # Detect the architecture
+            detect_architecture()
 
-      # Run vcvarsall.bat and print informative messages
-      message(STATUS "Searching for vcvarsall.bat in the Visual Studio directory...")
-      message(STATUS "Found vcvarsall.bat at: ${VCVARSALL_FILE}")
+            # Run vcvarsall.bat and print informative messages
+            message(STATUS "Searching for vcvarsall.bat in the Visual Studio directory...")
+            message(STATUS "Found vcvarsall.bat at: ${VCVARSALL_FILE}")
+            # Run vcvarsall.bat to set up the MSVC environment
+            message(STATUS "Running `${VCVARSALL_FILE} ${VCVARSALL_ARCH}` to set up the MSVC environment")
+            execute_process(
+                    COMMAND cmd /c "${VCVARSALL_FILE}" "${VCVARSALL_ARCH}" "&&" "call" "echo" "VCVARSALL_ENV_START" "&" "set"
+                    OUTPUT_VARIABLE VCVARSALL_OUTPUT
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-      # Run vcvarsall.bat to set up the MSVC environment
-      message(STATUS "Running `${VCVARSALL_FILE} ${VCVARSALL_ARCH}` to set up the MSVC environment")
-      execute_process(
-              COMMAND cmd /c "${VCVARSALL_FILE}" "${VCVARSALL_ARCH}" "&&" "call" "echo" "VCVARSALL_ENV_START" "&" "set"
-              RESULT_VARIABLE VCVARSALL_RESULT
-              OUTPUT_VARIABLE VCVARSALL_OUTPUT
-              ERROR_VARIABLE VCVARSALL_ERROR
-              OUTPUT_STRIP_TRAILING_WHITESPACE)
-      # Report results and additional information
-      if (NOT VCVARSALL_RESULT EQUAL 0)
-          message(WARNING "VCVARSALL execution failed with error code ${VCVARSALL_RESULT}")
-          message(WARNING "Error output: ${VCVARSALL_ERROR}")
-      else()
-          message(STATUS "VCVARSALL execution succeeded.")
-          # Parse the output and set the environment variables
-          find_substring_by_prefix(VCVARSALL_ENV "VCVARSALL_ENV_START" "${VCVARSALL_OUTPUT}")
-          if (NOT VCVARSALL_ENV)
-              message(WARNING "No environment variables found in the vcvarsall.bat output. Check for errors.")
-          else ()
-              set_env_from_string("${VCVARSALL_ENV}")
-              message(STATUS "MSVC environment is set up successfully.")
-          endif ()
-      endif()
-    else ()
-      message(WARNING "Could not find `vcvarsall.bat` for automatic MSVC environment preparation. Please manually open the MSVC command prompt and rebuild the project.")
+            # Parse the output and set the environment variables
+            find_substring_by_prefix(VCVARSALL_ENV "VCVARSALL_ENV_START" "${VCVARSALL_OUTPUT}")
+            if (NOT VCVARSALL_ENV)
+                message(WARNING "No environment variables found in the vcvarsall.bat output. Check for errors.")
+            else ()
+                set_env_from_string("${VCVARSALL_ENV}")
+                message(STATUS "MSVC environment is set up successfully.")
+            endif ()
+        else ()
+            message(WARNING "Could not find `vcvarsall.bat` for automatic MSVC environment preparation. Please manually open the MSVC command prompt and rebuild the project.")
+        endif ()
     endif ()
-  endif ()
 endfunction()
