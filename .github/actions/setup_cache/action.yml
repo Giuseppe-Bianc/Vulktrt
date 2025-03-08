@@ -1,3 +1,4 @@
+#file: noinspection UndefinedAction,UndefinedParamsPresent
 
 name: 'setup_cache'
 description: 'sets up the shared cache'
@@ -20,7 +21,7 @@ runs:
   using: "composite"
   steps:
     - name: Cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4.2.2
       with:
         # You might want to add .ccache to your cache configuration?
         path: |
@@ -29,4 +30,3 @@ runs:
         key: ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}-${{ inputs.generator }}-${{ inputs.packaging_maintainer_mode }}-${{ hashFiles('**/CMakeLists.txt') }}
         restore-keys: |
           ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}
-
