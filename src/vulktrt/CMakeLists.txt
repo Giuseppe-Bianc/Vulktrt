@@ -13,7 +13,6 @@ target_link_system_libraries(
   vulktrt
   PRIVATE
           CLI11::CLI11
-          fmt::fmt
-          spdlog::spdlog)
+          Vulktrt::vulktrt_lib)
 
 target_include_directories(vulktrt PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
