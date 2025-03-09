@@ -1,7 +1,9 @@
 include(GenerateExportHeader)
 
 find_package(Vulkan REQUIRED)
-add_library(vulktrt_lib vulktrt.cpp)
+add_library(vulktrt_lib vulktrt.cpp FPSCounter.cpp Window.cpp
+        FirstApp.cpp
+        ../../include/Vulktrt/FirstApp.hpp)
 
 get_target_property(target_name vulktrt_lib NAME)
 include("${CMAKE_SOURCE_DIR}/cmake/Simd.cmake")
@@ -44,11 +46,6 @@ set_target_properties(
 # Find all vertex and fragment sources within shaders directory
 # taken from VBlancos vulkan tutorial
 # https://github.com/vblanco20-1/vulkan-guide/blob/all-chapters/CMakeLists.txt
-############## Build SHADERS #######################
-
-# Find all vertex and fragment sources within shaders directory
-# taken from VBlancos vulkan tutorial
-# https://github.com/vblanco20-1/vulkan-guide/blob/all-chapters/CMakeLists.txt
 find_program(GLSL_VALIDATOR glslangValidator HINTS
         ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE}
         /usr/bin
@@ -59,9 +56,13 @@ find_program(GLSL_VALIDATOR glslangValidator HINTS
         $ENV{VULKAN_SDK}/Bin32/
 )
 
+if(NOT GLSL_VALIDATOR)
+  message(FATAL_ERROR "glslangValidator not found - Required for GLSL compilation")
+endif()
+message(STATUS "Using glslangValidator: ${GLSL_VALIDATOR}")
 
-find_program(SPIRV_OPT spirv-opt HINTS
-        ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE}
+find_program(SPIRV_OPT spirv-opt
+        HINTS
         /usr/bin
         /usr/local/bin
         ${VULKAN_SDK_PATH}/Bin
@@ -69,9 +70,15 @@ find_program(SPIRV_OPT spirv-opt HINTS
         $ENV{VULKAN_SDK}/Bin/
         $ENV{VULKAN_SDK}/Bin32/
 )
+if(SPIRV_OPT)
+  message(STATUS "SPIR-V optimizer found: ${SPIRV_OPT}")
+else()
+  message(WARNING "spirv-opt not found - Skipping SPIR-V optimization")
+endif()
 
-find_program(SPIRV_REMAP spirv-remap HINTS
-        ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE}
+# Optional SPIR-V remapping tool
+find_program(SPIRV_REMAP spirv-remap
+        HINTS
         /usr/bin
         /usr/local/bin
         ${VULKAN_SDK_PATH}/Bin
@@ -79,50 +86,86 @@ find_program(SPIRV_REMAP spirv-remap HINTS
         $ENV{VULKAN_SDK}/Bin/
         $ENV{VULKAN_SDK}/Bin32/
 )
+if(SPIRV_REMAP)
+  message(STATUS "SPIR-V remapper found: ${SPIRV_REMAP}")
+else()
+  message(WARNING "spirv-remap not found - Skipping SPIR-V remapping")
+endif()
 
 
 # get all .vert and .frag files in shaders directory
+set(SHADER_ROOT_DIR "${PROJECT_SOURCE_DIR}/shaders")
 file(GLOB_RECURSE GLSL_SOURCE_FILES
-        "${PROJECT_SOURCE_DIR}/shaders/*.frag"
-        "${PROJECT_SOURCE_DIR}/shaders/*.vert"
+        "${SHADER_ROOT_DIR}/*.vert" "${SHADER_ROOT_DIR}/*.frag"
+        "${SHADER_ROOT_DIR}/*.comp" "${SHADER_ROOT_DIR}/*.geom"
+        "${SHADER_ROOT_DIR}/*.tesc" "${SHADER_ROOT_DIR}/*.tese"
+        "${SHADER_ROOT_DIR}/*.rgen" "${SHADER_ROOT_DIR}/*.rahit"
+        "${SHADER_ROOT_DIR}/*.rchit" "${SHADER_ROOT_DIR}/*.rmiss"
+        "${SHADER_ROOT_DIR}/*.rcall"
 )
 
-foreach (GLSL ${GLSL_SOURCE_FILES})
+if(NOT GLSL_SOURCE_FILES)
+  message(WARNING "No GLSL shader sources found in ${SHADER_ROOT_DIR}")
+else()
+  list(LENGTH GLSL_SOURCE_FILES NUM_SHADERS)
+  message(STATUS "Found ${NUM_SHADERS} shader files:")
+  foreach(shader ${GLSL_SOURCE_FILES})
+    file(RELATIVE_PATH rel_path ${SHADER_ROOT_DIR} ${shader})
+    message(STATUS "  ${rel_path}")
+  endforeach()
+endif()
+
+
+foreach(GLSL ${GLSL_SOURCE_FILES})
+  # Get relative path for output messages
+  file(RELATIVE_PATH rel_path ${PROJECT_SOURCE_DIR} ${GLSL})
+
+  # Base SPIR-V output
   get_filename_component(FILE_NAME ${GLSL} NAME)
-  set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.spv")
-  add_custom_command(
-          OUTPUT ${SPIRV}
-          COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
-          DEPENDS ${GLSL})
-  list(APPEND SPIRV_BINARY_FILES ${SPIRV})
-endforeach (GLSL)
+  set(SPIRV_OUT "${SHADER_ROOT_DIR}/${FILE_NAME}.spv")
 
-foreach (BSPIRV ${SPIRV_BINARY_FILES})
-  get_filename_component(FILE_NAME ${BSPIRV} NAME_WLE)
-  set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.opt.spv")
+  # Compile command
   add_custom_command(
-          OUTPUT ${SPIRV}
-          COMMAND ${SPIRV_OPT} ${BSPIRV} -o ${SPIRV} -O
-          DEPENDS ${BSPIRV})
-  list(APPEND SPIRV_BINARY_FILES_OPT ${SPIRV})
-endforeach (BSPIRV)
+          OUTPUT ${SPIRV_OUT}
+          COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV_OUT}
+          DEPENDS ${GLSL}
+          COMMENT "Compiling GLSL: ${rel_path} -> ${FILE_NAME}.spv"
+          VERBATIM
+  )
+  list(APPEND SPIRV_BINARY_FILES ${SPIRV_OUT})
 
-foreach (RSPIRV ${SPIRV_BINARY_FILES_OPT})
-  get_filename_component(FILE_NAME ${RSPIRV} NAME_WLE)
-  set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.rmp.spv")
-  add_custom_command(
-          OUTPUT ${SPIRV}
-          COMMAND ${SPIRV_REMAP} -v --do-everything -i ${RSPIRV} -o ${SPIRV}
-          DEPENDS ${RSPIRV})
-  list(APPEND SPIRV_BINARY_FILES_REMAP ${SPIRV})
-endforeach (RSPIRV)
+  # Optimization stage
+  if(SPIRV_OPT)
+    set(OPT_OUT "${SHADER_ROOT_DIR}/${FILE_NAME}.opt.spv")
+    add_custom_command(
+            OUTPUT ${OPT_OUT}
+            COMMAND ${SPIRV_OPT} ${SPIRV_OUT} -O --strip-debug --freeze-spec-const --eliminate-dead-const -o ${OPT_OUT}
+            DEPENDS ${SPIRV_OUT}
+            COMMENT "Optimizing SPIR-V: ${FILE_NAME}.spv -> ${FILE_NAME}.opt.spv"
+            VERBATIM
+    )
+    list(APPEND SPIRV_BINARY_FILES ${OPT_OUT})
+    set(SPIRV_OUT ${OPT_OUT})  # Chain outputs for next stage
+  endif()
 
-list(APPEND SPIRV_BINARY_FILES ${SPIRV_BINARY_FILES_OPT})
-list(APPEND SPIRV_BINARY_FILES ${SPIRV_BINARY_FILES_REMAP})
+  # Remapping stage
+  if(SPIRV_REMAP)
+    set(REMAP_OUT "${SHADER_ROOT_DIR}/${FILE_NAME}.opt.remap.spv")
+    add_custom_command(
+            OUTPUT ${REMAP_OUT}
+            COMMAND ${SPIRV_REMAP} --do-everything -i ${SPIRV_OUT} -o ${REMAP_OUT}
+            DEPENDS ${SPIRV_OUT}
+            COMMENT "Remapping SPIR-V: ${FILE_NAME}${SPIRV_EXT}.spv -> ${FILE_NAME}.opt.remap.spv"
+            VERBATIM
+    )
+    list(APPEND SPIRV_BINARY_FILES ${REMAP_OUT})
+  endif()
+endforeach()
 
 add_custom_target(
         Shaders
         DEPENDS ${SPIRV_BINARY_FILES}
+        COMMENT "Building shader resources"
 )
 
 add_dependencies(vulktrt_lib Shaders)

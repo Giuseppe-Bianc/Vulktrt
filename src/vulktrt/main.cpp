@@ -9,6 +9,7 @@
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
 int main(int argc, const char **argv) {
+    INIT_LOG()
     try {
         CLI::App app{FORMAT("{} version {}", Vulktrt::cmake::project_name, Vulktrt::cmake::project_version)};
 
@@ -21,8 +22,14 @@ int main(int argc, const char **argv) {
             LINFO("{}\n", Vulktrt::cmake::project_version);
             return EXIT_SUCCESS;
         }
+        uint32_t extensionCount = 0;
+        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+        LINFO("{} extensions supported", extensionCount);
+        lve::FirstApp apa{};
+        apa.run();
 
     } catch(const std::exception &e) { spdlog::error("Unhandled exception in main: {}", e.what()); }
+    return EXIT_SUCCESS;
 }
 
 // NOLINTEND(*-include-cleaner)
