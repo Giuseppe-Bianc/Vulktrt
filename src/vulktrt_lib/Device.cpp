@@ -40,9 +40,7 @@ namespace lve {
     VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                           const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger) {
         auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-        if(func != nullptr) {
-            return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-        } else {
+        if(func != nullptr) { return func(instance, pCreateInfo, pAllocator, pDebugMessenger); } else {
             return VK_ERROR_EXTENSION_NOT_PRESENT;
         }
     }
@@ -54,7 +52,8 @@ namespace lve {
     }
 
     // class member functions
-    Device::Device(Window &window) : window{window} {
+    Device::Device(Window &window)
+        : window{window} {
         createInstance();
         setupDebugMessenger();
         createSurface();
@@ -71,6 +70,98 @@ namespace lve {
 
         vkDestroySurfaceKHR(instance, surface_, nullptr);
         vkDestroyInstance(instance, nullptr);
+    }
+
+    std::string getVendorName(uint32_t vendorID) {
+        static const std::unordered_map<uint32_t, std::string> vendorMap = {
+            {0x1002, "Advanced Micro Devices, Inc. (AMD)"},
+            {0x1010, "ImgTec"},
+            {0x10DE, "NVIDIA Corporation"},
+            {0x13B5, "ARM"},
+            {0x5143, "Qualcomm"},
+            {0x8086, "Intel Corporation"},
+            {0x1A03, "ASPEED Technology"},
+            {0x1D17, "Samsung Electronics Co Ltd"},
+            {0x1E0F, "Huawei Technologies Co., Ltd."},
+            {0x1B36, "Red Hat, Inc."},
+            {0x1AF4, "Virtio"},
+            {0x1C58, "JMicron Technology Corp."},
+            {0x1106, "VIA Technologies, Inc."},
+            {0x103C, "Hewlett-Packard Company"},
+            {0x1022, "Advanced Micro Devices, Inc. (AMD)"},
+            {0x102B, "Matrox Electronic Systems Ltd."},
+            {0x1043, "ASUSTeK Computer Inc."},
+            {0x1179, "Toshiba Corporation"},
+            {0x11AB, "Marvell Technology Group Ltd."},
+            {0x1237, "Intel Corporation (i440FX)"},
+            {0x15B7, "SanDisk"},
+            {0x168C, "Qualcomm Atheros"},
+            {0x1912, "Renesas Electronics Corporation"},
+            {0x1B4B, "Marvell Technology Group Ltd."},
+            {0x1C5C, "Fresco Logic"},
+            {0x1D6A, "Google, Inc."},
+            {0x8087, "Intel Corporation"},
+            {0x1057, "Motorola"},
+            {0x1077, "QLogic Corp."},
+            {0x1095, "Silicon Image, Inc."},
+            {0x10EC, "Realtek Semiconductor Corp."},
+            {0x11C1, "Lattice Semiconductor Corporation"},
+            {0x14E4, "Broadcom Inc."},
+            {0x15AD, "VMware, Inc."},
+            {0x15BC, "Hitachi, Ltd."},
+            {0x18D1, "Google Inc."},
+            {0x1AE0, "Xilinx, Inc."},
+            {0x1D0F, "Amazon.com, Inc."},
+            {0x1C7C, "Tehuti Networks Ltd."},
+            {0x16C3, "Cavium Inc."},
+            {0x105A, "Promise Technology"},
+            {0x12D8, "Pericom Semiconductor"},
+            {0x1B21, "ASMedia Technology Inc."},
+            {0x126F, "Silicon Motion, Inc."},
+            {0x1137, "Cisco Systems Inc."},
+            {0x1DB1, "Lite-On Technology Corporation"},
+            {0x10B5, "PLX Technology, Inc."},
+            {0x10B7, "3Com Corporation"},
+            {0x15E8, "Solarflare Communications"},
+            {0x1A3B, "Facebook, Inc."},
+            {0x1CC4, "Innogrit, Inc."},
+            {0x1C20, "Mellanox Technologies"},
+            // Add more vendor IDs and their corresponding names here if needed
+        };
+
+        auto it = vendorMap.find(vendorID);
+        if(it != vendorMap.end()) { return it->second; } else { return "Unknown Vendor"; }
+    }
+
+    static const char *getDeviceType(VkPhysicalDeviceType input_value) {
+        switch(input_value) {
+        case VK_PHYSICAL_DEVICE_TYPE_OTHER:
+            return "OTHER";
+        case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+            return "INTEGRATED_GPU";
+        case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+            return "DISCRETE_GPU";
+        case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+            return "VIRTUAL_GPU";
+        case VK_PHYSICAL_DEVICE_TYPE_CPU:
+            return "CPU";
+        default:
+            return "Unhandled VkPhysicalDeviceType";
+        }
+    }
+
+    void printPhysicalDeviceProperties(const VkPhysicalDeviceProperties &properties) {
+        LINFO("Device Name: {}", properties.deviceName);
+        LINFO("API Version: {}.{}.{}", VK_VERSION_MAJOR(properties.apiVersion), VK_VERSION_MINOR(properties.apiVersion),
+              VK_VERSION_PATCH(properties.apiVersion));
+        LINFO("Driver Version: {}.{}.{}", VK_VERSION_MAJOR(properties.driverVersion), VK_VERSION_MINOR(properties.driverVersion),
+              VK_VERSION_PATCH(properties.driverVersion));
+        LINFO("Vendor ID: {}", getVendorName(properties.vendorID));
+        LINFO("Device ID: {}", properties.deviceID);
+        LINFO("Device Type: {}", getDeviceType(properties.deviceType));
+        LINFO("pipelineCacheUUID: {:02x}", FMT_JOIN(properties.pipelineCacheUUID, "-"));
+
+        // Add more properties as needed
     }
 
     void Device::createInstance() {
@@ -115,7 +206,7 @@ namespace lve {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
         if(deviceCount == 0) { throw std::runtime_error("failed to find GPUs with Vulkan support!"); }
-        std::cout << "Device count: " << deviceCount << std::endl;
+
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
@@ -129,7 +220,8 @@ namespace lve {
         if(physicalDevice == VK_NULL_HANDLE) { throw std::runtime_error("failed to find a suitable GPU!"); }
 
         vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-        std::cout << "physical device: " << properties.deviceName << std::endl;
+        LINFO("Dev count: {}", deviceCount);
+        printPhysicalDeviceProperties(properties);;
     }
 
     void Device::createLogicalDevice() {
@@ -166,13 +258,9 @@ namespace lve {
         if(enableValidationLayers) {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
-        } else {
-            createInfo.enabledLayerCount = 0;
-        }
+        } else { createInfo.enabledLayerCount = 0; }
 
-        if(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create logical device!");
-        }
+        VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_), "failed to create logical device!");
 
         vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
         vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
@@ -186,9 +274,7 @@ namespace lve {
         poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
         poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-        if(vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create command pool!");
-        }
+        VK_CHECK(vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool), "failed to create command pool!");
     }
 
     void Device::createSurface() { window.createWindowSurface(instance, &surface_); }
@@ -217,16 +303,14 @@ namespace lve {
         createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
         createInfo.pfnUserCallback = debugCallback;
-        createInfo.pUserData = nullptr;  // Optional
+        createInfo.pUserData = nullptr; // Optional
     }
 
     void Device::setupDebugMessenger() {
         if(!enableValidationLayers) return;
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         populateDebugMessengerCreateInfo(createInfo);
-        if(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-            throw std::runtime_error("failed to set up debug messenger!");
-        }
+        VK_CHECK(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "failed to set up debug messenger!");
     }
 
     bool Device::checkValidationLayerSupport() {
@@ -269,20 +353,22 @@ namespace lve {
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+        std::unordered_set<std::string_view> available;
+        available.reserve(extensionCount); // Riserviamo spazio per migliorare le prestazioni
 
-        std::cout << "available extensions:" << std::endl;
-        std::unordered_set<std::string> available;
-        for(const auto &extension : extensions) {
-            std::cout << "\t" << extension.extensionName << std::endl;
-            available.insert(extension.extensionName);
+        std::vector<std::string> availableExtensions;
+        available.reserve(extensionCount);
+        for(const auto &[extensionName, specVersion] : extensions) {
+            availableExtensions.emplace_back(FORMAT("{} (v. {})", extensionName, specVersion));
+            available.emplace(extensionName);
         }
 
-        std::cout << "required extensions:" << std::endl;
-        auto requiredExtensions = getRequiredExtensions();
+        const auto requiredExtensions = getRequiredExtensions();
         for(const auto &required : requiredExtensions) {
-            std::cout << "\t" << required << std::endl;
-            if(available.find(required) == available.end()) { throw std::runtime_error("Missing required glfw extension"); }
+            if(!available.contains(required)) [[unlikely]] { throw std::runtime_error("Missing required glfw extension"); }
         }
+        LINFO("\navailable extensions:\n  {}\nrequired extensions:\n  {}", FMT_JOIN(availableExtensions, "\n  "),
+              FMT_JOIN(requiredExtensions, "\n  "));
     }
 
     bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device) {
@@ -355,11 +441,8 @@ namespace lve {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 
-            if(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
-                return format;
-            } else if(tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
-                return format;
-            }
+            if(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) { return format; } else if(
+                tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) { return format; }
         }
         throw std::runtime_error("failed to find supported format!");
     }
@@ -382,9 +465,7 @@ namespace lve {
         bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if(vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create vertex buffer!");
-        }
+        VK_CHECK(vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer), "failed to create vertex buffer!");
 
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(device_, buffer, &memRequirements);
@@ -394,9 +475,7 @@ namespace lve {
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, improperties);
 
-        if(vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
-            throw std::runtime_error("failed to allocate vertex buffer memory!");
-        }
+        VK_CHECK(vkAllocateMemory(device_, &allocInfo, nullptr, &bufferMemory), "failed to allocate vertex buffer memory!");
 
         vkBindBufferMemory(device_, buffer, bufferMemory, 0);
     }
@@ -437,8 +516,8 @@ namespace lve {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
-        copyRegion.srcOffset = 0;  // Optional
-        copyRegion.dstOffset = 0;  // Optional
+        copyRegion.srcOffset = 0; // Optional
+        copyRegion.dstOffset = 0; // Optional
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
@@ -477,12 +556,10 @@ namespace lve {
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, improperties);
 
-        if(vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
-            throw std::runtime_error("failed to allocate image memory!");
-        }
+        VK_CHECK(vkAllocateMemory(device_, &allocInfo, nullptr, &imageMemory), "failed to allocate image memory!");
 
         if(vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) { throw std::runtime_error("failed to bind image memory!"); }
     }
-}  // namespace lve
+} // namespace lve
 
 // NOLINTEND(*-include-cleaner)

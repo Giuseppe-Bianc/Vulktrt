@@ -4,6 +4,7 @@
  */
 // NOLINTBEGIN(*-include-cleaner)
 #include <Vulktrt/Window.hpp>
+#include <Vulktrt/vulkanCheck.hpp>
 
 namespace lve {
     std::string_view get_glfw_error_name(int error_code) {
@@ -47,15 +48,14 @@ namespace lve {
                 LINFO("Escape key pressed, closing window.");
             }
             break;
-        [[likely]] default:
+            [[likely]] default:
             // Handle other keys here
             break;
         }
     }
 
-    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept : width(w), height(h), windowName(window_name) {
-        initWindow();
-    }
+    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept
+        : width(w), height(h), windowName(window_name) { initWindow(); }
 
     Window::~Window() {
         glfwDestroyWindow(window);
@@ -157,11 +157,10 @@ namespace lve {
         LINFO("Monitor Mode:{}", formatMode(mode));
         LINFO("Created the window {0}: (w: {1}, h: {2}, pos:({3}/{4}))", windowName.data(), width, height, centerX, centerY);
     }
+
     void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
-        if(glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
-            throw std::runtime_error("failed to craete window surface");
-        }
+        VK_CHECK(glfwCreateWindowSurface(instance, window, nullptr, surface), "failed to craete window surface");
     }
-}  // namespace lve
+} // namespace lve
 
 // NOLINTEND(*-include-cleaner)
