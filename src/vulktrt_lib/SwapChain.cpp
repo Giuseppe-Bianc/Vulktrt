@@ -1,7 +1,12 @@
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise)
 #include "Vulktrt/SwapChain.hpp"
 
 namespace lve {
-    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
+    inline static constexpr auto presentModeMailBox = VK_PRESENT_MODE_MAILBOX_KHR;
+    inline static constexpr auto presentModeImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR;
+
+    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent)
+        : device{deviceRef}, windowExtent{extent} {
         createSwapChain();
         createImageViews();
         createRenderPass();
@@ -41,7 +46,7 @@ namespace lve {
         vkWaitForFences(device.device(), 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
 
         VkResult result = vkAcquireNextImageKHR(device.device(), swapChain, std::numeric_limits<uint64_t>::max(),
-                                                imageAvailableSemaphores[currentFrame],  // must be a not signaled semaphore
+                                                imageAvailableSemaphores[currentFrame], // must be a not signaled semaphore
                                                 VK_NULL_HANDLE, imageIndex);
 
         return result;
@@ -116,16 +121,16 @@ namespace lve {
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
         QueueFamilyIndices indices = device.findPhysicalQueueFamilies();
-        uint32_t queueFamilyIndices[] = {indices.graphicsFamily, indices.presentFamily};
+        std::array<std::uint32_t,2> queueFamilyIndices = {indices.graphicsFamily, indices.presentFamily};
 
         if(indices.graphicsFamily != indices.presentFamily) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
-            createInfo.pQueueFamilyIndices = queueFamilyIndices;
+            createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
         } else {
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-            createInfo.queueFamilyIndexCount = 0;      // Optional
-            createInfo.pQueueFamilyIndices = nullptr;  // Optional
+            createInfo.queueFamilyIndexCount = 0;     // Optional
+            createInfo.pQueueFamilyIndices = nullptr; // Optional
         }
 
         createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
@@ -164,9 +169,8 @@ namespace lve {
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
 
-            if(vkCreateImageView(device.device(), &viewInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
-                throw std::runtime_error("failed to create texture image view!");
-            }
+            VK_CHECK(vkCreateImageView(device.device(), &viewInfo, nullptr, &swapChainImageViews[i]),
+                     "failed to create texture image view!");
         }
     }
 
@@ -241,9 +245,8 @@ namespace lve {
             framebufferInfo.height = iswapChainExtent.height;
             framebufferInfo.layers = 1;
 
-            if(vkCreateFramebuffer(device.device(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
-                throw std::runtime_error("failed to create framebuffer!");
-            }
+            VK_CHECK(vkCreateFramebuffer(device.device(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
+                     "failed to create framebuffer!");
         }
     }
 
@@ -284,10 +287,7 @@ namespace lve {
             viewInfo.subresourceRange.levelCount = 1;
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
-
-            if(vkCreateImageView(device.device(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS) {
-                throw std::runtime_error("failed to create texture image view!");
-            }
+            VK_CHECK(vkCreateImageView(device.device(), &viewInfo, nullptr, &depthImageViews[i]), "failed to create texture image view!");
         }
     }
 
@@ -324,33 +324,25 @@ namespace lve {
     }
 
     VkPresentModeKHR SwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes) {
-        for(const auto &availablePresentMode : availablePresentModes) {
-            if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-                std::cout << "Present mode: Mailbox" << std::endl;
-                return availablePresentMode;
-            }
-        }
-
-        // for (const auto &availablePresentMode : availablePresentModes) {
-        //   if (availablePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR) {
-        //     std::cout << "Present mode: Immediate" << std::endl;
-        //     return availablePresentMode;
-        //   }
+        // if(std::ranges::find(availablePresentModes, presentModeMailBox) != availablePresentModes.end()) {
+        //     LINFO("Present mode: Mailbox");
+        //     return presentModeMailBox;
         // }
 
-        std::cout << "Present mode: V-Sync" << std::endl;
+        if(std::ranges::find(availablePresentModes, presentModeImmediate) != availablePresentModes.end()) {
+            LINFO("Present mode: Immediate");
+            return presentModeImmediate;
+        }
+
+        LINFO("Present mode: V-Sync");
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
     VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
-        if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
-            return capabilities.currentExtent;
-        } else {
+        if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) { return capabilities.currentExtent; } else {
             VkExtent2D actualExtent = windowExtent;
-            actualExtent.width = std::max(capabilities.minImageExtent.width,
-                                          std::min(capabilities.maxImageExtent.width, actualExtent.width));
-            actualExtent.height = std::max(capabilities.minImageExtent.height,
-                                           std::min(capabilities.maxImageExtent.height, actualExtent.height));
+            actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+            actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 
             return actualExtent;
         }
@@ -360,4 +352,6 @@ namespace lve {
         return device.findSupportedFormat({VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
                                           VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
-}  // namespace lve
+} // namespace lve
+
+// NOLINTEND(*-include-cleaner, *-signed-bitwise)
