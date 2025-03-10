@@ -16,7 +16,6 @@ namespace lve {
 
     FirstApp::~FirstApp() { vkDestroyPipelineLayout(lveDevice.device(), pipelineLayout, nullptr); }
 
-
     void FirstApp::run() {
         FPSCounter fpsCounter{lveWindow.getGLFWWindow(), wtile};
         while(!lveWindow.shouldClose()) {
@@ -33,8 +32,8 @@ namespace lve {
     void FirstApp::createPipelineLayout() {
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 0;    // Optional
-        pipelineLayoutInfo.pSetLayouts = nullptr; // Optional
+        pipelineLayoutInfo.setLayoutCount = 0;     // Optional
+        pipelineLayoutInfo.pSetLayouts = nullptr;  // Optional
         pipelineLayoutInfo.pushConstantRangeCount = 0;
         pipelineLayoutInfo.pPushConstantRanges = nullptr;
         if(vkCreatePipelineLayout(lveDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
@@ -61,8 +60,9 @@ namespace lve {
         allocInfo.commandPool = lveDevice.getCommandPool();
         allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
-        if(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()) !=
-           VK_SUCCESS) { throw std::runtime_error("failed to allocate command buffers!"); }
+        if(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate command buffers!");
+        }
 
         for(int i = 0; i < commandBuffers.size(); i++) {
             VkCommandBufferBeginInfo beginInfo{};
@@ -104,6 +104,6 @@ namespace lve {
         result = lveSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
         if(result != VK_SUCCESS) { throw std::runtime_error("failed to present swap chain image!"); }
     }
-} // namespace lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

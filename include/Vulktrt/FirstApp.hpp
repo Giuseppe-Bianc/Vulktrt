@@ -7,9 +7,9 @@
 
 #include "Device.hpp"
 #include "Pipeline.hpp"
+#include "SwapChain.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
-#include "SwapChain.hpp"
 
 namespace lve {
     class FirstApp {
@@ -38,6 +38,6 @@ namespace lve {
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
     };
-} // namespace lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)
