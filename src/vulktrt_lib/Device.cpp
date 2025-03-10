@@ -40,7 +40,9 @@ namespace lve {
     VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                           const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger) {
         auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-        if(func != nullptr) { return func(instance, pCreateInfo, pAllocator, pDebugMessenger); } else {
+        if(func != nullptr) {
+            return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+        } else {
             return VK_ERROR_EXTENSION_NOT_PRESENT;
         }
     }
@@ -52,8 +54,7 @@ namespace lve {
     }
 
     // class member functions
-    Device::Device(Window &window)
-        : window{window} {
+    Device::Device(Window &window) : window{window} {
         createInstance();
         setupDebugMessenger();
         createSurface();
@@ -130,7 +131,11 @@ namespace lve {
         };
 
         auto it = vendorMap.find(vendorID);
-        if(it != vendorMap.end()) { return it->second; } else { return "Unknown Vendor"; }
+        if(it != vendorMap.end()) {
+            return it->second;
+        } else {
+            return "Unknown Vendor";
+        }
     }
 
     static const char *getDeviceType(VkPhysicalDeviceType input_value) {
@@ -221,7 +226,8 @@ namespace lve {
 
         vkGetPhysicalDeviceProperties(physicalDevice, &properties);
         LINFO("Dev count: {}", deviceCount);
-        printPhysicalDeviceProperties(properties);;
+        printPhysicalDeviceProperties(properties);
+        ;
     }
 
     void Device::createLogicalDevice() {
@@ -258,7 +264,9 @@ namespace lve {
         if(enableValidationLayers) {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
-        } else { createInfo.enabledLayerCount = 0; }
+        } else {
+            createInfo.enabledLayerCount = 0;
+        }
 
         VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_), "failed to create logical device!");
 
@@ -303,7 +311,7 @@ namespace lve {
         createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
         createInfo.pfnUserCallback = debugCallback;
-        createInfo.pUserData = nullptr; // Optional
+        createInfo.pUserData = nullptr;  // Optional
     }
 
     void Device::setupDebugMessenger() {
@@ -354,7 +362,7 @@ namespace lve {
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
         std::unordered_set<std::string_view> available;
-        available.reserve(extensionCount); // Riserviamo spazio per migliorare le prestazioni
+        available.reserve(extensionCount);  // Riserviamo spazio per migliorare le prestazioni
 
         std::vector<std::string> availableExtensions;
         available.reserve(extensionCount);
@@ -441,8 +449,11 @@ namespace lve {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 
-            if(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) { return format; } else if(
-                tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) { return format; }
+            if(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
+                return format;
+            } else if(tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
+                return format;
+            }
         }
         throw std::runtime_error("failed to find supported format!");
     }
@@ -516,8 +527,8 @@ namespace lve {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
-        copyRegion.srcOffset = 0; // Optional
-        copyRegion.dstOffset = 0; // Optional
+        copyRegion.srcOffset = 0;  // Optional
+        copyRegion.dstOffset = 0;  // Optional
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
@@ -560,6 +571,6 @@ namespace lve {
 
         if(vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) { throw std::runtime_error("failed to bind image memory!"); }
     }
-} // namespace lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

@@ -48,14 +48,15 @@ namespace lve {
                 LINFO("Escape key pressed, closing window.");
             }
             break;
-            [[likely]] default:
+        [[likely]] default:
             // Handle other keys here
             break;
         }
     }
 
-    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept
-        : width(w), height(h), windowName(window_name) { initWindow(); }
+    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept : width(w), height(h), windowName(window_name) {
+        initWindow();
+    }
 
     Window::~Window() {
         glfwDestroyWindow(window);
@@ -161,6 +162,6 @@ namespace lve {
     void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
         VK_CHECK(glfwCreateWindowSurface(instance, window, nullptr, surface), "failed to craete window surface");
     }
-} // namespace lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)
