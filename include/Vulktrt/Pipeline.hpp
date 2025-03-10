@@ -48,6 +48,6 @@ namespace lve {
         VkShaderModule vertShaderModule;
         VkShaderModule fragShaderModule;
     };
-} // namespace lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)
