@@ -3,7 +3,12 @@ include(GenerateExportHeader)
 find_package(Vulkan REQUIRED)
 add_library(vulktrt_lib vulktrt.cpp FPSCounter.cpp Window.cpp
         FirstApp.cpp
-        ../../include/Vulktrt/FirstApp.hpp)
+        ../../include/Vulktrt/FirstApp.hpp
+        Pipeline.cpp
+        ../../include/Vulktrt/Pipeline.hpp
+        Device.cpp
+        ../../include/Vulktrt/Device.hpp
+)
 
 get_target_property(target_name vulktrt_lib NAME)
 include("${CMAKE_SOURCE_DIR}/cmake/Simd.cmake")
@@ -150,12 +155,12 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
 
   # Remapping stage
   if(SPIRV_REMAP)
-    set(REMAP_OUT "${SHADER_ROOT_DIR}/${FILE_NAME}.opt.remap.spv")
+    set(REMAP_OUT "${SHADER_ROOT_DIR}/${FILE_NAME}.opt.rmp.spv")
     add_custom_command(
             OUTPUT ${REMAP_OUT}
             COMMAND ${SPIRV_REMAP} --do-everything -i ${SPIRV_OUT} -o ${REMAP_OUT}
             DEPENDS ${SPIRV_OUT}
-            COMMENT "Remapping SPIR-V: ${FILE_NAME}${SPIRV_EXT}.spv -> ${FILE_NAME}.opt.remap.spv"
+            COMMENT "Remapping SPIR-V: ${FILE_NAME}${SPIRV_EXT}.spv -> ${FILE_NAME}.opt.rmp.spv"
             VERBATIM
     )
     list(APPEND SPIRV_BINARY_FILES ${REMAP_OUT})

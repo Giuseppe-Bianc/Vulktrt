@@ -28,6 +28,7 @@ namespace lve {
         //[[nodiscard]] bool wasWindowResized() noexcept { return framebufferResized; }
         void resetWindowResizedFlag() noexcept { framebufferResized = false; }
         //void swapBuffers() const noexcept { glfwSwapBuffers(window); }
+        void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
         static void initializeGLFW();
 

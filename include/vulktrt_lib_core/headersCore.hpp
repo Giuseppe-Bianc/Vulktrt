@@ -41,7 +41,7 @@ DISABLE_WARNINGS_PUSH(
 #include <optional>
 #include <random>
 #include <ranges>
-//#include <set>
+#include <set>
 #include <source_location>
 #include <sstream>
 //#include <stack>
@@ -49,7 +49,7 @@ DISABLE_WARNINGS_PUSH(
 #include <string>
 #include <string_view>
 #include <type_traits>
-//#include <unordered_set>
+#include <unordered_set>
 #include <utility>
 #include <variant>
 #include <vector>

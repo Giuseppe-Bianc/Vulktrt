@@ -156,6 +156,11 @@ namespace lve {
         LINFO("Monitor Mode:{}", formatMode(mode));
         LINFO("Created the window {0}: (w: {1}, h: {2}, pos:({3}/{4}))", windowName.data(), width, height, centerX, centerY);
     }
+    void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
+        if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
+            throw std::runtime_error("failed to craete window surface");
+        }
+    }
 }
 
 // NOLINTEND(*-include-cleaner)
