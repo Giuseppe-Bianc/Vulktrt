@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Window.hpp"
 #include "VulkanLogInfoCallback.hpp"
+#include "Window.hpp"
 
 namespace lve {
     struct SwapChainSupportDetails {
@@ -21,7 +21,7 @@ namespace lve {
     class Device {
     public:
 #ifdef NDEBUG
-  const bool enableValidationLayers = false;
+        const bool enableValidationLayers = false;
 #else
         const bool enableValidationLayers = true;
 #endif
@@ -44,27 +44,18 @@ namespace lve {
         SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(physicalDevice); }
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags improperties);
         QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(physicalDevice); }
-        VkFormat findSupportedFormat(
-            const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+        VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
         // Buffer Helper Functions
-        void createBuffer(
-            VkDeviceSize size,
-            VkBufferUsageFlags usage,
-            VkMemoryPropertyFlags improperties,
-            VkBuffer &buffer,
-            VkDeviceMemory &bufferMemory);
+        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags improperties, VkBuffer &buffer,
+                          VkDeviceMemory &bufferMemory);
         VkCommandBuffer beginSingleTimeCommands();
         void endSingleTimeCommands(VkCommandBuffer commandBuffer);
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-        void copyBufferToImage(
-            VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
+        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
 
-        void createImageWithInfo(
-            const VkImageCreateInfo &imageInfo,
-            VkMemoryPropertyFlags improperties,
-            VkImage &image,
-            VkDeviceMemory &imageMemory);
+        void createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags improperties, VkImage &image,
+                                 VkDeviceMemory &imageMemory);
 
         VkPhysicalDeviceProperties properties;
 
@@ -100,4 +91,4 @@ namespace lve {
         const std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
         const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     };
-} // namespace lve
+}  // namespace lve

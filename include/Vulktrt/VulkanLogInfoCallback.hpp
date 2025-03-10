@@ -1,12 +1,12 @@
 /*
-* Created by gbian on 10/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 10/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 
 #pragma once
 
-#include <vulkan/vk_enum_string_helper.h>
 #include "vulkanCheck.hpp"
+#include <vulkan/vk_enum_string_helper.h>
 
 DISABLE_WARNINGS_PUSH(26429 26481)
 
@@ -114,6 +114,5 @@ inline void logDebugValidationLayerInfo(const VkDebugUtilsMessengerCallbackDataE
         return "";
     }
 }
-
 
 DISABLE_WARNINGS_POP()
