@@ -34,7 +34,7 @@ namespace lve {
 
         void bind(VkCommandBuffer commandBuffer);
 
-        static PipelineConfigInfo defaultPipelineConfigInfo(PipelineConfigInfo &configInfo, uint32_t width, uint32_t height);
+        static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo, uint32_t width, uint32_t height);
 
     private:
         static std::vector<char> readFile(const std::string &filepath);
@@ -48,6 +48,6 @@ namespace lve {
         VkShaderModule vertShaderModule;
         VkShaderModule fragShaderModule;
     };
-}  // namespace lve
+} // namespace lve
 
 // NOLINTEND(*-include-cleaner)
