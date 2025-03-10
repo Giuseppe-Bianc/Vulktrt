@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 09/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 09/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #include "Vulktrt/FirstApp.hpp"
 
@@ -12,11 +12,11 @@ namespace lve {
         FPSCounter fpsCounter{lveWindow.getGLFWWindow(), wtile};
         while(!lveWindow.shouldClose()) {
             fpsCounter.frameInTitle(false, false);
-            //lveWindow.swapBuffers();
-            // Take care of all GLFW events
+            // lveWindow.swapBuffers();
+            //  Take care of all GLFW events
             glfwPollEvents();
         }
     }
-} // lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

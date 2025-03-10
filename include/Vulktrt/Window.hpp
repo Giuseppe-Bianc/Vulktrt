@@ -10,23 +10,24 @@
 #include <string_view>
 
 namespace lve {
-    static void errorCallback(int error, const char* description);
-    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void errorCallback(int error, const char *description);
+    static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
     // static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;
     // NOLINT(*-special-member-functions)
     class Window {
     public:
-        Window(const int w, const int h, const std::string_view& window_name) noexcept;
+        Window(const int w, const int h, const std::string_view &window_name) noexcept;
         ~Window();
 
-        Window(const Window&) = delete;
-        Window& operator=(const Window&) = delete;
+        Window(const Window &) = delete;
+        Window &operator=(const Window &) = delete;
 
-        [[nodiscard]] GLFWwindow* getGLFWWindow() const noexcept { return window; }
+        [[nodiscard]] GLFWwindow *getGLFWWindow() const noexcept { return window; }
         [[nodiscard]] bool shouldClose() const noexcept { return glfwWindowShouldClose(window); }
         //[[nodiscard]] bool wasWindowResized() noexcept { return framebufferResized; }
         void resetWindowResizedFlag() noexcept { framebufferResized = false; }
+        // void swapBuffers() const noexcept { glfwSwapBuffers(window); }
         //void swapBuffers() const noexcept { glfwSwapBuffers(window); }
         void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
@@ -39,7 +40,7 @@ namespace lve {
 
         void setHints() const;
 
-        [[nodiscard]] std::string formatMode(const GLFWvidmode* mode) const;
+        [[nodiscard]] std::string formatMode(const GLFWvidmode *mode) const;
 
         void centerWindow();
 
@@ -47,8 +48,8 @@ namespace lve {
         int height;
         bool framebufferResized = false;
         std::string_view windowName;
-        GLFWwindow* window{nullptr};
+        GLFWwindow *window{nullptr};
     };
-}
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

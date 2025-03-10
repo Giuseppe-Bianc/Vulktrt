@@ -47,14 +47,15 @@ namespace lve {
                 LINFO("Escape key pressed, closing window.");
             }
             break;
-            [[likely]] default:
+        [[likely]] default:
             // Handle other keys here
             break;
         }
     }
 
-    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept
-        : width(w), height(h), windowName(window_name) { initWindow(); }
+    Window::Window(const int w, const int h, const std::string_view &window_name) noexcept : width(w), height(h), windowName(window_name) {
+        initWindow();
+    }
 
     Window::~Window() {
         glfwDestroyWindow(window);
@@ -87,7 +88,7 @@ namespace lve {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-        //glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+        // glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     }
 
@@ -161,6 +162,6 @@ namespace lve {
             throw std::runtime_error("failed to craete window surface");
         }
     }
-}
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)
