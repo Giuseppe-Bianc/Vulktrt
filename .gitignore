@@ -35,3 +35,4 @@ $RECYCLE.BIN/
 ehthumbs.db
 Thumbs.db
 /shaders/*.spv
+/buildd/
