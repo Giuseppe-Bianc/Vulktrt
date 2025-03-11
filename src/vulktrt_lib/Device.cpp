@@ -148,7 +148,7 @@ namespace lve {
         LINFO("Driver Version: {}.{}.{}", VK_VERSION_MAJOR(properties.driverVersion), VK_VERSION_MINOR(properties.driverVersion),
               VK_VERSION_PATCH(properties.driverVersion));
         LINFO("Vendor ID: {}", getVendorName(properties.vendorID));
-        LINFO("Device ID: {}", properties.deviceID);
+        LINFO("Device ID: {0}(0x{0:04X})", properties.deviceID);
         LINFO("Device Type: {}", getDeviceType(properties.deviceType));
         LINFO("pipelineCacheUUID: {:02x}", FMT_JOIN(properties.pipelineCacheUUID, "-"));
 
