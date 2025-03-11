@@ -5,8 +5,7 @@ namespace lve {
     inline static constexpr auto presentModeMailBox = VK_PRESENT_MODE_MAILBOX_KHR;
     inline static constexpr auto presentModeImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR;
 
-    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent)
-        : device{deviceRef}, windowExtent{extent} {
+    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
         createSwapChain();
         createImageViews();
         createRenderPass();
@@ -46,7 +45,7 @@ namespace lve {
         vkWaitForFences(device.device(), 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
 
         VkResult result = vkAcquireNextImageKHR(device.device(), swapChain, std::numeric_limits<uint64_t>::max(),
-                                                imageAvailableSemaphores[currentFrame], // must be a not signaled semaphore
+                                                imageAvailableSemaphores[currentFrame],  // must be a not signaled semaphore
                                                 VK_NULL_HANDLE, imageIndex);
 
         return result;
@@ -121,7 +120,7 @@ namespace lve {
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
         QueueFamilyIndices indices = device.findPhysicalQueueFamilies();
-        std::array<std::uint32_t,2> queueFamilyIndices = {indices.graphicsFamily, indices.presentFamily};
+        std::array<std::uint32_t, 2> queueFamilyIndices = {indices.graphicsFamily, indices.presentFamily};
 
         if(indices.graphicsFamily != indices.presentFamily) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
@@ -129,8 +128,8 @@ namespace lve {
             createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
         } else {
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-            createInfo.queueFamilyIndexCount = 0;     // Optional
-            createInfo.pQueueFamilyIndices = nullptr; // Optional
+            createInfo.queueFamilyIndexCount = 0;      // Optional
+            createInfo.pQueueFamilyIndices = nullptr;  // Optional
         }
 
         createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
@@ -163,6 +162,10 @@ namespace lve {
             viewInfo.image = swapChainImages[i];
             viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
             viewInfo.format = swapChainImageFormat;
+            viewInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+            viewInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+            viewInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+            viewInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
             viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
             viewInfo.subresourceRange.baseMipLevel = 0;
             viewInfo.subresourceRange.levelCount = 1;
@@ -220,7 +223,7 @@ namespace lve {
         std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
         VkRenderPassCreateInfo renderPassInfo = {};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-        renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        renderPassInfo.attachmentCount = C_UI32T(attachments.size());
         renderPassInfo.pAttachments = attachments.data();
         renderPassInfo.subpassCount = 1;
         renderPassInfo.pSubpasses = &subpass;
@@ -239,7 +242,7 @@ namespace lve {
             VkFramebufferCreateInfo framebufferInfo = {};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = renderPass;
-            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.attachmentCount = C_UI32T(attachments.size());
             framebufferInfo.pAttachments = attachments.data();
             framebufferInfo.width = iswapChainExtent.width;
             framebufferInfo.height = iswapChainExtent.height;
@@ -314,11 +317,11 @@ namespace lve {
     }
 
     VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {
-        for(const auto &availableFormat : availableFormats) {
-            if(availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-                return availableFormat;
-            }
-        }
+        auto isDesiredFormat = [](const VkSurfaceFormatKHR &format) {
+            return format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+        };
+
+        if(auto it = std::ranges::find_if(availableFormats, isDesiredFormat); it != availableFormats.end()) { return *it; }
 
         return availableFormats[0];
     }
@@ -339,7 +342,9 @@ namespace lve {
     }
 
     VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
-        if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) { return capabilities.currentExtent; } else {
+        if(capabilities.currentExtent.width != ui32tmax) {
+            return capabilities.currentExtent;
+        } else {
             VkExtent2D actualExtent = windowExtent;
             actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
             actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
@@ -352,6 +357,6 @@ namespace lve {
         return device.findSupportedFormat({VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
                                           VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
-} // namespace lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner, *-signed-bitwise)

@@ -1,5 +1,6 @@
-// NOLINTBEGIN(*-include-cleaner)
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise)
 #include "Vulktrt/Device.hpp"
+// #define INDEPTH
 
 namespace lve {
     // local callback functions
@@ -7,6 +8,7 @@ namespace lve {
                                                         VkDebugUtilsMessageTypeFlagsEXT messageType,
                                                         const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                                         [[maybe_unused]] void *pUserData) {
+        vnd::AutoTimer t("Debug Callback");
         // Determine the message type
         const std::string_view type = debugCallbackString(messageType);
 
@@ -14,23 +16,7 @@ namespace lve {
         const auto msg = FORMAT("{}Message ID: {}({}): {}", type, pCallbackData->pMessageIdName ? pCallbackData->pMessageIdName : "Unknown",
                                 pCallbackData->messageIdNumber, pCallbackData->pMessage);
 
-        switch(messageSeverity) {
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-            LTRACE(msg);
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-            LINFO(msg);
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-            LWARN(msg);
-            break;
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-            LERROR(msg);
-            break;
-        default:
-            LDEBUG(msg);
-            break;
-        }
+        printMessageWhitSeverity(msg, messageSeverity);
 
         logDebugValidationLayerInfo(pCallbackData, messageSeverity);
 
@@ -180,19 +166,19 @@ namespace lve {
         appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
         appInfo.pEngineName = "No Engine";
         appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.apiVersion = VK_API_VERSION_1_0;
+        appInfo.apiVersion = VK_API_VERSION_1_3;
 
         VkInstanceCreateInfo createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
 
         auto extensions = getRequiredExtensions();
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+        createInfo.enabledExtensionCount = C_UI32T(extensions.size());
         createInfo.ppEnabledExtensionNames = extensions.data();
 
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
         if(enableValidationLayers) {
-            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.enabledLayerCount = C_UI32T(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
 
             populateDebugMessengerCreateInfo(debugCreateInfo);
@@ -202,12 +188,15 @@ namespace lve {
             createInfo.pNext = nullptr;
         }
 
-        if(vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) { throw std::runtime_error("failed to create instance!"); }
+        VK_CHECK(vkCreateInstance(&createInfo, nullptr, &instance), "failed to create instance!");
 
         hasGflwRequiredInstanceExtensions();
     }
 
     void Device::pickPhysicalDevice() {
+#ifdef INDEPTH
+        vnd::AutoTimer t{"pickPhysicalDevice", vnd::Timer::Big};
+#endif
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
         if(deviceCount == 0) { throw std::runtime_error("failed to find GPUs with Vulkan support!"); }
@@ -227,7 +216,6 @@ namespace lve {
         vkGetPhysicalDeviceProperties(physicalDevice, &properties);
         LINFO("Dev count: {}", deviceCount);
         printPhysicalDeviceProperties(properties);
-        ;
     }
 
     void Device::createLogicalDevice() {
@@ -252,17 +240,17 @@ namespace lve {
         VkDeviceCreateInfo createInfo = {};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
-        createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+        createInfo.queueCreateInfoCount = C_UI32T(queueCreateInfos.size());
         createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
         createInfo.pEnabledFeatures = &deviceFeatures;
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+        createInfo.enabledExtensionCount = C_UI32T(deviceExtensions.size());
         createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
         // might not really be necessary anymore because device specific validation layers
         // have been deprecated
         if(enableValidationLayers) {
-            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.enabledLayerCount = C_UI32T(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
         } else {
             createInfo.enabledLayerCount = 0;
@@ -322,6 +310,9 @@ namespace lve {
     }
 
     bool Device::checkValidationLayerSupport() {
+#ifdef INDEPTH
+        vnd::AutoTimer t{"checkValidationLayerSupport", vnd::Timer::Big};
+#endif
         uint32_t layerCount;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
@@ -331,11 +322,10 @@ namespace lve {
         for(const char *layerName : validationLayers) {
             bool layerFound = false;
 
-            for(const auto &layerProperties : availableLayers) {
-                if(strcmp(layerName, layerProperties.layerName) == 0) {
-                    layerFound = true;
-                    break;
-                }
+            if(std::ranges::any_of(availableLayers, [layerName](const auto &layerProperties) {
+                   return std::strcmp(layerName, layerProperties.layerName) == 0;
+               })) {
+                layerFound = true;
             }
 
             if(!layerFound) { return false; }
@@ -351,12 +341,15 @@ namespace lve {
 
         std::vector<const char *> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-        if(enableValidationLayers) { extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME); }
+        if(enableValidationLayers) { extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME); }
 
         return extensions;
     }
 
     void Device::hasGflwRequiredInstanceExtensions() {
+#ifdef INDEPTH
+        vnd::AutoTimer t{"hasGflwRequiredInstanceExtensions", vnd::Timer::Big};
+#endif
         uint32_t extensionCount = 0;
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
         std::vector<VkExtensionProperties> extensions(extensionCount);
@@ -402,21 +395,18 @@ namespace lve {
         std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
-        int i = 0;
-        for(const auto &queueFamily : queueFamilies) {
-            if(queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-                indices.graphicsFamily = i;
+        for(const auto &[i, queueFamily] : queueFamilies | std::views::enumerate) {
+            if(queueFamily.queueCount > 0 && C_BOOL(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)) {
+                indices.graphicsFamily = C_UI32T(i);
                 indices.graphicsFamilyHasValue = true;
             }
             VkBool32 presentSupport = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &presentSupport);
-            if(queueFamily.queueCount > 0 && presentSupport) {
-                indices.presentFamily = i;
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, C_UI32T(i), surface_, &presentSupport);
+            if(queueFamily.queueCount > 0 && C_BOOL(presentSupport)) {
+                indices.presentFamily = C_UI32T(i);
                 indices.presentFamilyHasValue = true;
             }
             if(indices.isComplete()) { break; }
-
-            i++;
         }
 
         return indices;
@@ -557,7 +547,7 @@ namespace lve {
 
     void Device::createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags improperties, VkImage &image,
                                      VkDeviceMemory &imageMemory) {
-        if(vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) { throw std::runtime_error("failed to create image!"); }
+        VK_CHECK(vkCreateImage(device_, &imageInfo, nullptr, &image), "failed to create image!");
 
         VkMemoryRequirements memRequirements;
         vkGetImageMemoryRequirements(device_, image, &memRequirements);
@@ -573,4 +563,4 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner)
+// NOLINTEND(*-include-cleaner, *-signed-bitwise)
