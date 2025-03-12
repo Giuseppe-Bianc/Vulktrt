@@ -139,6 +139,84 @@ DISABLE_WARNINGS_POP()
  */
 #define LCRITICAL(...) SPDLOG_CRITICAL(__VA_ARGS__)
 
+/**
+ * @brief Macro for logging trace messages using SPDLOG_TRACE.
+ * @param ... Variable arguments to be formatted and logged.
+ * @details Use this macro to log detailed tracing information for debugging purposes.
+ * This macro is a wrapper around the SPDLOG_TRACE macro provided by the spdlog library.
+ * Example usage:
+ * @code
+ * LTRACE("This is a trace message: {}", some_variable);
+ * @endcode
+ * @see spdlog::trace
+ */
+#define VLTRACE(...) spdlog::get("VK")->trace(__VA_ARGS__)
+
+/**
+ * @brief Macro for logging debug messages using SPDLOG_DEBUG.
+ * @param ... Variable arguments to be formatted and logged.
+ * @details Use this macro to log debug information helpful during development and testing.
+ * This macro is a wrapper around the SPDLOG_DEBUG macro provided by the spdlog library.
+ * Example usage:
+ * @code
+ * LDEBUG("This is a debug message: {}", some_variable);
+ * @endcode
+ * @see spdlog::debug
+ */
+#define VLDEBUG(...) spdlog::get("VK")->debug(__VA_ARGS__)
+
+/**
+ * @brief Macro for logging informational messages using SPDLOG_INFO.
+ * @param ... Variable arguments to be formatted and logged.
+ * @details Use this macro to log general information about the application's state.
+ * This macro is a wrapper around the SPDLOG_INFO macro provided by the spdlog library.
+ * Example usage:
+ * @code
+ * LINFO("This is an info message: {}", some_variable);
+ * @endcode
+ * @see spdlog::info
+ */
+#define VLINFO(...) spdlog::get("VK")->info(__VA_ARGS__)
+
+/**
+ * @brief Macro for logging warning messages using SPDLOG_WARN.
+ * @param ... Variable arguments to be formatted and logged.
+ * @details Use this macro to log non-critical warnings that might indicate potential issues.
+ * This macro is a wrapper around the SPDLOG_WARN macro provided by the spdlog library.
+ * Example usage:
+ * @code
+ * LWARN("This is a warning message: {}", some_variable);
+ * @endcode
+ * @see spdlog::warn
+ */
+#define VLWARN(...) spdlog::get("VK")->warn(__VA_ARGS__)
+
+/**
+ *  @brief Macro for logging error messages using SPDLOG_ERROR.
+ * @param ... Variable arguments to be formatted and logged.
+ * @details Use this macro to log errors that do not prevent the application from continuing.
+ * This macro is a wrapper around the SPDLOG_ERROR macro provided by the spdlog library.
+ * Example usage:
+ * @code
+ * LERROR("This is an error message: {}", some_variable);
+ * @endcode
+ * @see spdlog::error
+ */
+#define VLERROR(...) spdlog::get("VK")->error(__VA_ARGS__)
+
+/**
+ * @brief Macro for logging critical messages using SPDLOG_CRITICAL.
+ * @param ... Variable arguments to be formatted and logged.
+ * @details Use this macro to log critical errors that require immediate attention.
+ * This macro is a wrapper around the SPDLOG_CRITICAL macro provided by the spdlog library.
+ * Example usage:
+ * @code
+ * LCRITICAL("This is a critical message: {}", some_variable);
+ * @endcode
+ * @see spdlog::critical
+ */
+#define VLCRITICAL(...) spdlog::get("VK")->critical(__VA_ARGS__)
+
 inline std::string get_current_timestamp() {
     const auto now = std::chrono::system_clock::now();
     const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
@@ -175,6 +253,10 @@ inline void setup_logger() {
     const auto logger = std::make_shared<spdlog::logger>("main", sinks.begin(), sinks.end());
     logger->set_pattern(R"(%^[%T %l] %v%$)");  // Log pattern
     logger->set_level(spdlog::level::trace);   // Minimum log level (trace)
+
+    const auto vklogger = spdlog::stdout_color_mt("VK");
+    vklogger->set_pattern(R"(%^%n %v%$)");
+    vklogger->set_level(spdlog::level::trace);
 
     // Set this logger as the default logger
     spdlog::set_default_logger(logger);

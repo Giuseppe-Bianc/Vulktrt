@@ -5,7 +5,8 @@ namespace lve {
     inline static constexpr auto presentModeMailBox = VK_PRESENT_MODE_MAILBOX_KHR;
     inline static constexpr auto presentModeImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR;
 
-    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
+    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent)
+        : device{deviceRef}, windowExtent{extent} {
         createSwapChain();
         createImageViews();
         createRenderPass();
@@ -42,10 +43,10 @@ namespace lve {
     }
 
     VkResult SwapChain::acquireNextImage(uint32_t *imageIndex) {
-        vkWaitForFences(device.device(), 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
+        vkWaitForFences(device.device(), 1, &inFlightFences[currentFrame], VK_TRUE, uint64Max);
 
-        VkResult result = vkAcquireNextImageKHR(device.device(), swapChain, std::numeric_limits<uint64_t>::max(),
-                                                imageAvailableSemaphores[currentFrame],  // must be a not signaled semaphore
+        VkResult result = vkAcquireNextImageKHR(device.device(), swapChain, uint64Max,
+                                                imageAvailableSemaphores[currentFrame], // must be a not signaled semaphore
                                                 VK_NULL_HANDLE, imageIndex);
 
         return result;
@@ -128,8 +129,8 @@ namespace lve {
             createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
         } else {
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-            createInfo.queueFamilyIndexCount = 0;      // Optional
-            createInfo.pQueueFamilyIndices = nullptr;  // Optional
+            createInfo.queueFamilyIndexCount = 0;     // Optional
+            createInfo.pQueueFamilyIndices = nullptr; // Optional
         }
 
         createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
@@ -328,23 +329,21 @@ namespace lve {
 
     VkPresentModeKHR SwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes) {
         // if(std::ranges::find(availablePresentModes, presentModeMailBox) != availablePresentModes.end()) {
-        //     LINFO("Present mode: Mailbox");
+        //     VLINFO("Present mode: Mailbox");
         //     return presentModeMailBox;
         // }
 
         if(std::ranges::find(availablePresentModes, presentModeImmediate) != availablePresentModes.end()) {
-            LINFO("Present mode: Immediate");
+            VLINFO("Present mode: Immediate");
             return presentModeImmediate;
         }
 
-        LINFO("Present mode: V-Sync");
+        VLINFO("Present mode: V-Sync");
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
     VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) {
-        if(capabilities.currentExtent.width != ui32tmax) {
-            return capabilities.currentExtent;
-        } else {
+        if(capabilities.currentExtent.width != ui32tmax) { return capabilities.currentExtent; } else {
             VkExtent2D actualExtent = windowExtent;
             actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
             actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
@@ -357,6 +356,6 @@ namespace lve {
         return device.findSupportedFormat({VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
                                           VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
-}  // namespace lve
+} // namespace lve
 
 // NOLINTEND(*-include-cleaner, *-signed-bitwise)

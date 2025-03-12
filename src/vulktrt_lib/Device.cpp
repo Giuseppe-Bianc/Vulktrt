@@ -1,6 +1,6 @@
 // NOLINTBEGIN(*-include-cleaner, *-signed-bitwise)
 #include "Vulktrt/Device.hpp"
-// #define INDEPTH
+#define INDEPTH
 
 namespace lve {
     // local callback functions
@@ -8,7 +8,9 @@ namespace lve {
                                                         VkDebugUtilsMessageTypeFlagsEXT messageType,
                                                         const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                                         [[maybe_unused]] void *pUserData) {
-        vnd::AutoTimer t("Debug Callback");
+#ifdef INDEPTH
+        vnd::AutoTimer t{"Debug Callback", vnd::Timer::Big};
+#endif
         // Determine the message type
         const std::string_view type = debugCallbackString(messageType);
 
@@ -141,20 +143,82 @@ namespace lve {
         }
     }
 
+    void printDeviceFeatures(VkPhysicalDevice device) {
+        VkPhysicalDeviceFeatures features;
+        vkGetPhysicalDeviceFeatures(device, &features);
+
+        VLINFO("=== Supported Features ===");
+        VLINFO("Geometry Shader:       {}", C_BOOL(features.geometryShader));
+        VLINFO("Tessellation Shader:   {}", C_BOOL(features.tessellationShader));
+        VLINFO("Multi Viewport:        {}", C_BOOL(features.multiViewport));
+        // Aggiungi altre features...
+    }
+
+    void printMemoryInfo(VkPhysicalDevice device) {
+        VkPhysicalDeviceMemoryProperties mem_props;
+        vkGetPhysicalDeviceMemoryProperties(device, &mem_props);
+
+        VLINFO("=== Memory Heaps ({} total) ===", mem_props.memoryHeapCount);
+        for(uint32_t i = 0; i < mem_props.memoryHeapCount; ++i) {
+            const auto size_mb = C_ST(mem_props.memoryHeaps[i].size) / (1024 * 1024);
+            const auto sis_device_local = (mem_props.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) ? "[Device Local]" : "";
+            VLINFO("Heap {:2}: {:>12} MB {}", i, size_mb, sis_device_local);
+        }
+
+        VLINFO("=== Memory Types ({} total) ===", mem_props.memoryTypeCount);
+        for(uint32_t i = 0; i < mem_props.memoryTypeCount; ++i) {
+            std::string flags;
+            const auto &type = mem_props.memoryTypes[i];
+
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) flags += "DeviceLocal ";
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) flags += "HostVisible ";
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) flags += "HostCoherent ";
+
+            VLINFO("Type {:2}: Heap {:2} | {}", i, type.heapIndex, flags);
+        }
+    }
+
+    void printQueueFamilies(VkPhysicalDevice device) {
+        uint32_t count;
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &count, nullptr);
+        std::vector<VkQueueFamilyProperties> queues(count);
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &count, queues.data());
+
+        VLINFO("=== Queue Families ({} total) ===", count);
+        for(uint32_t i = 0; i < queues.size(); ++i) {
+            std::string capabilities;
+            const auto &q = queues[i];
+
+            if(q.queueFlags & VK_QUEUE_GRAPHICS_BIT) capabilities += "Graphics ";
+            if(q.queueFlags & VK_QUEUE_COMPUTE_BIT) capabilities += "Compute ";
+            if(q.queueFlags & VK_QUEUE_TRANSFER_BIT) capabilities += "Transfer ";
+            if(q.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT) capabilities += "Sparse ";
+
+            VLINFO("Family {:2}: {:2} queues | {}", i, q.queueCount, capabilities);
+        }
+    }
+
     void printPhysicalDeviceProperties(const VkPhysicalDeviceProperties &properties) {
-        LINFO("Device Name: {}", properties.deviceName);
-        LINFO("API Version: {}.{}.{}", VK_VERSION_MAJOR(properties.apiVersion), VK_VERSION_MINOR(properties.apiVersion),
-              VK_VERSION_PATCH(properties.apiVersion));
-        LINFO("Driver Version: {}.{}.{}", VK_VERSION_MAJOR(properties.driverVersion), VK_VERSION_MINOR(properties.driverVersion),
-              VK_VERSION_PATCH(properties.driverVersion));
-        LINFO("Vendor ID: {}", getVendorName(properties.vendorID));
-        LINFO("Device ID: {0}(0x{0:04X})", properties.deviceID);
-        LINFO("Device Type: {}", getDeviceType(properties.deviceType));
-        LINFO("pipelineCacheUUID: {:02x}", FMT_JOIN(properties.pipelineCacheUUID, "-"));
+        VLINFO("Device Name: {}", properties.deviceName);
+        VLINFO("API Version: {}.{}.{}", VK_VERSION_MAJOR(properties.apiVersion), VK_VERSION_MINOR(properties.apiVersion),
+               VK_VERSION_PATCH(properties.apiVersion));
+        VLINFO("Driver Version: {}.{}.{}", VK_VERSION_MAJOR(properties.driverVersion), VK_VERSION_MINOR(properties.driverVersion),
+               VK_VERSION_PATCH(properties.driverVersion));
+        VLINFO("Vendor ID: {}", getVendorName(properties.vendorID));
+        VLINFO("Device ID: {0}(0x{0:04X})", properties.deviceID);
+        VLINFO("Device Type: {}", getDeviceType(properties.deviceType));
+        VLINFO("pipelineCacheUUID: {:02x}", FMT_JOIN(properties.pipelineCacheUUID, "-"));
 
         // Add more properties as needed
     }
 
+    void printDeviceInfo(VkPhysicalDevice device, const VkPhysicalDeviceProperties &properties) {
+        printPhysicalDeviceProperties(properties);
+        printDeviceFeatures(device);
+        printMemoryInfo(device);
+        printQueueFamilies(device);
+        // printDeviceExtensions(device);
+    }
     void Device::createInstance() {
         if(enableValidationLayers && !checkValidationLayerSupport()) {
             throw std::runtime_error("validation layers requested, but not available!");
@@ -214,8 +278,8 @@ namespace lve {
         if(physicalDevice == VK_NULL_HANDLE) { throw std::runtime_error("failed to find a suitable GPU!"); }
 
         vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-        LINFO("Dev count: {}", deviceCount);
-        printPhysicalDeviceProperties(properties);
+        VLINFO("Dev count: {}", deviceCount);
+        printDeviceInfo(physicalDevice, properties);
     }
 
     void Device::createLogicalDevice() {
@@ -368,8 +432,8 @@ namespace lve {
         for(const auto &required : requiredExtensions) {
             if(!available.contains(required)) [[unlikely]] { throw std::runtime_error("Missing required glfw extension"); }
         }
-        LINFO("\navailable extensions:\n  {}\nrequired extensions:\n  {}", FMT_JOIN(availableExtensions, "\n  "),
-              FMT_JOIN(requiredExtensions, "\n  "));
+        VLINFO("available extensions:\n  {}", FMT_JOIN(availableExtensions, "\n  "));
+        VLINFO("required extensions:\n  {}", FMT_JOIN(requiredExtensions, "\n  "));
     }
 
     bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device) {

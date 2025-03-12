@@ -18,6 +18,7 @@ static inline constexpr auto wheight = hfactor * factor;
 static inline constexpr auto aspectRatio = C_D(wfactor) / C_D(hfactor);
 static inline constexpr auto aspectRatiof = C_F(wfactor) / C_F(hfactor);
 static inline constexpr auto ui32tmax = C_UI32T(std::numeric_limits<uint32_t>::max());
+static inline constexpr auto uint64Max = C_UI64T(std::numeric_limits<uint64_t>::max());
 static inline const auto curentP = fs::current_path();
 
 [[nodiscard]] static constexpr auto calcolaCentro(const int &width, const int &w) noexcept { return (width - w) / 2; }

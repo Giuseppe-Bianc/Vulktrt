@@ -13,34 +13,23 @@ DISABLE_WARNINGS_PUSH(26429 26481)
 
 // const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity
 inline static void printMessageWhitSeverity(const std::string &msg, VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity) {
-    static auto vulkan_logger = [] {
-        auto logger = spdlog::get("VULKAN_DEBUG");
-        if(!logger) {
-            logger = spdlog::stdout_color_mt("VULKAN_DEBUG");
-            logger->set_pattern(R"(%^%v%$)");
-        }
-        return logger;
-    }();
-    spdlog::level::level_enum level;
     switch(messageSeverity) {
     case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-        level = spdlog::level::trace;
+        VLTRACE(msg);
         break;
     case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-        level = spdlog::level::info;
+        VLINFO(msg);
         break;
     case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-
-        level = spdlog::level::warn;
+        VLWARN(msg);
         break;
     case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-        level = spdlog::level::err;
+        VLERROR(msg);
         break;
     default:
-        level = spdlog::level::debug;
+        VLDEBUG(msg);
         break;
     }
-    vulkan_logger->log(level, msg);
 }
 
 inline static void logQueueLabel(const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
