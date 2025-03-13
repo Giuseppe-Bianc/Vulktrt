@@ -198,6 +198,18 @@ jobs:
         run: |
           pipx upgrade gcovr
           gcovr --version  # Verify gcovr is installed correctly
+      - name: Install Vulkan SDK (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install -y vulkan-tools libvulkan-dev mesa-vulkan-drivers
+          echo "VULKAN_SDK=/usr" >> $GITHUB_ENV
+
+      - name: Install Vulkan SDK (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          choco install vulkan-sdk
+          echo "VULKAN_SDK=C:\VulkanSDK" >> $GITHUB_ENV
 
       - name: Configure CMake LLVM
         if: ${{ matrix.compiler == 'llvm-18.1.3' }}
