@@ -3,7 +3,8 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // clang-fotmat off
-// NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix,
+// *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
 // clang-format on
 #include "Vulktrt/FirstApp.hpp"
 
@@ -104,5 +105,6 @@ namespace lve {
 }  // namespace lve
 
 // clang-fotmat off
-// NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix,
+// *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
 // clang-format on
