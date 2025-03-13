@@ -2,7 +2,9 @@
  * Created by gbian on 09/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// clang-fotmat off
+// NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// clang-format on
 #include "Vulktrt/FirstApp.hpp"
 
 #include <Vulktrt/FPSCounter.hpp>
@@ -61,7 +63,7 @@ namespace lve {
 
         VK_CHECK(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
 
-        for(int i = 0; i < commandBuffers.size(); i++) {
+        for(std::size_t i = 0; i < commandBuffers.size(); i++) {
             VkCommandBufferBeginInfo beginInfo{};
             beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -70,7 +72,7 @@ namespace lve {
             VkRenderPassBeginInfo renderPassInfo{};
             renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
             renderPassInfo.renderPass = lveSwapChain.getRenderPass();
-            renderPassInfo.framebuffer = lveSwapChain.getFrameBuffer(i);
+            renderPassInfo.framebuffer = lveSwapChain.getFrameBuffer(C_I(i));
 
             renderPassInfo.renderArea.offset = {0, 0};
             renderPassInfo.renderArea.extent = lveSwapChain.getSwapChainExtent();
@@ -92,7 +94,7 @@ namespace lve {
     }
 
     void FirstApp::drawFrame() {
-        uint32_t imageIndex;
+        uint32_t imageIndex{};
         auto result = lveSwapChain.acquireNextImage(&imageIndex);
         if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) { throw std::runtime_error("failed to acquire swap chain image!"); }
 
@@ -101,4 +103,6 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner)
+// clang-fotmat off
+// NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// clang-format on

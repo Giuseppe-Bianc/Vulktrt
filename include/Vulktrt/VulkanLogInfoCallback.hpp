@@ -70,8 +70,7 @@ inline static void logObjects(const VkDebugUtilsMessengerCallbackDataEXT *pCallb
             [[fallthrough]];
 #endif  // USE_FALLTHROUGH
         case VK_OBJECT_TYPE_QUEUE:
-            msg = FORMAT("Object [{}]: Type: {} (Handle: {}) Name: {}", i, string_VkObjectType(objectType), (void *)(uintptr_t)(objhandle),
-                         objectName);
+            msg = FORMAT("Object [{}]: Type: {} (Handle: {}) Name: {}", i, string_VkObjectType(objectType), static_cast<void *>(static_cast<uintptr_t>(objhandle)), objectName);
             break;
         default:
             msg = FORMAT("Object [{}]: Type: {} (Handle: 0x{:X}) Name: {}", i, string_VkObjectType(objectType), objhandle, objectName);

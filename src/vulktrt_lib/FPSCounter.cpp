@@ -2,7 +2,7 @@
  * Created by gbian on 04/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
+// NOLINTBEGIN(*-include-cleaner, *-avoid-magic-numbers,*-magic-numbers)
 #include "Vulktrt/FPSCounter.hpp"
 
 FPSCounter::FPSCounter(GLFWwindow *window, std::string_view title) noexcept
@@ -64,3 +64,5 @@ void FPSCounter::updateFPS() noexcept {
 long double FPSCounter::getFPS() const noexcept { return fps; }
 
 long double FPSCounter::getMsPerFrame() const noexcept { return ms_per_frame; }
+
+// NOLINTEND(*-include-cleaner, *-avoid-magic-numbers,*-magic-numbers)

@@ -2,7 +2,7 @@
  * Created by gbian on 03/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables)
 #include <Vulktrt/Window.hpp>
 #include <Vulktrt/vulkanCheck.hpp>
 
@@ -164,4 +164,4 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner)
+// NOLINTEND(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables)
