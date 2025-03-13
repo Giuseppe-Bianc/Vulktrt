@@ -26,7 +26,7 @@ namespace lve {
         const bool enableValidationLayers = true;
 #endif
 
-        explicit Device(Window &window);
+        explicit Device(Window &windowe);
         ~Device();
 
         // Not copyable or movable
@@ -69,7 +69,7 @@ namespace lve {
 
         // helper functions
         bool isDeviceSuitable(VkPhysicalDevice device);
-        std::vector<const char *> getRequiredExtensions();
+        std::vector<const char *> getRequiredExtensions() const;
         bool checkValidationLayerSupport();
         QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
         void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);

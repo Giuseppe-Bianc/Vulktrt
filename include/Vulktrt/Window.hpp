@@ -8,10 +8,8 @@
 #include "headers.hpp"
 #include <string>
 #include <string_view>
-
+#include "WindowCallback.hpp"
 namespace lve {
-    static void errorCallback(int error, const char *description);
-    static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
     // static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;
     // NOLINT(*-special-member-functions)

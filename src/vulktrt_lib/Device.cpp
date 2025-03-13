@@ -1,4 +1,6 @@
-// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise)
+// clang-format off
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
+// clang-format on
 #include "Vulktrt/Device.hpp"
 #define INDEPTH
 
@@ -27,7 +29,8 @@ namespace lve {
 
     VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                           const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger) {
-        auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+        // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
+        auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
         if(func != nullptr) {
             return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
         } else {
@@ -37,12 +40,13 @@ namespace lve {
 
     void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
                                        const VkAllocationCallbacks *pAllocator) {
-        auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+        // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
+        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
         if(func != nullptr) { func(instance, debugMessenger, pAllocator); }
     }
 
     // class member functions
-    Device::Device(Window &window) : window{window} {
+    Device::Device(Window &windowe) : window{windowe} {
         createInstance();
         setupDebugMessenger();
         createSurface();
@@ -158,28 +162,30 @@ namespace lve {
         VkPhysicalDeviceMemoryProperties mem_props;
         vkGetPhysicalDeviceMemoryProperties(device, &mem_props);
 
-        VLINFO("=== Memory Heaps ({} total) ===", mem_props.memoryHeapCount);
-        for(uint32_t i = 0; i < mem_props.memoryHeapCount; ++i) {
-            const auto size_mb = C_ST(mem_props.memoryHeaps[i].size) / (1024 * 1024);
+        const auto mhc = C_ST(mem_props.memoryHeapCount);
+        VLINFO("=== Memory Heaps ({} total) ===", mhc);
+        for(size_t i = 0; i < mhc; ++i) {
+            const auto size_mb = C_ST(mem_props.memoryHeaps[i].size) / C_ST(1024 * 1024);
             const auto sis_device_local = (mem_props.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) ? "[Device Local]" : "";
             VLINFO("Heap {:2}: {:>12} MB {}", i, size_mb, sis_device_local);
         }
 
-        VLINFO("=== Memory Types ({} total) ===", mem_props.memoryTypeCount);
-        for(uint32_t i = 0; i < mem_props.memoryTypeCount; ++i) {
+        const auto mtc = C_ST(mem_props.memoryTypeCount);
+        VLINFO("=== Memory Types ({} total) ===", mtc);
+        for(size_t i = 0; i < mtc; ++i) {
             std::string flags;
             const auto &type = mem_props.memoryTypes[i];
 
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) flags += "DeviceLocal ";
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) flags += "HostVisible ";
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) flags += "HostCoherent ";
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT){ flags += "DeviceLocal ";}
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT){ flags += "HostVisible ";}
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT){ flags += "HostCoherent ";}
 
             VLINFO("Type {:2}: Heap {:2} | {}", i, type.heapIndex, flags);
         }
     }
 
     void printQueueFamilies(VkPhysicalDevice device) {
-        uint32_t count;
+        uint32_t count{};
         vkGetPhysicalDeviceQueueFamilyProperties(device, &count, nullptr);
         std::vector<VkQueueFamilyProperties> queues(count);
         vkGetPhysicalDeviceQueueFamilyProperties(device, &count, queues.data());
@@ -189,10 +195,10 @@ namespace lve {
             std::string capabilities;
             const auto &q = queues[i];
 
-            if(q.queueFlags & VK_QUEUE_GRAPHICS_BIT) capabilities += "Graphics ";
-            if(q.queueFlags & VK_QUEUE_COMPUTE_BIT) capabilities += "Compute ";
-            if(q.queueFlags & VK_QUEUE_TRANSFER_BIT) capabilities += "Transfer ";
-            if(q.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT) capabilities += "Sparse ";
+            if(q.queueFlags & VK_QUEUE_GRAPHICS_BIT) {capabilities += "Graphics ";}
+            if(q.queueFlags & VK_QUEUE_COMPUTE_BIT) {capabilities += "Compute ";}
+            if(q.queueFlags & VK_QUEUE_TRANSFER_BIT) {capabilities += "Transfer ";}
+            if(q.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT) {capabilities += "Sparse ";}
 
             VLINFO("Family {:2}: {:2} queues | {}", i, q.queueCount, capabilities);
         }
@@ -246,7 +252,8 @@ namespace lve {
             createInfo.ppEnabledLayerNames = validationLayers.data();
 
             populateDebugMessengerCreateInfo(debugCreateInfo);
-            createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
+            // NOLINTNEXTLINE(*-redundant-casting)
+            createInfo.pNext = const_cast<VkDebugUtilsMessengerCreateInfoEXT *>(&debugCreateInfo);
         } else {
             createInfo.enabledLayerCount = 0;
             createInfo.pNext = nullptr;
@@ -367,7 +374,7 @@ namespace lve {
     }
 
     void Device::setupDebugMessenger() {
-        if(!enableValidationLayers) return;
+        if(!enableValidationLayers){ return;}
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         populateDebugMessengerCreateInfo(createInfo);
         VK_CHECK(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "failed to set up debug messenger!");
@@ -377,7 +384,7 @@ namespace lve {
 #ifdef INDEPTH
         vnd::AutoTimer t{"checkValidationLayerSupport", vnd::Timer::Big};
 #endif
-        uint32_t layerCount;
+        uint32_t layerCount{};
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
         std::vector<VkLayerProperties> availableLayers(layerCount);
@@ -387,6 +394,7 @@ namespace lve {
             bool layerFound = false;
 
             if(std::ranges::any_of(availableLayers, [layerName](const auto &layerProperties) {
+                   // NOLINTNEXTLINE(*-pro-bounds-array-to-pointer-decay,*-no-array-decay)
                    return std::strcmp(layerName, layerProperties.layerName) == 0;
                })) {
                 layerFound = true;
@@ -398,9 +406,9 @@ namespace lve {
         return true;
     }
 
-    std::vector<const char *> Device::getRequiredExtensions() {
+    std::vector<const char *> Device::getRequiredExtensions() const {
         uint32_t glfwExtensionCount = 0;
-        const char **glfwExtensions;
+        const char **glfwExtensions = nullptr;
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
         std::vector<const char *> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
@@ -437,7 +445,7 @@ namespace lve {
     }
 
     bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device) {
-        uint32_t extensionCount;
+        uint32_t extensionCount{};
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
 
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
@@ -445,7 +453,10 @@ namespace lve {
 
         std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
-        for(const auto &extension : availableExtensions) { requiredExtensions.erase(extension.extensionName); }
+        for(const auto &extension : availableExtensions) {
+            // NOLINTNEXTLINE(*-pro-bounds-array-to-pointer-decay, *-no-array-decay)
+            requiredExtensions.erase(extension.extensionName); 
+        }
 
         return requiredExtensions.empty();
     }
@@ -477,10 +488,10 @@ namespace lve {
     }
 
     SwapChainSupportDetails Device::querySwapChainSupport(VkPhysicalDevice device) {
-        SwapChainSupportDetails details;
+        SwapChainSupportDetails details{};
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &details.capabilities);
 
-        uint32_t formatCount;
+        uint32_t formatCount{};
         vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, nullptr);
 
         if(formatCount != 0) {
@@ -488,7 +499,7 @@ namespace lve {
             vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &formatCount, details.formats.data());
         }
 
-        uint32_t presentModeCount;
+        uint32_t presentModeCount{};
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &presentModeCount, nullptr);
 
         if(presentModeCount != 0) {
@@ -503,11 +514,13 @@ namespace lve {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 
+            // NOLINTBEGIN(*-branch-clone)
             if(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
                 return format;
             } else if(tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
                 return format;
             }
+            // NOLINTEND(*-branch-clone)
         }
         throw std::runtime_error("failed to find supported format!");
     }
@@ -552,7 +565,7 @@ namespace lve {
         allocInfo.commandPool = commandPool;
         allocInfo.commandBufferCount = 1;
 
-        VkCommandBuffer commandBuffer;
+        VkCommandBuffer commandBuffer{};
         vkAllocateCommandBuffers(device_, &allocInfo, &commandBuffer);
 
         VkCommandBufferBeginInfo beginInfo{};
@@ -627,4 +640,6 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner, *-signed-bitwise)
+// clang-format off
+// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
+// clang-format on

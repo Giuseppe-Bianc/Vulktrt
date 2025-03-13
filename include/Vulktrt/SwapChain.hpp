@@ -13,9 +13,9 @@ namespace lve {
         SwapChain(const SwapChain &) = delete;
         SwapChain &operator=(const SwapChain &) = delete;
 
-        VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
+        VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[C_ST(index)]; }
         VkRenderPass getRenderPass() { return renderPass; }
-        VkImageView getImageView(int index) { return swapChainImageViews[index]; }
+        VkImageView getImageView(int index) { return swapChainImageViews[C_ST(index)]; }
         size_t imageCount() { return swapChainImages.size(); }
         VkFormat getSwapChainImageFormat() { return swapChainImageFormat; }
         VkExtent2D getSwapChainExtent() { return swapChainExtent; }

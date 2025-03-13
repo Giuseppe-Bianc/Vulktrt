@@ -1,9 +1,11 @@
-// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise)
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-qualified-auto, *-pro-type-member-init, *-member-init, *-avoid-c-arrays)
 #include "Vulktrt/SwapChain.hpp"
 
 namespace lve {
+    // NOLINTBEGIN(*-diagnostic-unused-const-variable)
     inline static constexpr auto presentModeMailBox = VK_PRESENT_MODE_MAILBOX_KHR;
     inline static constexpr auto presentModeImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR;
+    // NOLINTEND(*-diagnostic-unused-const-variable)
 
     SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
         createSwapChain();
@@ -23,7 +25,7 @@ namespace lve {
             swapChain = nullptr;
         }
 
-        for(int i = 0; i < depthImages.size(); i++) {
+        for(size_t i = 0; i < depthImages.size(); i++) {
             vkDestroyImageView(device.device(), depthImageViews[i], nullptr);
             vkDestroyImage(device.device(), depthImages[i], nullptr);
             vkFreeMemory(device.device(), depthImageMemorys[i], nullptr);
@@ -51,6 +53,7 @@ namespace lve {
         return result;
     }
 
+    // NOLINTBEGIN(*-non-const-parameter, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
     VkResult SwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) {
         if(imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
             vkWaitForFences(device.device(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
@@ -95,6 +98,7 @@ namespace lve {
 
         return result;
     }
+    // NOLINTEND(*-non-const-parameter, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
 
     void SwapChain::createSwapChain() {
         SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
@@ -261,7 +265,7 @@ namespace lve {
         depthImageMemorys.resize(imageCount());
         depthImageViews.resize(imageCount());
 
-        for(int i = 0; i < depthImages.size(); i++) {
+        for(size_t i = 0; i < depthImages.size(); i++) {
             VkImageCreateInfo imageInfo{};
             imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -359,4 +363,4 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner, *-signed-bitwise)
+// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-qualified-auto, *-pro-type-member-init, *-member-init, *-avoid-c-arrays)

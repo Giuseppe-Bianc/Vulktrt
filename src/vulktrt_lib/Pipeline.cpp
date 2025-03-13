@@ -2,8 +2,9 @@
  * Created by gbian on 10/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
-// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise)
+// clang-format off
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-pro-type-reinterpret-cast, *-uppercase-literal-suffix,*-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// clang-format on
 #include "Vulktrt/Pipeline.hpp"
 
 namespace lve {
@@ -29,7 +30,7 @@ namespace lve {
         std::vector<char> buffer(fileSize);
 
         if(!file) { throw std::runtime_error("failed to open file: " + path.string()); }
-        if(!file.read(buffer.data(), fileSize)) { throw std::runtime_error("failed to read file: " + path.string()); }
+        if(!file.read(buffer.data(), C_L(fileSize))) { throw std::runtime_error("failed to read file: " + path.string()); }
 
         LINFO("{}", t);
         return buffer;
@@ -179,4 +180,7 @@ namespace lve {
         configInfo.depthStencilInfo.back = {};   // Optional
     }
 }  // namespace lve
-// NOLINTEND(*-include-cleaner, *-signed-bitwise)
+
+// clang-format off
+// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-pro-type-reinterpret-cast, *-uppercase-literal-suffix,*-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// clang-format on
