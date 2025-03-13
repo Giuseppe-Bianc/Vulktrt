@@ -61,7 +61,7 @@ inline static void logObjects(const VkDebugUtilsMessengerCallbackDataEXT *pCallb
         const auto objectType = pCallbackData->pObjects[i].objectType;
         const auto objhandle = pCallbackData->pObjects[i].objectHandle;
         std::string msg;
-        // NOLINTBEGIN(*-pro-type-reinterpret-cast)
+        // NOLINTBEGIN(*-pro-type-reinterpret-cast, *-no-int-to-ptr)
         switch(objectType) {
         case VK_OBJECT_TYPE_INSTANCE:
         case VK_OBJECT_TYPE_PHYSICAL_DEVICE:
@@ -78,7 +78,7 @@ inline static void logObjects(const VkDebugUtilsMessengerCallbackDataEXT *pCallb
             msg = FORMAT("Object [{}]: Type: {} (Handle: 0x{:X}) Name: {}", i, string_VkObjectType(objectType), objhandle, objectName);
             break;
         }
-        // NOLINTEND(*-pro-type-reinterpret-cast)
+        // NOLINTEND(*-pro-type-reinterpret-cast, *-no-int-to-ptr)
         printMessageWhitSeverity(msg, messageSeverity);
     }
 }
