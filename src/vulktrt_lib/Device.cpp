@@ -41,7 +41,8 @@ namespace lve {
     void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
                                        const VkAllocationCallbacks *pAllocator) {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
+        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
         if(func != nullptr) { func(instance, debugMessenger, pAllocator); }
     }
 
@@ -176,9 +177,9 @@ namespace lve {
             std::string flags;
             const auto &type = mem_props.memoryTypes[i];
 
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT){ flags += "DeviceLocal ";}
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT){ flags += "HostVisible ";}
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT){ flags += "HostCoherent ";}
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) { flags += "DeviceLocal "; }
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) { flags += "HostVisible "; }
+            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) { flags += "HostCoherent "; }
 
             VLINFO("Type {:2}: Heap {:2} | {}", i, type.heapIndex, flags);
         }
@@ -195,10 +196,10 @@ namespace lve {
             std::string capabilities;
             const auto &q = queues[i];
 
-            if(q.queueFlags & VK_QUEUE_GRAPHICS_BIT) {capabilities += "Graphics ";}
-            if(q.queueFlags & VK_QUEUE_COMPUTE_BIT) {capabilities += "Compute ";}
-            if(q.queueFlags & VK_QUEUE_TRANSFER_BIT) {capabilities += "Transfer ";}
-            if(q.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT) {capabilities += "Sparse ";}
+            if(q.queueFlags & VK_QUEUE_GRAPHICS_BIT) { capabilities += "Graphics "; }
+            if(q.queueFlags & VK_QUEUE_COMPUTE_BIT) { capabilities += "Compute "; }
+            if(q.queueFlags & VK_QUEUE_TRANSFER_BIT) { capabilities += "Transfer "; }
+            if(q.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT) { capabilities += "Sparse "; }
 
             VLINFO("Family {:2}: {:2} queues | {}", i, q.queueCount, capabilities);
         }
@@ -374,7 +375,7 @@ namespace lve {
     }
 
     void Device::setupDebugMessenger() {
-        if(!enableValidationLayers){ return;}
+        if(!enableValidationLayers) { return; }
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         populateDebugMessengerCreateInfo(createInfo);
         VK_CHECK(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "failed to set up debug messenger!");
@@ -455,7 +456,7 @@ namespace lve {
 
         for(const auto &extension : availableExtensions) {
             // NOLINTNEXTLINE(*-pro-bounds-array-to-pointer-decay, *-no-array-decay)
-            requiredExtensions.erase(extension.extensionName); 
+            requiredExtensions.erase(extension.extensionName);
         }
 
         return requiredExtensions.empty();
