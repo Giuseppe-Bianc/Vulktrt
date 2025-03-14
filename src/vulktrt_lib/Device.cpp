@@ -41,7 +41,8 @@ namespace lve {
     void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
                                        const VkAllocationCallbacks *pAllocator) {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
+        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
         if(func != nullptr) [[likely]] { func(instance, debugMessenger, pAllocator); }
     }
 
@@ -455,7 +456,7 @@ namespace lve {
 
         for(const auto &extension : availableExtensions) {
             // NOLINTNEXTLINE(*-pro-bounds-array-to-pointer-decay, *-no-array-decay)
-            requiredExtensions.erase(extension.extensionName); 
+            requiredExtensions.erase(extension.extensionName);
         }
 
         return requiredExtensions.empty();
