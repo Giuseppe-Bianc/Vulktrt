@@ -86,13 +86,16 @@ namespace lve {
         auto centerY = CALC_CENTRO(monitorHeight, windowHeight);
         LINFO("{}", crepositiont);
 
+#ifndef __linux__
         vnd::Timer wrepositiont("window reposition");
         glfwSetWindowPos(window, centerX, centerY);
         int posX = 0;
         int posY = 0;
         glfwGetWindowPos(window, &posX, &posY);
         if(posX != centerX || posY != centerY) { throw std::runtime_error("Failed to position the window at the center."); }
-        // LINFO("{}", wrepositiont);
+        LINFO("{}", wrepositiont);
+#endif
+
         int xPos;
         int yPos;
         float xScale;

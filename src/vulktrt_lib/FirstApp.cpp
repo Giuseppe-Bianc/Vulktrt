@@ -21,7 +21,7 @@ namespace lve {
 
     void FirstApp::run() {
         FPSCounter fpsCounter{lveWindow.getGLFWWindow(), wtile};
-        while(!lveWindow.shouldClose()) {
+        while(!lveWindow.shouldClose()) [[likely]] {
             fpsCounter.frameInTitle(false, false);
             // lveWindow.swapBuffers();
             //  Take care of all GLFW events
@@ -90,17 +90,21 @@ namespace lve {
             vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
 
             vkCmdEndRenderPass(commandBuffers[i]);
-            if(vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) { throw std::runtime_error("failed to record command buffer!"); }
+            if(vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) [[unlikely]] {
+                throw std::runtime_error("failed to record command buffer!");
+            }
         }
     }
 
     void FirstApp::drawFrame() {
         uint32_t imageIndex{};
         auto result = lveSwapChain.acquireNextImage(&imageIndex);
-        if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) { throw std::runtime_error("failed to acquire swap chain image!"); }
+        if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) [[unlikely]] {
+            throw std::runtime_error("failed to acquire swap chain image!");
+        }
 
         result = lveSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
-        if(result != VK_SUCCESS) { throw std::runtime_error("failed to present swap chain image!"); }
+        if(result != VK_SUCCESS) [[unlikely]] { throw std::runtime_error("failed to present swap chain image!"); }
     }
 }  // namespace lve
 
