@@ -1,10 +1,14 @@
 #pragma once
 
+// NOLINTBEGIN(*-include-cleaner)
 #include "headers.hpp"
 
+
 // Disabilita l'avviso unused-function
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 
 inline std::string_view get_glfw_error_name(int error_code) {
     switch(error_code) {
@@ -33,12 +37,12 @@ inline std::string_view get_glfw_error_name(int error_code) {
     }
 }
 
-static void errorCallback(int error, const char *description) {
+inline static void errorCallback(int error, const char *description) {
     auto errorName = get_glfw_error_name(error);
     LINFO("GLFW Error: {} ({}) - {}", error, errorName, description);
 }
 
-static void keyCallback(GLFWwindow *window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
+inline static void keyCallback(GLFWwindow *window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
     switch(key) {
     // NOLINTN(*-multiway-paths-covered)
     case GLFW_KEY_ESCAPE:
@@ -54,4 +58,8 @@ static void keyCallback(GLFWwindow *window, int key, [[maybe_unused]] int scanco
 }
 
 // Ripristina le impostazioni degli avvisi
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
+
+// NOLINTEND(*-include-cleaner)
