@@ -95,11 +95,11 @@ namespace lve {
         LINFO("{}", wrepositiont);
 #endif
 
-
         glfwSetWindowUserPointer(window, this);
         glfwShowWindow(window);
-        LINFO("Monitor:\"{}\", Phys:{}x{}mm, Scale:({}/{}), Pos:({}/{})", glfwGetMonitorName(primaryMonitor), monitorInfo.getPhysicalWidth(),
-              monitorInfo.getPhysicalHeight(), monitorInfo.getScaleX(), monitorInfo.getScaleY(), monitorInfo.getXPos(), monitorInfo.getYPos());
+        LINFO("Monitor:\"{}\", Phys:{}x{}mm, Scale:({}/{}), Pos:({}/{})", glfwGetMonitorName(primaryMonitor),
+              monitorInfo.getPhysicalWidth(), monitorInfo.getPhysicalHeight(), monitorInfo.getScaleX(), monitorInfo.getScaleY(),
+              monitorInfo.getXPos(), monitorInfo.getYPos());
         LINFO("Monitor Mode:{}", monitorInfo.formatMode());
         LINFO("Created the window {0}: (w: {1}, h: {2}, pos:({3}/{4}))", windowName.data(), width, height, centerX, centerY);
     }

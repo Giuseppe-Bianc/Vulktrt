@@ -1,7 +1,7 @@
 /*
-* Created by derbinan on 14/03/25.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by derbinan on 14/03/25.
+ * Copyright (c) 2025 All rights reserved.
+ */
 
 #pragma once
 
@@ -10,7 +10,7 @@
 namespace lve {
     class Monitor {
     public:
-        explicit Monitor(GLFWmonitor* monitorin);
+        explicit Monitor(GLFWmonitor *monitorin);
         void fetchMonitorInfo();
         std::string formatMode() const;
         int getWidth() const { return monitorWidth; }
@@ -23,8 +23,8 @@ namespace lve {
         int getYPos() const { return yPos; }
 
     private:
-        GLFWmonitor* monitor;
-        const GLFWvidmode* mode;
+        GLFWmonitor *monitor;
+        const GLFWvidmode *mode;
         int monitorWidth, monitorHeight;
         int physicalWidth, physicalHeight;
         float scaleX, scaleY;
