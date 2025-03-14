@@ -5,10 +5,10 @@
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
+#include "WindowCallback.hpp"
 #include "headers.hpp"
 #include <string>
 #include <string_view>
-#include "WindowCallback.hpp"
 namespace lve {
 
     // static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;

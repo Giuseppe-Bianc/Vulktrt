@@ -6,7 +6,6 @@
 #include <Vulktrt/Window.hpp>
 #include <Vulktrt/vulkanCheck.hpp>
 
-
 namespace lve {
     Window::Window(const int w, const int h, const std::string_view &window_name) noexcept : width(w), height(h), windowName(window_name) {
         initWindow();
