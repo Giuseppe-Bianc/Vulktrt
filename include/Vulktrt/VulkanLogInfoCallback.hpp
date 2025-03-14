@@ -60,6 +60,7 @@ inline static void logObjects(const VkDebugUtilsMessengerCallbackDataEXT *pCallb
         std::string_view objectName = pCallbackData->pObjects[i].pObjectName ? pCallbackData->pObjects[i].pObjectName : "Unknown";
         const auto objectType = pCallbackData->pObjects[i].objectType;
         const auto objhandle = pCallbackData->pObjects[i].objectHandle;
+        const auto objtypestring = string_VkObjectType(objectType);
         std::string msg;
         // NOLINTBEGIN(*-pro-type-reinterpret-cast, *-no-int-to-ptr)
         switch(objectType) {
@@ -71,11 +72,11 @@ inline static void logObjects(const VkDebugUtilsMessengerCallbackDataEXT *pCallb
             [[fallthrough]];
 #endif  // USE_FALLTHROUGH
         case VK_OBJECT_TYPE_QUEUE:
-            msg = FORMAT("Object [{}]: Type: {} (Handle: {}) Name: {}", i, string_VkObjectType(objectType),
+            msg = FORMAT("Object [{}]: Type: {} (Handle: {}) Name: {}", i, objtypestring,
                          reinterpret_cast<void *>(static_cast<uintptr_t>(objhandle)), objectName);
             break;
         default:
-            msg = FORMAT("Object [{}]: Type: {} (Handle: 0x{:X}) Name: {}", i, string_VkObjectType(objectType), objhandle, objectName);
+            msg = FORMAT("Object [{}]: Type: {} (Handle: 0x{:X}) Name: {}", i, objtypestring, objhandle, objectName);
             break;
         }
         // NOLINTEND(*-pro-type-reinterpret-cast, *-no-int-to-ptr)

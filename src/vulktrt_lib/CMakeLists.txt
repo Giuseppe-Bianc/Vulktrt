@@ -14,6 +14,8 @@ add_library(vulktrt_lib vulktrt.cpp
         ../../include/Vulktrt/Device.hpp
         SwapChain.cpp
         ../../include/Vulktrt/SwapChain.hpp
+        Monitor.cpp
+        ../../include/Vulktrt/Monitor.hpp
 )
 
 get_target_property(target_name vulktrt_lib NAME)

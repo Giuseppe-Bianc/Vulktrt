@@ -22,9 +22,6 @@ int main(int argc, const char **argv) {
             LINFO("{}\n", Vulktrt::cmake::project_version);
             return EXIT_SUCCESS;
         }
-        uint32_t extensionCount = 0;
-        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-        LINFO("{} extensions supported", extensionCount);
         lve::FirstApp apa{};
         apa.run();
 

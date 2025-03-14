@@ -9,6 +9,7 @@
 #include "headers.hpp"
 #include <string>
 #include <string_view>
+
 namespace lve {
 
     // static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;

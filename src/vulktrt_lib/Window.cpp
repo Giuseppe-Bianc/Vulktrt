@@ -3,6 +3,8 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables)
+#include "Vulktrt/Monitor.hpp"
+
 #include <Vulktrt/Window.hpp>
 #include <Vulktrt/vulkanCheck.hpp>
 
@@ -24,7 +26,7 @@ namespace lve {
     }
 
     void Window::createWindow() {
-        vnd::AutoTimer timer("window creation");
+        vnd::AutoTimer timer("glfw_window creation");
 
         // Use std::unique_ptr with custom deleter
         window = glfwCreateWindow(width, height, windowName.data(), nullptr, nullptr);
@@ -71,19 +73,16 @@ namespace lve {
         if(!primaryMonitor) { throw std::runtime_error("Failed to get the primary monitor."); }
         LINFO("{}", monitort);
 
-        vnd::Timer modet("get mode");
-        const GLFWvidmode *mode = glfwGetVideoMode(primaryMonitor);
-        if(!mode) { throw std::runtime_error("Failed to get the video mode of the primary monitor."); }
+        vnd::Timer modet("get monitor informatoons");
+        Monitor monitorInfo(primaryMonitor);
         LINFO("{}", modet);
 
         vnd::Timer crepositiont("calculating for reposition");
-        const int monitorWidth = mode->width;
-        const int monitorHeight = mode->height;
         int windowWidth;
         int windowHeight;
         glfwGetWindowSize(window, &windowWidth, &windowHeight);
-        auto centerX = CALC_CENTRO(monitorWidth, windowWidth);
-        auto centerY = CALC_CENTRO(monitorHeight, windowHeight);
+        auto centerX = CALC_CENTRO(monitorInfo.getWidth(), windowWidth);
+        auto centerY = CALC_CENTRO(monitorInfo.getHeight(), windowHeight);
         LINFO("{}", crepositiont);
 
 #ifndef __linux__
@@ -96,22 +95,12 @@ namespace lve {
         LINFO("{}", wrepositiont);
 #endif
 
-        int xPos;
-        int yPos;
-        float xScale;
-        float yScale;
-        int monitorPhysicalWidth;
-        int monitorPhysicalHeight;
-        vnd::Timer tmonitorinfo("get monitor info");
-        glfwGetMonitorPos(primaryMonitor, &xPos, &yPos);
-        glfwGetMonitorContentScale(primaryMonitor, &xScale, &yScale);
-        glfwGetMonitorPhysicalSize(primaryMonitor, &monitorPhysicalWidth, &monitorPhysicalHeight);
-        LINFO("{}", tmonitorinfo);
+
         glfwSetWindowUserPointer(window, this);
         glfwShowWindow(window);
-        LINFO("Monitor:\"{}\", Phys:{}x{}mm, Scale:({}/{}), Pos:({}/{})", glfwGetMonitorName(primaryMonitor), monitorPhysicalWidth,
-              monitorPhysicalHeight, xScale, yScale, xPos, yPos);
-        LINFO("Monitor Mode:{}", formatMode(mode));
+        LINFO("Monitor:\"{}\", Phys:{}x{}mm, Scale:({}/{}), Pos:({}/{})", glfwGetMonitorName(primaryMonitor), monitorInfo.getPhysicalWidth(),
+              monitorInfo.getPhysicalHeight(), monitorInfo.getScaleX(), monitorInfo.getScaleY(), monitorInfo.getXPos(), monitorInfo.getYPos());
+        LINFO("Monitor Mode:{}", monitorInfo.formatMode());
         LINFO("Created the window {0}: (w: {1}, h: {2}, pos:({3}/{4}))", windowName.data(), width, height, centerX, centerY);
     }
 
