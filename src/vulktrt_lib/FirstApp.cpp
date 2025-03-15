@@ -38,7 +38,6 @@ namespace lve {
         lveModel = std::make_unique<Model>(lveDevice, vertices);
     }
 
-
     void FirstApp::createPipelineLayout() {
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;

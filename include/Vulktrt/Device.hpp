@@ -1,8 +1,8 @@
 #pragma once
 
+#include "DeviceInfo.hpp"
 #include "VulkanLogInfoCallback.hpp"
 #include "Window.hpp"
-#include "DeviceInfo.hpp"
 
 namespace lve {
     struct SwapChainSupportDetails {

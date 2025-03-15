@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 15/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 15/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 #include "Device.hpp"
@@ -10,7 +10,6 @@ namespace lve {
 
     class Model {
     public:
-
         struct Vertex {
             glm::vec2 position;
 
@@ -28,12 +27,13 @@ namespace lve {
         void draw(VkCommandBuffer commandBuffer);
 
         void createVertexBuffer(const std::vector<Vertex> &vertices);
+
     private:
         Device &lveDevice;
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
         std::uint32_t vertexCount;
     };
-} // lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

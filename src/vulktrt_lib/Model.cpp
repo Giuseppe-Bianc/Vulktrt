@@ -1,13 +1,12 @@
 /*
-* Created by gbian on 15/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 15/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #include "Vulktrt/Model.hpp"
 
 namespace lve {
-    Model::Model(Device &devicein, const std::vector<Vertex> &vertices)
-        : lveDevice{devicein} { createVertexBuffer(vertices); }
+    Model::Model(Device &devicein, const std::vector<Vertex> &vertices) : lveDevice{devicein} { createVertexBuffer(vertices); }
 
     Model::~Model() {
         vkDestroyBuffer(lveDevice.device(), vertexBuffer, nullptr);
@@ -18,12 +17,9 @@ namespace lve {
         vertexCount = static_cast<uint32_t>(vertices.size());
         assert(vertexCount >= 3 && "Vertex count must be at least 3");
         VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
-        lveDevice.createBuffer(
-            bufferSize,
-            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            vertexBuffer,
-            vertexBufferMemory);
+        lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, vertexBuffer,
+                               vertexBufferMemory);
 
         void *data = nullptr;
         vkMapMemory(lveDevice.device(), vertexBufferMemory, 0, bufferSize, 0, &data);
@@ -55,6 +51,6 @@ namespace lve {
         attributeDescriptions[0].offset = 0;
         return attributeDescriptions;
     }
-} // lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

@@ -45,7 +45,8 @@ namespace lve {
     void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
                                        const VkAllocationCallbacks *pAllocator) {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
+        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
         if(func != nullptr) [[likely]] { func(instance, debugMessenger, pAllocator); }
     }
 
@@ -181,7 +182,9 @@ namespace lve {
         if(enableValidationLayers) [[unlikely]] {
             createInfo.enabledLayerCount = NC_UI32T(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
-        } else [[likely]] { createInfo.enabledLayerCount = 0; }
+        } else [[likely]] {
+            createInfo.enabledLayerCount = 0;
+        }
 #else
         if(enableValidationLayers) [[likely]] {
             createInfo.enabledLayerCount = NC_UI32T(validationLayers.size());
@@ -266,7 +269,6 @@ namespace lve {
             }
             // clang-format on
 
-
             if(!layerFound) { return false; }
         }
 
@@ -294,7 +296,7 @@ namespace lve {
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
         std::unordered_set<std::string_view> available;
-        available.reserve(extensionCount); // Riserviamo spazio per migliorare le prestazioni
+        available.reserve(extensionCount);  // Riserviamo spazio per migliorare le prestazioni
 
 #if defined(_DEBUG) || defined(DEBUG)
         std::vector<std::string> availableExtensions;
@@ -308,7 +310,7 @@ namespace lve {
         }
 
         const auto requiredExtensions = getRequiredExtensions();
-        if(!std::ranges::all_of(requiredExtensions, [&](const auto &required) { return available.contains(required); })) [[unlikely]]{
+        if(!std::ranges::all_of(requiredExtensions, [&](const auto &required) { return available.contains(required); })) [[unlikely]] {
             throw std::runtime_error("Missing required GLFW extension");
         }
 #ifdef NDEBUG
@@ -516,7 +518,7 @@ namespace lve {
 
         if(vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) { throw std::runtime_error("failed to bind image memory!"); }
     }
-} // namespace lve
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)

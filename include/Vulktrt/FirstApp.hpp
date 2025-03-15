@@ -6,11 +6,11 @@
 #pragma once
 
 #include "Device.hpp"
+#include "Model.hpp"
 #include "Pipeline.hpp"
 #include "SwapChain.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
-#include "Model.hpp"
 
 namespace lve {
     class FirstApp {

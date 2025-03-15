@@ -294,8 +294,7 @@ template <typename T, glm::qualifier Q> struct fmt::formatter<glm::qua<T, Q>> : 
      * @param ctx The format context.
      * @return The formatted string.
      */
-    template <typename FormatContext> auto format(const glm::qua<T, Q> &quaternion, format_context &ctx) const ->
-    format_context::iterator {
+    template <typename FormatContext> auto format(const glm::qua<T, Q> &quaternion, format_context &ctx) const -> format_context::iterator {
         return formatter<std::string_view>::format(glmp::to_string(quaternion), ctx);
     }
 };

@@ -6,8 +6,8 @@
 #pragma once
 
 #include "Device.hpp"
-#include "headers.hpp"
 #include "Model.hpp"
+#include "headers.hpp"
 
 namespace lve {
     struct PipelineConfigInfo {

@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 15/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 15/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
@@ -97,6 +97,5 @@ static inline std::string VkQueueFlagsString(VkQueueFlags input_value) {
     // if(ret.empty()) ret.append("VkQueueFlags(0)");
     return ret;
 }
-
 
 // NOLINTEND(*-include-cleaner)
