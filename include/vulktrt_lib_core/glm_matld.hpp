@@ -1,5 +1,6 @@
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
+#define GLM_FORCE_RADIANS
 #define GLM_FORCE_INTRINSICS
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_SILENT_WARNINGS

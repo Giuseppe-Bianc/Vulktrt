@@ -2,6 +2,11 @@ include(GenerateExportHeader)
 
 find_package(Vulkan REQUIRED)
 add_library(vulktrt_lib vulktrt.cpp
+        ../../include/Vulktrt/vulktrt.hpp
+        ../../include/Vulktrt/DeviceInfo.hpp
+        ../../include/Vulktrt/vulkanToString.hpp
+        ../../include/Vulktrt/vulkanCheck.hpp
+        ../../include/Vulktrt/VulkanLogInfoCallback.hpp
         FPSCounter.cpp
         ../../include/Vulktrt/FPSCounter.hpp
         Window.cpp
@@ -16,6 +21,8 @@ add_library(vulktrt_lib vulktrt.cpp
         ../../include/Vulktrt/SwapChain.hpp
         Monitor.cpp
         ../../include/Vulktrt/Monitor.hpp
+        Model.cpp
+        ../../include/Vulktrt/Model.hpp
 )
 
 get_target_property(target_name vulktrt_lib NAME)

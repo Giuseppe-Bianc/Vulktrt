@@ -2,6 +2,7 @@
 
 #include "VulkanLogInfoCallback.hpp"
 #include "Window.hpp"
+#include "DeviceInfo.hpp"
 
 namespace lve {
     struct SwapChainSupportDetails {

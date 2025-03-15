@@ -9,6 +9,8 @@
 // vulkan headers
 #include <vulkan/vk_enum_string_helper.h>
 
+#include "vulkanToString.hpp"
+
 #define VK_CHECK(f, throwable)                                                                                                             \
     do {                                                                                                                                   \
         const VkResult res = (f);                                                                                                          \

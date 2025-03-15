@@ -10,6 +10,7 @@
 #include "SwapChain.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
+#include "Model.hpp"
 
 namespace lve {
     class FirstApp {
@@ -23,6 +24,7 @@ namespace lve {
         void run();
 
     private:
+        void loadModels();
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
@@ -37,6 +39,7 @@ namespace lve {
         std::unique_ptr<Pipeline> lvePipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
+        std::unique_ptr<Model> lveModel;
     };
 }  // namespace lve
 

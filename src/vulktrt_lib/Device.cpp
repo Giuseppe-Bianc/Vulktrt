@@ -2,7 +2,8 @@
 // NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
 // clang-format on
 #include "Vulktrt/Device.hpp"
-// #define INDEPTH
+#define INDEPTH
+#define USE_ALGORITHM
 
 namespace lve {
     static inline constexpr float queuePriority = 1.0f;
@@ -32,18 +33,19 @@ namespace lve {
                                           const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger) {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
         auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
+        // clang-format off
         if(func != nullptr) [[likely]] {
             return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
         } else {
             return VK_ERROR_EXTENSION_NOT_PRESENT;
         }
+        // clang-format on
     }
 
     void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
                                        const VkAllocationCallbacks *pAllocator) {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
+        auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
         if(func != nullptr) [[likely]] { func(instance, debugMessenger, pAllocator); }
     }
 
@@ -67,166 +69,6 @@ namespace lve {
         vkDestroyInstance(instance, nullptr);
     }
 
-    std::string getVendorName(uint32_t vendorID) {
-        static const std::unordered_map<uint32_t, std::string> vendorMap = {
-            {0x1002, "Advanced Micro Devices, Inc. (AMD)"},
-            {0x1010, "ImgTec"},
-            {0x10DE, "NVIDIA Corporation"},
-            {0x13B5, "ARM"},
-            {0x5143, "Qualcomm"},
-            {0x8086, "Intel Corporation"},
-            {0x1A03, "ASPEED Technology"},
-            {0x1D17, "Samsung Electronics Co Ltd"},
-            {0x1E0F, "Huawei Technologies Co., Ltd."},
-            {0x1B36, "Red Hat, Inc."},
-            {0x1AF4, "Virtio"},
-            {0x1C58, "JMicron Technology Corp."},
-            {0x1106, "VIA Technologies, Inc."},
-            {0x103C, "Hewlett-Packard Company"},
-            {0x1022, "Advanced Micro Devices, Inc. (AMD)"},
-            {0x102B, "Matrox Electronic Systems Ltd."},
-            {0x1043, "ASUSTeK Computer Inc."},
-            {0x1179, "Toshiba Corporation"},
-            {0x11AB, "Marvell Technology Group Ltd."},
-            {0x1237, "Intel Corporation (i440FX)"},
-            {0x15B7, "SanDisk"},
-            {0x168C, "Qualcomm Atheros"},
-            {0x1912, "Renesas Electronics Corporation"},
-            {0x1B4B, "Marvell Technology Group Ltd."},
-            {0x1C5C, "Fresco Logic"},
-            {0x1D6A, "Google, Inc."},
-            {0x8087, "Intel Corporation"},
-            {0x1057, "Motorola"},
-            {0x1077, "QLogic Corp."},
-            {0x1095, "Silicon Image, Inc."},
-            {0x10EC, "Realtek Semiconductor Corp."},
-            {0x11C1, "Lattice Semiconductor Corporation"},
-            {0x14E4, "Broadcom Inc."},
-            {0x15AD, "VMware, Inc."},
-            {0x15BC, "Hitachi, Ltd."},
-            {0x18D1, "Google Inc."},
-            {0x1AE0, "Xilinx, Inc."},
-            {0x1D0F, "Amazon.com, Inc."},
-            {0x1C7C, "Tehuti Networks Ltd."},
-            {0x16C3, "Cavium Inc."},
-            {0x105A, "Promise Technology"},
-            {0x12D8, "Pericom Semiconductor"},
-            {0x1B21, "ASMedia Technology Inc."},
-            {0x126F, "Silicon Motion, Inc."},
-            {0x1137, "Cisco Systems Inc."},
-            {0x1DB1, "Lite-On Technology Corporation"},
-            {0x10B5, "PLX Technology, Inc."},
-            {0x10B7, "3Com Corporation"},
-            {0x15E8, "Solarflare Communications"},
-            {0x1A3B, "Facebook, Inc."},
-            {0x1CC4, "Innogrit, Inc."},
-            {0x1C20, "Mellanox Technologies"},
-            // Add more vendor IDs and their corresponding names here if needed
-        };
-
-        auto it = vendorMap.find(vendorID);
-        if(it != vendorMap.end()) {
-            return it->second;
-        } else {
-            return "Unknown Vendor";
-        }
-    }
-
-    static const char *getDeviceType(VkPhysicalDeviceType input_value) {
-        switch(input_value) {
-        case VK_PHYSICAL_DEVICE_TYPE_OTHER:
-            return "OTHER";
-        case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-            return "INTEGRATED_GPU";
-        case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-            return "DISCRETE_GPU";
-        case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-            return "VIRTUAL_GPU";
-        case VK_PHYSICAL_DEVICE_TYPE_CPU:
-            return "CPU";
-        default:
-            return "Unhandled VkPhysicalDeviceType";
-        }
-    }
-
-    void printDeviceFeatures(VkPhysicalDevice device) {
-        VkPhysicalDeviceFeatures features;
-        vkGetPhysicalDeviceFeatures(device, &features);
-
-        VLINFO("=== Supported Features ===");
-        VLINFO("Geometry Shader:       {}", C_BOOL(features.geometryShader));
-        VLINFO("Tessellation Shader:   {}", C_BOOL(features.tessellationShader));
-        VLINFO("Multi Viewport:        {}", C_BOOL(features.multiViewport));
-        // Aggiungi altre features...
-    }
-
-    void printMemoryInfo(VkPhysicalDevice device) {
-        VkPhysicalDeviceMemoryProperties mem_props;
-        vkGetPhysicalDeviceMemoryProperties(device, &mem_props);
-
-        const auto mhc = C_ST(mem_props.memoryHeapCount);
-        VLINFO("=== Memory Heaps ({} total) ===", mhc);
-        for(size_t i = 0; i < mhc; ++i) {
-            const auto size_mb = C_ST(mem_props.memoryHeaps[i].size) / C_ST(1024 * 1024);
-            const auto sis_device_local = (mem_props.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) ? "[Device Local]" : "";
-            VLINFO("Heap {:2}: {:>12} MB {}", i, size_mb, sis_device_local);
-        }
-
-        const auto mtc = C_ST(mem_props.memoryTypeCount);
-        VLINFO("=== Memory Types ({} total) ===", mtc);
-        for(size_t i = 0; i < mtc; ++i) {
-            std::string flags;
-            const auto &type = mem_props.memoryTypes[i];
-
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) { flags += "DeviceLocal "; }
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) { flags += "HostVisible "; }
-            if(type.propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) { flags += "HostCoherent "; }
-
-            VLINFO("Type {:2}: Heap {:2} | {}", i, type.heapIndex, flags);
-        }
-    }
-
-    void printQueueFamilies(VkPhysicalDevice device) {
-        uint32_t count{};
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &count, nullptr);
-        std::vector<VkQueueFamilyProperties> queues(count);
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &count, queues.data());
-
-        VLINFO("=== Queue Families ({} total) ===", count);
-        for(uint32_t i = 0; i < queues.size(); ++i) {
-            std::string capabilities;
-            const auto &q = queues[i];
-
-            if(q.queueFlags & VK_QUEUE_GRAPHICS_BIT) { capabilities += "Graphics "; }
-            if(q.queueFlags & VK_QUEUE_COMPUTE_BIT) { capabilities += "Compute "; }
-            if(q.queueFlags & VK_QUEUE_TRANSFER_BIT) { capabilities += "Transfer "; }
-            if(q.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT) { capabilities += "Sparse "; }
-
-            VLINFO("Family {:2}: {:2} queues | {}", i, q.queueCount, capabilities);
-        }
-    }
-
-    void printPhysicalDeviceProperties(const VkPhysicalDeviceProperties &properties) {
-        VLINFO("Device Name: {}", properties.deviceName);
-        VLINFO("API Version: {}.{}.{}", VK_VERSION_MAJOR(properties.apiVersion), VK_VERSION_MINOR(properties.apiVersion),
-               VK_VERSION_PATCH(properties.apiVersion));
-        VLINFO("Driver Version: {}.{}.{}", VK_VERSION_MAJOR(properties.driverVersion), VK_VERSION_MINOR(properties.driverVersion),
-               VK_VERSION_PATCH(properties.driverVersion));
-        VLINFO("Vendor ID: {}", getVendorName(properties.vendorID));
-        VLINFO("Device ID: {0}(0x{0:04X})", properties.deviceID);
-        VLINFO("Device Type: {}", getDeviceType(properties.deviceType));
-        VLINFO("pipelineCacheUUID: {:02x}", FMT_JOIN(properties.pipelineCacheUUID, "-"));
-
-        // Add more properties as needed
-    }
-
-    void printDeviceInfo(VkPhysicalDevice device, const VkPhysicalDeviceProperties &properties) {
-        printPhysicalDeviceProperties(properties);
-        printDeviceFeatures(device);
-        printMemoryInfo(device);
-        printQueueFamilies(device);
-        // printDeviceExtensions(device);
-    }
     void Device::createInstance() {
         if(enableValidationLayers && !checkValidationLayerSupport()) {
             throw std::runtime_error("validation layers requested, but not available!");
@@ -249,17 +91,31 @@ namespace lve {
         createInfo.ppEnabledExtensionNames = extensions.data();
 
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-        if(enableValidationLayers) {
+#ifdef NDEBUG
+        if(enableValidationLayers) [[unlikely]] {
             createInfo.enabledLayerCount = C_UI32T(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
 
             populateDebugMessengerCreateInfo(debugCreateInfo);
             // NOLINTNEXTLINE(*-redundant-casting)
             createInfo.pNext = const_cast<VkDebugUtilsMessengerCreateInfoEXT *>(&debugCreateInfo);
-        } else {
+        } else [[likely]] {
             createInfo.enabledLayerCount = 0;
             createInfo.pNext = nullptr;
         }
+#else
+        if(enableValidationLayers) [[likely]] {
+            createInfo.enabledLayerCount = C_UI32T(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+
+            populateDebugMessengerCreateInfo(debugCreateInfo);
+            // NOLINTNEXTLINE(*-redundant-casting)
+            createInfo.pNext = const_cast<VkDebugUtilsMessengerCreateInfoEXT *>(&debugCreateInfo);
+        } else [[unlikely]] {
+            createInfo.enabledLayerCount = 0;
+            createInfo.pNext = nullptr;
+        }
+#endif
 
         VK_CHECK(vkCreateInstance(&createInfo, nullptr, &instance), "failed to create instance!");
 
@@ -321,12 +177,19 @@ namespace lve {
 
         // might not really be necessary anymore because device specific validation layers
         // have been deprecated
-        if(enableValidationLayers) {
-            createInfo.enabledLayerCount = C_UI32T(validationLayers.size());
+#ifdef NDEBUG
+        if(enableValidationLayers) [[unlikely]] {
+            createInfo.enabledLayerCount = NC_UI32T(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
-        } else {
+        } else [[likely]] { createInfo.enabledLayerCount = 0; }
+#else
+        if(enableValidationLayers) [[likely]] {
+            createInfo.enabledLayerCount = NC_UI32T(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        } else [[unlikely]] {
             createInfo.enabledLayerCount = 0;
         }
+#endif
 
         VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_), "failed to create logical device!");
 
@@ -394,12 +257,15 @@ namespace lve {
         for(const char *layerName : validationLayers) {
             bool layerFound = false;
 
+            // clang-format off
             if(std::ranges::any_of(availableLayers, [layerName](const auto &layerProperties) {
                    // NOLINTNEXTLINE(*-pro-bounds-array-to-pointer-decay,*-no-array-decay)
                    return std::strcmp(layerName, layerProperties.layerName) == 0;
                })) {
                 layerFound = true;
             }
+            // clang-format on
+
 
             if(!layerFound) { return false; }
         }
@@ -428,21 +294,30 @@ namespace lve {
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
         std::unordered_set<std::string_view> available;
-        available.reserve(extensionCount);  // Riserviamo spazio per migliorare le prestazioni
+        available.reserve(extensionCount); // Riserviamo spazio per migliorare le prestazioni
 
+#if defined(_DEBUG) || defined(DEBUG)
         std::vector<std::string> availableExtensions;
+#endif
         available.reserve(extensionCount);
         for(const auto &[extensionName, specVersion] : extensions) {
+#if defined(_DEBUG) || defined(DEBUG)
             availableExtensions.emplace_back(FORMAT("{} (v. {})", extensionName, specVersion));
+#endif
             available.emplace(extensionName);
         }
 
         const auto requiredExtensions = getRequiredExtensions();
-        for(const auto &required : requiredExtensions) {
-            if(!available.contains(required)) [[unlikely]] { throw std::runtime_error("Missing required glfw extension"); }
+        if(!std::ranges::all_of(requiredExtensions, [&](const auto &required) { return available.contains(required); })) [[unlikely]]{
+            throw std::runtime_error("Missing required GLFW extension");
         }
+#ifdef NDEBUG
+        VLINFO("available extensions count: {}", available.size());
+        VLINFO("required extensions count: {}", requiredExtensions.size());
+#else
         VLINFO("available extensions:\n  {}", FMT_JOIN(availableExtensions, "\n  "));
         VLINFO("required extensions:\n  {}", FMT_JOIN(requiredExtensions, "\n  "));
+#endif
     }
 
     bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device) {
@@ -511,16 +386,18 @@ namespace lve {
     }
 
     VkFormat Device::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
-        for(VkFormat format : candidates) {
+        for(const VkFormat format : candidates) {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 
             // NOLINTBEGIN(*-branch-clone)
+            // clang-format off
             if(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) {
                 return format;
             } else if(tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) {
                 return format;
             }
+            // clang-format on
             // NOLINTEND(*-branch-clone)
         }
         throw std::runtime_error("failed to find supported format!");
@@ -639,7 +516,7 @@ namespace lve {
 
         if(vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) { throw std::runtime_error("failed to bind image memory!"); }
     }
-}  // namespace lve
+} // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)

@@ -7,6 +7,7 @@
 
 #include "Device.hpp"
 #include "headers.hpp"
+#include "Model.hpp"
 
 namespace lve {
     struct PipelineConfigInfo {

@@ -96,19 +96,6 @@ inline void logDebugValidationLayerInfo(const VkDebugUtilsMessengerCallbackDataE
     logObjects(pCallbackData, messageSeverity);
 }
 
-[[nodiscard]] static constexpr std::string_view debugCallbackString(VkDebugUtilsMessageTypeFlagsEXT messageType) noexcept {
-    switch(messageType) {
-    case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
-        return "[General] ";
-    case VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT:
-        return "[Validation] ";
-    case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT:
-        return "[Performance] ";
-    default:
-        return "";
-    }
-}
-
 DISABLE_WARNINGS_POP()
 
 // NOLINTEND(*-include-cleaner)
