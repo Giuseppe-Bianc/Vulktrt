@@ -3,7 +3,6 @@
 // NOLINTBEGIN(*-include-cleaner)
 #include "headers.hpp"
 
-
 // Disabilita l'avviso unused-function
 #ifdef __GNUC__
 #pragma GCC diagnostic push
