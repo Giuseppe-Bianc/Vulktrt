@@ -7,11 +7,10 @@ namespace lve {
     inline static constexpr auto presentModeImmediate = VK_PRESENT_MODE_IMMEDIATE_KHR;
     // NOLINTEND(*-diagnostic-unused-const-variable)
 
-    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
-        init();
-    }
+    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} { init(); }
 
-    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent, std::shared_ptr<SwapChain> previous) : device{deviceRef}, windowExtent{extent}, oldSwapChain{previous} {
+    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent, std::shared_ptr<SwapChain> previous)
+      : device{deviceRef}, windowExtent{extent}, oldSwapChain{previous} {
         init();
         oldSwapChain = nullptr;
     }
@@ -26,9 +25,7 @@ namespace lve {
     }
 
     SwapChain::~SwapChain() {
-        for(auto imageView : swapChainImageViews) {
-            vkDestroyImageView(device.device(), imageView, nullptr);
-        }
+        for(auto imageView : swapChainImageViews) { vkDestroyImageView(device.device(), imageView, nullptr); }
         swapChainImageViews.clear();
 
         if(swapChain != nullptr) {
@@ -323,11 +320,10 @@ namespace lve {
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            VK_CHECK_SYNC_OBJECTS(
-                vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
-                vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
-                vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]),
-                "failed to create synchronization objects for a frame!");
+            VK_CHECK_SYNC_OBJECTS(vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
+                                  vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
+                                  vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]),
+                                  "failed to create synchronization objects for a frame!");
         }
     }
 

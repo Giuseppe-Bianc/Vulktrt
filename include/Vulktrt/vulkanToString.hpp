@@ -7,7 +7,7 @@
 
 #include "headers.hpp"
 
-[[nodiscard]] static inline const char* VkDebugUtilsMessageTypeFlagBitsEXTString(VkDebugUtilsMessageTypeFlagBitsEXT messageType) noexcept {
+[[nodiscard]] static inline const char *VkDebugUtilsMessageTypeFlagBitsEXTString(VkDebugUtilsMessageTypeFlagBitsEXT messageType) noexcept {
     switch(messageType) {
     case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
         return "[GENERAL] ";
@@ -104,14 +104,14 @@ static inline std::string VkDebugUtilsMessageTypeFlagsEXTString(VkDebugUtilsMess
     std::string ret;
     int index = 0;
     while(input_value) {
-        if (input_value & 1) {
-            if( !ret.empty()) ret.append("|");
+        if(input_value & 1) {
+            if(!ret.empty()) ret.append("|");
             ret.append(VkDebugUtilsMessageTypeFlagBitsEXTString(static_cast<VkDebugUtilsMessageTypeFlagBitsEXT>(1U << index)));
         }
         ++index;
         input_value >>= 1;
     }
-    //if (ret.empty()) ret.append("VkDebugUtilsMessageTypeFlagsEXT(0)");
+    // if (ret.empty()) ret.append("VkDebugUtilsMessageTypeFlagsEXT(0)");
     return ret;
 }
 

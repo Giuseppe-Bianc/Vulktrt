@@ -33,9 +33,7 @@ namespace lve {
 
     void FirstApp::loadModels() {
         std::vector<Model::Vertex> vertices{
-            {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-            {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-            {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+            {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}}, {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}, {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
         lveModel = std::make_unique<Model>(lveDevice, vertices);
     }
 
@@ -93,11 +91,11 @@ namespace lve {
         allocInfo.commandPool = lveDevice.getCommandPool();
         allocInfo.commandBufferCount = C_UI32T(commandBuffers.size());
 
-       VK_CHECK(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
+        VK_CHECK(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
     }
 
     void FirstApp::freeCommandBuffers() {
-        vkFreeCommandBuffers(lveDevice.device(),lveDevice.getCommandPool(),C_UI32T(commandBuffers.size()),commandBuffers.data());
+        vkFreeCommandBuffers(lveDevice.device(), lveDevice.getCommandPool(), C_UI32T(commandBuffers.size()), commandBuffers.data());
         commandBuffers.clear();
     }
 
@@ -139,7 +137,7 @@ namespace lve {
         lveModel->draw(commandBuffers[imageIndex]);
 
         vkCmdEndRenderPass(commandBuffers[imageIndex]);
-        VK_CHECK(vkEndCommandBuffer(commandBuffers[imageIndex]),"failed to record command buffer!");
+        VK_CHECK(vkEndCommandBuffer(commandBuffers[imageIndex]), "failed to record command buffer!");
     }
 
     void FirstApp::drawFrame() {
@@ -155,8 +153,7 @@ namespace lve {
 
         recordCommandBuffer(imageIndex);
         result = lveSwapChain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
-        if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
-           lveWindow.wasWindowResized()) {
+        if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || lveWindow.wasWindowResized()) {
             lveWindow.resetWindowResizedFlag();
             recreateSwapChain();
             return;

@@ -35,7 +35,7 @@ namespace lve {
 
         Window lveWindow{wwidth, wheight, wtile};
         Device lveDevice{lveWindow};
-        //SwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
+        // SwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
         std::unique_ptr<SwapChain> lveSwapChain;
         /*Pipeline lvePipeline{lveDevice, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
                              calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(),
