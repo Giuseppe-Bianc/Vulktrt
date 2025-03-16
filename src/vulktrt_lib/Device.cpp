@@ -2,7 +2,7 @@
 // NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
 // clang-format on
 #include "Vulktrt/Device.hpp"
-#define INDEPTH
+//#define INDEPTH
 #define USE_ALGORITHM
 
 namespace lve {
@@ -16,7 +16,7 @@ namespace lve {
         vnd::AutoTimer t{"Debug Callback", vnd::Timer::Big};
 #endif
         // Determine the message type
-        const std::string_view type = debugCallbackString(messageType);
+        const std::string type = VkDebugUtilsMessageTypeFlagsEXTString(messageType);
 
         // Format and log the message
         const auto msg = FORMAT("{}Message ID: {}({}): {}", type, pCallbackData->pMessageIdName ? pCallbackData->pMessageIdName : "Unknown",

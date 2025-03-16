@@ -96,6 +96,7 @@ namespace lve {
 #endif
 
         glfwSetWindowUserPointer(window, this);
+        glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
         glfwShowWindow(window);
         LINFO("Monitor:\"{}\", Phys:{}x{}mm, Scale:({}/{}), Pos:({}/{})", glfwGetMonitorName(primaryMonitor),
               monitorInfo.getPhysicalWidth(), monitorInfo.getPhysicalHeight(), monitorInfo.getScaleX(), monitorInfo.getScaleY(),
@@ -106,6 +107,13 @@ namespace lve {
 
     void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
         VK_CHECK(glfwCreateWindowSurface(instance, window, nullptr, surface), "failed to craete window surface");
+    }
+
+    void Window::framebufferResizeCallback(GLFWwindow *window, int width, int height) {
+        auto lveWindow = reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
+        lveWindow->framebufferResized = true;
+        lveWindow->width = width;
+        lveWindow->height = height;
     }
 }  // namespace lve
 

@@ -8,6 +8,15 @@ namespace lve {
     // NOLINTEND(*-diagnostic-unused-const-variable)
 
     SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
+        init();
+    }
+
+    SwapChain::SwapChain(Device &deviceRef, VkExtent2D extent, std::shared_ptr<SwapChain> previous) : device{deviceRef}, windowExtent{extent}, oldSwapChain{previous} {
+        init();
+        oldSwapChain = nullptr;
+    }
+
+    void SwapChain::init() {
         createSwapChain();
         createImageViews();
         createRenderPass();
@@ -17,7 +26,9 @@ namespace lve {
     }
 
     SwapChain::~SwapChain() {
-        for(auto imageView : swapChainImageViews) { vkDestroyImageView(device.device(), imageView, nullptr); }
+        for(auto imageView : swapChainImageViews) {
+            vkDestroyImageView(device.device(), imageView, nullptr);
+        }
         swapChainImageViews.clear();
 
         if(swapChain != nullptr) {
@@ -142,7 +153,7 @@ namespace lve {
         createInfo.presentMode = presentMode;
         createInfo.clipped = VK_TRUE;
 
-        createInfo.oldSwapchain = VK_NULL_HANDLE;
+        createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
         VK_CHECK(vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain), "failed to create swap chain!");
 
@@ -242,14 +253,14 @@ namespace lve {
         for(size_t i = 0; i < imageCount(); i++) {
             std::array<VkImageView, 2> attachments = {swapChainImageViews[i], depthImageViews[i]};
 
-            VkExtent2D iswapChainExtent = getSwapChainExtent();
+            auto [width, height] = getSwapChainExtent();
             VkFramebufferCreateInfo framebufferInfo = {};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = renderPass;
             framebufferInfo.attachmentCount = C_UI32T(attachments.size());
             framebufferInfo.pAttachments = attachments.data();
-            framebufferInfo.width = iswapChainExtent.width;
-            framebufferInfo.height = iswapChainExtent.height;
+            framebufferInfo.width = width;
+            framebufferInfo.height = height;
             framebufferInfo.layers = 1;
 
             VK_CHECK(vkCreateFramebuffer(device.device(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
@@ -312,17 +323,17 @@ namespace lve {
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            if(vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-               vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-               vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
-                throw std::runtime_error("failed to create synchronization objects for a frame!");
-            }
+            VK_CHECK_SYNC_OBJECTS(
+                vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
+                vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
+                vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]),
+                "failed to create synchronization objects for a frame!");
         }
     }
 
     VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {
         auto isDesiredFormat = [](const VkSurfaceFormatKHR &format) {
-            return format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+            return format.format == VK_FORMAT_B8G8R8A8_SRGB && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
         };
 
         if(auto it = std::ranges::find_if(availableFormats, isDesiredFormat); it != availableFormats.end()) { return *it; }

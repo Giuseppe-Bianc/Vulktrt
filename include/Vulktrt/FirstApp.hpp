@@ -28,11 +28,15 @@ namespace lve {
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
+        void freeCommandBuffers();
         void drawFrame();
+        void recreateSwapChain();
+        void recordCommandBuffer(int imageIndex);
 
         Window lveWindow{wwidth, wheight, wtile};
         Device lveDevice{lveWindow};
-        SwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
+        //SwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
+        std::unique_ptr<SwapChain> lveSwapChain;
         /*Pipeline lvePipeline{lveDevice, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
                              calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(),
                              Pipeline::defaultPipelineConfigInfo(wwidth, wheight)};*/

@@ -24,7 +24,7 @@ namespace lve {
 
         [[nodiscard]] GLFWwindow *getGLFWWindow() const noexcept { return window; }
         [[nodiscard]] bool shouldClose() const noexcept { return glfwWindowShouldClose(window); }
-        //[[nodiscard]] bool wasWindowResized() noexcept { return framebufferResized; }
+        [[nodiscard]] bool wasWindowResized() noexcept { return framebufferResized; }
         void resetWindowResizedFlag() noexcept { framebufferResized = false; }
         // void swapBuffers() const noexcept { glfwSwapBuffers(window); }
         void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
@@ -43,6 +43,7 @@ namespace lve {
         [[nodiscard]] std::string formatMode(const GLFWvidmode *mode) const;
 
         void centerWindow();
+        static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
 
         int width;
         int height;

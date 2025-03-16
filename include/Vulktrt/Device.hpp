@@ -1,3 +1,4 @@
+// NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
 #include "DeviceInfo.hpp"
@@ -93,3 +94,5 @@ namespace lve {
         const std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     };
 }  // namespace lve
+
+// NOLINTEND(*-include-cleaner)

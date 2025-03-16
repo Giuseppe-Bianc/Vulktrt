@@ -7,16 +7,18 @@
 
 #include "headers.hpp"
 
-[[nodiscard]] static constexpr std::string_view debugCallbackString(VkDebugUtilsMessageTypeFlagsEXT messageType) noexcept {
+[[nodiscard]] static inline const char* VkDebugUtilsMessageTypeFlagBitsEXTString(VkDebugUtilsMessageTypeFlagBitsEXT messageType) noexcept {
     switch(messageType) {
     case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
-        return "[General] ";
+        return "[GENERAL] ";
     case VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT:
-        return "[Validation] ";
+        return "[VALIDATION] ";
     case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT:
-        return "[Performance] ";
+        return "[PERFORMANCE] ";
+    case VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT:
+        return "[DEVICE_ADDRESS_BINDING] ";
     default:
-        return "";
+        return "Unhandled VkDebugUtilsMessageTypeFlagBitsEXT";
     }
 }
 
@@ -95,6 +97,21 @@ static inline std::string VkQueueFlagsString(VkQueueFlags input_value) {
         input_value >>= 1;
     }
     // if(ret.empty()) ret.append("VkQueueFlags(0)");
+    return ret;
+}
+
+static inline std::string VkDebugUtilsMessageTypeFlagsEXTString(VkDebugUtilsMessageTypeFlagsEXT input_value) {
+    std::string ret;
+    int index = 0;
+    while(input_value) {
+        if (input_value & 1) {
+            if( !ret.empty()) ret.append("|");
+            ret.append(VkDebugUtilsMessageTypeFlagBitsEXTString(static_cast<VkDebugUtilsMessageTypeFlagBitsEXT>(1U << index)));
+        }
+        ++index;
+        input_value >>= 1;
+    }
+    //if (ret.empty()) ret.append("VkDebugUtilsMessageTypeFlagsEXT(0)");
     return ret;
 }
 

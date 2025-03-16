@@ -10,9 +10,12 @@
 #include <GLFW/glfw3.h>
 
 static inline constexpr std::string_view wtile = Vulktrt::cmake::project_name;
-static inline constexpr std::size_t factor = 80;
-static inline constexpr auto wfactor = 16;
-static inline constexpr auto hfactor = 9;
+// static inline constexpr std::size_t factor = 80;
+// static inline constexpr auto wfactor = 16;
+// static inline constexpr auto hfactor = 9;
+static inline constexpr std::size_t factor = 200;
+static inline constexpr auto wfactor = 4;
+static inline constexpr auto hfactor = 3;
 static inline constexpr auto wwidth = wfactor * factor;
 static inline constexpr auto wheight = hfactor * factor;
 static inline constexpr auto aspectRatio = C_D(wfactor) / C_D(hfactor);

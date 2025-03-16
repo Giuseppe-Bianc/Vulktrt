@@ -6,6 +6,7 @@
 #pragma once
 
 #include "headers.hpp"
+#include "vulkanToString.hpp"
 
 static inline constexpr VkDeviceSize GB = 1024 * 1024 * 1024;
 static inline constexpr VkDeviceSize MB = 1024 * 1024;
