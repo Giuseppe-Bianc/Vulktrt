@@ -11,16 +11,16 @@ namespace lve {
     class Monitor {
     public:
         explicit Monitor(GLFWmonitor *monitorin);
-        void fetchMonitorInfo();
+        void fetchMonitorInfo() noexcept;
         std::string formatMode() const;
-        int getWidth() const { return monitorWidth; }
-        int getHeight() const { return monitorHeight; }
-        int getPhysicalWidth() const { return physicalWidth; }
-        int getPhysicalHeight() const { return physicalHeight; }
-        float getScaleX() const { return scaleX; }
-        float getScaleY() const { return scaleY; }
-        int getXPos() const { return xPos; }
-        int getYPos() const { return yPos; }
+        int getWidth() const noexcept { return monitorWidth; }
+        int getHeight() const noexcept { return monitorHeight; }
+        int getPhysicalWidth() const noexcept { return physicalWidth; }
+        int getPhysicalHeight() const noexcept { return physicalHeight; }
+        float getScaleX() const noexcept { return scaleX; }
+        float getScaleY() const noexcept { return scaleY; }
+        int getXPos() const noexcept { return xPos; }
+        int getYPos() const noexcept { return yPos; }
 
     private:
         GLFWmonitor *monitor;

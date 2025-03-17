@@ -22,7 +22,7 @@
     }
 }
 
-static inline const char *VkMemoryPropertyFlagBitsString(VkMemoryPropertyFlagBits input_value) {
+static inline const char *VkMemoryPropertyFlagBitsString(VkMemoryPropertyFlagBits input_value) noexcept {
     switch(input_value) {
     case VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT:
         return "DEVICE_LOCAL";
@@ -47,7 +47,7 @@ static inline const char *VkMemoryPropertyFlagBitsString(VkMemoryPropertyFlagBit
     }
 }
 
-static inline const char *VkQueueFlagBitsString(VkQueueFlagBits input_value) {
+static inline const char *VkQueueFlagBitsString(VkQueueFlagBits input_value) noexcept {
     switch(input_value) {
     case VK_QUEUE_GRAPHICS_BIT:
         return "GRAPHICS";

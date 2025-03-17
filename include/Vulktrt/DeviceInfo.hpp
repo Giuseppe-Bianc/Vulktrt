@@ -8,6 +8,7 @@
 #include "headers.hpp"
 #include "vulkanToString.hpp"
 
+DISABLE_WARNINGS_PUSH(26446 26482)
 static inline constexpr VkDeviceSize GB = 1024 * 1024 * 1024;
 static inline constexpr VkDeviceSize MB = 1024 * 1024;
 static inline constexpr std::size_t GBST = C_ST(GB);
@@ -78,7 +79,7 @@ static inline std::string getVendorName(uint32_t vendorID) {
     }
 }
 
-static inline const char *getDeviceType(VkPhysicalDeviceType input_value) {
+static inline const char *getDeviceType(VkPhysicalDeviceType input_value) noexcept {
     switch(input_value) {
     case VK_PHYSICAL_DEVICE_TYPE_OTHER:
         return "OTHER";
@@ -109,10 +110,10 @@ static inline void printDeviceFeatures(VkPhysicalDevice device) {
 static inline std::string formatDeviceSize(VkDeviceSize size) {
     if(size >= GB) {
         // Convert size to GB
-        auto gb = C_D(size) / GBST;
-        auto wholeGB = C_ST(gb);                             // Extract the whole GB part
-        auto remainingMB = (gb - C_D(wholeGB)) * C_D(1024);  // Convert the fractional GB part to MB
-        auto wholeMB = C_ST(remainingMB);                    // Get whole MB part
+        const auto gb = C_D(size) / GBST;
+        auto wholeGB = NC_ST(gb);                                  // Extract the whole GB part
+        const auto remainingMB = (gb - C_D(wholeGB)) * C_D(1024);  // Convert the fractional GB part to MB
+        auto wholeMB = NC_ST(remainingMB);                         // Get whole MB part
 
         // Return the formatted string
         return FORMAT("{:>12} GB {:>3} MB", wholeGB, wholeMB);
@@ -178,5 +179,6 @@ static inline void printDeviceInfo(VkPhysicalDevice device, const VkPhysicalDevi
     printQueueFamilies(device);
     // printDeviceExtensions(device);
 }
+DISABLE_WARNINGS_POP()
 
 // NOLINTEND(*-include-cleaner)

@@ -9,7 +9,7 @@
 #pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
-inline std::string_view get_glfw_error_name(int error_code) {
+inline std::string_view get_glfw_error_name(int error_code) noexcept {
     switch(error_code) {
     case GLFW_NOT_INITIALIZED:
         return "GLFW_NOT_INITIALIZED";

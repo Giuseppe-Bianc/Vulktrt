@@ -29,7 +29,7 @@ namespace lve {
         // void swapBuffers() const noexcept { glfwSwapBuffers(window); }
         void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
-        VkExtent2D getExtent() { return {C_UI32T(width), C_UI32T(height)}; }
+        VkExtent2D getExtent() noexcept { return {C_UI32T(width), C_UI32T(height)}; }
 
         static void initializeGLFW();
 
@@ -38,9 +38,7 @@ namespace lve {
 
         void createWindow();
 
-        void setHints() const;
-
-        [[nodiscard]] std::string formatMode(const GLFWvidmode *mode) const;
+        void setHints() const noexcept;
 
         void centerWindow();
         static void framebufferResizeCallback(GLFWwindow *window, int width, int height);

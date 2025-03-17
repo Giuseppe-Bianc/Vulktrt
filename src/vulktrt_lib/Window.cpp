@@ -9,6 +9,7 @@
 #include <Vulktrt/vulkanCheck.hpp>
 
 namespace lve {
+    DISABLE_WARNINGS_PUSH(26432)
     Window::Window(const int w, const int h, const std::string_view &window_name) noexcept : width(w), height(h), windowName(window_name) {
         initWindow();
     }
@@ -17,6 +18,7 @@ namespace lve {
         glfwDestroyWindow(window);
         glfwTerminate();
     }
+    DISABLE_WARNINGS_POP()
 
     void Window::initWindow() {
         initializeGLFW();
@@ -38,7 +40,7 @@ namespace lve {
         glfwSetKeyCallback(window, keyCallback);
     }
 
-    void Window::setHints() const {
+    void Window::setHints() const noexcept {
         vnd::AutoTimer timer("set glfw hints");
         // Set GLFW context version and profile
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -62,11 +64,6 @@ namespace lve {
         glfwSetErrorCallback(errorCallback);
     }
 
-    std::string Window::formatMode(const GLFWvidmode *mode) const {
-        return FORMAT("({}x{}, Bits rgb{}{}{}, RR:{}Hz)", mode->width, mode->height, mode->redBits, mode->greenBits, mode->blueBits,
-                      mode->refreshRate);
-    }
-
     void Window::centerWindow() {
         vnd::Timer monitort("get primary Monitor");
         GLFWmonitor *primaryMonitor = glfwGetPrimaryMonitor();
@@ -74,7 +71,7 @@ namespace lve {
         LINFO("{}", monitort);
 
         vnd::Timer modet("get monitor informatoons");
-        Monitor monitorInfo(primaryMonitor);
+        const Monitor monitorInfo(primaryMonitor);
         LINFO("{}", modet);
 
         vnd::Timer crepositiont("calculating for reposition");

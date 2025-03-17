@@ -30,6 +30,7 @@ void FPSCounter::frameInTitle(bool vsync, bool showMax) {
     }
 }
 
+DISABLE_WARNINGS_PUSH(26447)
 std::string FPSCounter::transformTime(const long double inputTimeMilli) noexcept {
     using namespace std::chrono;
 
@@ -45,6 +46,7 @@ std::string FPSCounter::transformTime(const long double inputTimeMilli) noexcept
 
     return FORMAT("{}ms,{}us,{}ns", C_LD(durationMs.count()), C_LD(durationUs.count()), C_LD(durationNs.count()));
 }
+DISABLE_WARNINGS_POP()
 
 void FPSCounter::updateFPS() noexcept {
     frames++;

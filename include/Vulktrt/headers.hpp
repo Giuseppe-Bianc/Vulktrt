@@ -2,13 +2,14 @@
  * Created by gbian on 09/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
+// NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
 #include <vulktrt_lib_core/vulktrt_lib_core.hpp>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+DISABLE_WARNINGS_PUSH(26426)
 static inline constexpr std::string_view wtile = Vulktrt::cmake::project_name;
 // static inline constexpr std::size_t factor = 80;
 // static inline constexpr auto wfactor = 16;
@@ -23,6 +24,7 @@ static inline constexpr auto aspectRatiof = C_F(wfactor) / C_F(hfactor);
 static inline constexpr auto ui32tmax = C_UI32T(std::numeric_limits<uint32_t>::max());
 static inline constexpr auto uint64Max = C_UI64T(std::numeric_limits<uint64_t>::max());
 static inline const auto curentP = fs::current_path();
+DISABLE_WARNINGS_POP()
 
 [[nodiscard]] static constexpr auto calcolaCentro(const int &width, const int &w) noexcept { return (width - w) / 2; }
 #define CALC_CENTRO(width, w) calcolaCentro(width, w)
@@ -49,3 +51,4 @@ inline fs::path calculateRelativePathToShaders(const fs::path &executablePath, c
 inline fs::path calculateRelativePathToTextures(const fs::path &executablePath, const fs::path &targetFile) {
     return calculateRelativePathToSrc(executablePath, targetFile, "textures");
 }
+// NOLINTEND(*-include-cleaner)

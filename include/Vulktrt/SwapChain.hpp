@@ -15,20 +15,22 @@ namespace lve {
         SwapChain(const SwapChain &) = delete;
         SwapChain &operator=(const SwapChain &) = delete;
 
-        VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[C_ST(index)]; }
-        VkRenderPass getRenderPass() { return renderPass; }
-        VkImageView getImageView(int index) { return swapChainImageViews[C_ST(index)]; }
-        size_t imageCount() { return swapChainImages.size(); }
-        VkFormat getSwapChainImageFormat() { return swapChainImageFormat; }
-        VkExtent2D getSwapChainExtent() { return swapChainExtent; }
-        uint32_t width() { return swapChainExtent.width; }
-        uint32_t height() { return swapChainExtent.height; }
+        DISABLE_WARNINGS_PUSH(26446)
+        VkFramebuffer getFrameBuffer(int index) noexcept { return swapChainFramebuffers[C_ST(index)]; }
+        VkRenderPass getRenderPass() noexcept { return renderPass; }
+        VkImageView getImageView(int index) noexcept { return swapChainImageViews[C_ST(index)]; }
+        size_t imageCount() noexcept { return swapChainImages.size(); }
+        VkFormat getSwapChainImageFormat() noexcept { return swapChainImageFormat; }
+        VkExtent2D getSwapChainExtent() noexcept { return swapChainExtent; }
+        uint32_t width() noexcept { return swapChainExtent.width; }
+        uint32_t height() noexcept { return swapChainExtent.height; }
 
-        float extentAspectRatio() { return C_F(swapChainExtent.width) / C_F(swapChainExtent.height); }
+        float extentAspectRatio() noexcept { return C_F(swapChainExtent.width) / C_F(swapChainExtent.height); }
+        DISABLE_WARNINGS_POP()
 
         VkFormat findDepthFormat();
 
-        VkResult acquireNextImage(uint32_t *imageIndex);
+        VkResult acquireNextImage(uint32_t *imageIndex) noexcept;
         VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
     private:

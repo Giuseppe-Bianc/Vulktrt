@@ -8,6 +8,7 @@
 #include "Vulktrt/Pipeline.hpp"
 
 namespace lve {
+    DISABLE_WARNINGS_PUSH(26432)
     Pipeline::Pipeline(Device &device, const std::string &vertFilepath, const std::string &fragFilepath,
                        const PipelineConfigInfo &configInfo)
       : lveDevice{device} {
@@ -19,6 +20,7 @@ namespace lve {
         vkDestroyShaderModule(lveDevice.device(), fragShaderModule, nullptr);
         vkDestroyPipeline(lveDevice.device(), graphicsPipeline, nullptr);
     }
+    DISABLE_WARNINGS_POP()
 
     std::vector<char> Pipeline::readFile(const std::string &filepath) {
         auto path = fs::path(filepath).lexically_normal();
@@ -34,6 +36,7 @@ namespace lve {
         return buffer;
     }
 
+    DISABLE_WARNINGS_PUSH(26446)
     void Pipeline::createGraphicsPipeline(const std::string &vertFilepath, const std::string &fragFilepath,
                                           const PipelineConfigInfo &configInfo) {
         assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Cannot create graphics pipeline: no pipelineLayout provided in configInfo");
@@ -92,6 +95,7 @@ namespace lve {
         VK_CHECK(vkCreateGraphicsPipelines(lveDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline),
                  "failed to create graphics pipeline");
     }
+    DISABLE_WARNINGS_POP()
 
     void Pipeline::createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule) {
         VkShaderModuleCreateInfo createInfo{};
@@ -102,7 +106,7 @@ namespace lve {
         VK_CHECK(vkCreateShaderModule(lveDevice.device(), &createInfo, nullptr, shaderModule), "failed to create shader module!");
     }
 
-    void Pipeline::bind(VkCommandBuffer commandBuffer) {
+    void Pipeline::bind(VkCommandBuffer commandBuffer) noexcept {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
     }
 

@@ -15,7 +15,7 @@ namespace lve {
         fetchMonitorInfo();
     }
 
-    void Monitor::fetchMonitorInfo() {
+    void Monitor::fetchMonitorInfo() noexcept {
         monitorWidth = mode->width;
         monitorHeight = mode->height;
         glfwGetMonitorPos(monitor, &xPos, &yPos);
