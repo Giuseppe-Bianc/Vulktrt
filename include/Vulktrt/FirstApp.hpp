@@ -11,6 +11,7 @@
 #include "SwapChain.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
+#include "GameObject.hpp"
 
 namespace lve {
     DISABLE_WARNINGS_PUSH(26447)
@@ -25,7 +26,7 @@ namespace lve {
         void run();
 
     private:
-        void loadModels();
+        void loadGameObjects();
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
@@ -33,6 +34,8 @@ namespace lve {
         void drawFrame();
         void recreateSwapChain();
         void recordCommandBuffer(int imageIndex);
+        void renderGameObjects(VkCommandBuffer commandBuffer);
+
 
         Window lveWindow{wwidth, wheight, wtile};
         Device lveDevice{lveWindow};
@@ -44,7 +47,7 @@ namespace lve {
         std::unique_ptr<Pipeline> lvePipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
-        std::unique_ptr<Model> lveModel;
+        std::vector<GameObject> gameObjects;
     };
     DISABLE_WARNINGS_POP()
 }  // namespace lve
