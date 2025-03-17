@@ -17,7 +17,7 @@ namespace lve {
         alignas(16) glm::vec3 color;
     };
     DISABLE_WARNINGS_POP()
-    
+
     DISABLE_WARNINGS_PUSH(26432)
     FirstApp::FirstApp() {
         loadModels();
