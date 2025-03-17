@@ -55,13 +55,12 @@ namespace lve {
     VkResult SwapChain::acquireNextImage(uint32_t *imageIndex) noexcept {
         vkWaitForFences(device.device(), 1, &inFlightFences[currentFrame], VK_TRUE, uint64Max);
 
-        VkResult result = vkAcquireNextImageKHR(device.device(), swapChain, uint64Max,
-                                                imageAvailableSemaphores[currentFrame],  // must be a not signaled semaphore
-                                                VK_NULL_HANDLE, imageIndex);
-
-        return result;
+        return vkAcquireNextImageKHR(device.device(), swapChain, uint64Max,
+                                     imageAvailableSemaphores[currentFrame],  // must be a not signaled semaphore
+                                     VK_NULL_HANDLE, imageIndex);
     }
 
+    DISABLE_WARNINGS_PUSH(26429 26461)
     // NOLINTBEGIN(*-non-const-parameter, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
     VkResult SwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) {
         if(imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
@@ -101,13 +100,14 @@ namespace lve {
 
         presentInfo.pImageIndices = imageIndex;
 
-        auto result = vkQueuePresentKHR(device.presentQueue(), &presentInfo);
+        const auto result = vkQueuePresentKHR(device.presentQueue(), &presentInfo);
 
         currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 
         return result;
     }
     // NOLINTEND(*-non-const-parameter, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
+    DISABLE_WARNINGS_POP()
 
     void SwapChain::createSwapChain() {
         SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();

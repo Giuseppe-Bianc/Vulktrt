@@ -41,7 +41,7 @@ namespace lve {
         void setHints() const noexcept;
 
         void centerWindow();
-        static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
+        static void framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept;
 
         int width;
         int height;

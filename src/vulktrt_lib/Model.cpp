@@ -6,6 +6,7 @@
 #include "Vulktrt/Model.hpp"
 
 namespace lve {
+    static inline constexpr auto modelVertexs = sizeof(Model::Vertex);
     DISABLE_WARNINGS_PUSH(26432)
     Model::Model(Device &devicein, const std::vector<Vertex> &vertices) : lveDevice{devicein} { createVertexBuffer(vertices); }
 
@@ -42,7 +43,7 @@ namespace lve {
     std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions() {
         std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
         bindingDescriptions[0].binding = 0;
-        bindingDescriptions[0].stride = sizeof(Vertex);
+        bindingDescriptions[0].stride = modelVertexs;
         bindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
         return bindingDescriptions;
     }

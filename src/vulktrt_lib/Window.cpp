@@ -9,7 +9,7 @@
 #include <Vulktrt/vulkanCheck.hpp>
 
 namespace lve {
-    DISABLE_WARNINGS_PUSH(26432)
+    DISABLE_WARNINGS_PUSH(26432 26447)
     Window::Window(const int w, const int h, const std::string_view &window_name) noexcept : width(w), height(h), windowName(window_name) {
         initWindow();
     }
@@ -106,8 +106,8 @@ namespace lve {
         VK_CHECK(glfwCreateWindowSurface(instance, window, nullptr, surface), "failed to craete window surface");
     }
 
-    void Window::framebufferResizeCallback(GLFWwindow *window, int width, int height) {
-        auto lveWindow = reinterpret_cast<Window *>(glfwGetWindowUserPointer(window));
+    void Window::framebufferResizeCallback(GLFWwindow *window, int width, int height) noexcept {
+        auto lveWindow = static_cast<Window *>(glfwGetWindowUserPointer(window));
         lveWindow->framebufferResized = true;
         lveWindow->width = width;
         lveWindow->height = height;

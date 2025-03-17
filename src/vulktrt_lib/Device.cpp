@@ -6,6 +6,7 @@
 #define USE_ALGORITHM
 
 namespace lve {
+    DISABLE_WARNINGS_PUSH(26446 26482 26485)
     static inline constexpr float queuePriority = 1.0f;
     // local callback functions
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -98,8 +99,7 @@ namespace lve {
             createInfo.ppEnabledLayerNames = validationLayers.data();
 
             populateDebugMessengerCreateInfo(debugCreateInfo);
-            // NOLINTNEXTLINE(*-redundant-casting)
-            createInfo.pNext = const_cast<VkDebugUtilsMessengerCreateInfoEXT *>(&debugCreateInfo);
+            createInfo.pNext = &debugCreateInfo;
         } else [[likely]] {
             createInfo.enabledLayerCount = 0;
             createInfo.pNext = nullptr;
@@ -110,8 +110,7 @@ namespace lve {
             createInfo.ppEnabledLayerNames = validationLayers.data();
 
             populateDebugMessengerCreateInfo(debugCreateInfo);
-            // NOLINTNEXTLINE(*-redundant-casting)
-            createInfo.pNext = const_cast<VkDebugUtilsMessengerCreateInfoEXT *>(&debugCreateInfo);
+            createInfo.pNext = &debugCreateInfo;
         } else [[unlikely]] {
             createInfo.enabledLayerCount = 0;
             createInfo.pNext = nullptr;
@@ -216,7 +215,7 @@ namespace lve {
     bool Device::isDeviceSuitable(VkPhysicalDevice device) {
         QueueFamilyIndices indices = findQueueFamilies(device);
 
-        bool extensionsSupported = checkDeviceExtensionSupport(device);
+        const bool extensionsSupported = checkDeviceExtensionSupport(device);
 
         bool swapChainAdequate = false;
         if(extensionsSupported) {
@@ -521,6 +520,7 @@ namespace lve {
 
         if(vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) { throw std::runtime_error("failed to bind image memory!"); }
     }
+    DISABLE_WARNINGS_POP()
 }  // namespace lve
 
 // clang-format off

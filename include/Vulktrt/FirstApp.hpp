@@ -13,9 +13,10 @@
 #include "headers.hpp"
 
 namespace lve {
+    DISABLE_WARNINGS_PUSH(26447)
     class FirstApp {
     public:
-        FirstApp();
+        FirstApp() noexcept;
         ~FirstApp();
 
         FirstApp(const FirstApp &other) = delete;
@@ -28,7 +29,7 @@ namespace lve {
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
-        void freeCommandBuffers();
+        void freeCommandBuffers() noexcept;
         void drawFrame();
         void recreateSwapChain();
         void recordCommandBuffer(int imageIndex);
@@ -45,6 +46,7 @@ namespace lve {
         std::vector<VkCommandBuffer> commandBuffers;
         std::unique_ptr<Model> lveModel;
     };
+    DISABLE_WARNINGS_POP()
 }  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

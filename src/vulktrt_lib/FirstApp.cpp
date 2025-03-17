@@ -16,10 +16,11 @@ namespace lve {
         glm::vec2 offset;
         alignas(16) glm::vec3 color;
     };
+    static inline constexpr auto spcds = sizeof(SimplePushConstantData);
     DISABLE_WARNINGS_POP()
 
-    DISABLE_WARNINGS_PUSH(26432)
-    FirstApp::FirstApp() {
+    DISABLE_WARNINGS_PUSH(26432 26447)
+    FirstApp::FirstApp() noexcept {
         loadModels();
         createPipelineLayout();
         recreateSwapChain();
@@ -50,7 +51,7 @@ namespace lve {
         VkPushConstantRange pushConstantRange{};
         pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
         pushConstantRange.offset = 0;
-        pushConstantRange.size = sizeof(SimplePushConstantData);
+        pushConstantRange.size = spcds;
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -108,7 +109,7 @@ namespace lve {
         VK_CHECK(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
     }
 
-    void FirstApp::freeCommandBuffers() {
+    void FirstApp::freeCommandBuffers() noexcept {
         vkFreeCommandBuffers(lveDevice.device(), lveDevice.getCommandPool(), C_UI32T(commandBuffers.size()), commandBuffers.data());
         commandBuffers.clear();
     }
@@ -157,14 +158,13 @@ namespace lve {
             push.offset = {-0.5f + frame * 0.002f, -0.4f + i * 0.25f};
             push.color = {0.0f, 0.0f, 0.2f + 0.2f * i};
             vkCmdPushConstants(commandBuffers[imageIndex], pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
-                               sizeof(SimplePushConstantData), &push);
+                               spcds, &push);
             lveModel->draw(commandBuffers[imageIndex]);
         }
 
         vkCmdEndRenderPass(commandBuffers[imageIndex]);
         VK_CHECK(vkEndCommandBuffer(commandBuffers[imageIndex]), "failed to record command buffer!");
     }
-    DISABLE_WARNINGS_POP()
 
     void FirstApp::drawFrame() {
         uint32_t imageIndex;
@@ -187,6 +187,7 @@ namespace lve {
             throw std::runtime_error("failed to present swap chain image!");
         }
     }
+    DISABLE_WARNINGS_POP()
 }  // namespace lve
 
 // clang-fotmat off
