@@ -14,12 +14,12 @@ namespace lve {
         glm::vec2 scale{1.f, 1.f};
         float rotation;
 
-        glm::mat2 mat2() {
+        glm::mat2 mat2() const noexcept {
             const float s = glm::sin(rotation);
             const float c = glm::cos(rotation);
-            glm::mat2 rotMatrix{{c, s}, {-s, c}};
+            const glm::mat2 rotMatrix{{c, s}, {-s, c}};
 
-            glm::mat2 scaleMat{{scale.x, .0f}, {.0f, scale.y}};
+            const glm::mat2 scaleMat{{scale.x, .0f}, {.0f, scale.y}};
             return rotMatrix * scaleMat;
         }
     };
@@ -39,7 +39,7 @@ namespace lve {
         GameObject &operator=(GameObject &&other) noexcept = default;
         ~GameObject() = default;
 
-        id_t getId() const { return id; }
+        id_t getId() const noexcept { return id; }
         std::shared_ptr<Model> model{};
         glm::vec3 color{};
         Transform2dComponent transform2d{};
