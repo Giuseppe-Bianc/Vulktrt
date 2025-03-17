@@ -1,12 +1,12 @@
 /*
-* Created by gbian on 17/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 17/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
-#include "headers.hpp"
 #include "Model.hpp"
+#include "headers.hpp"
 
 namespace lve {
     struct Transform2dComponent {
@@ -43,11 +43,12 @@ namespace lve {
         std::shared_ptr<Model> model{};
         glm::vec3 color{};
         Transform2dComponent transform2d{};
+
     private:
         GameObject(id_t id) : id{id} {}
 
         id_t id;
     };
-} // lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

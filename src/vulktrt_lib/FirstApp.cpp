@@ -168,7 +168,6 @@ namespace lve {
     void FirstApp::renderGameObjects(VkCommandBuffer commandBuffer) {
         lvePipeline->bind(commandBuffer);
 
-
         for(auto &obj : gameObjects) {
             obj.transform2d.rotation = glm::mod(obj.transform2d.rotation + 0.01f, glm2pi);
 

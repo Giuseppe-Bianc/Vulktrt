@@ -6,12 +6,12 @@
 #pragma once
 
 #include "Device.hpp"
+#include "GameObject.hpp"
 #include "Model.hpp"
 #include "Pipeline.hpp"
 #include "SwapChain.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
-#include "GameObject.hpp"
 
 namespace lve {
     DISABLE_WARNINGS_PUSH(26447)
@@ -35,7 +35,6 @@ namespace lve {
         void recreateSwapChain();
         void recordCommandBuffer(int imageIndex);
         void renderGameObjects(VkCommandBuffer commandBuffer);
-
 
         Window lveWindow{wwidth, wheight, wtile};
         Device lveDevice{lveWindow};
