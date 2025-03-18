@@ -45,9 +45,8 @@ namespace lve {
         allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
         VK_CHECK(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
-        for(const auto [index, comandbuffer] : commandBuffers | std::views::enumerate) {
-            lveDevice.setObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(comandbuffer), FORMAT("Main Command Buffer {}", index).c_str());
-        }
+        //lveDevice.setObjectsName(VK_OBJECT_TYPE_COMMAND_BUFFER, "Main Command Buffers", commandBuffers);
+        lveDevice.setObjectNames(VK_OBJECT_TYPE_COMMAND_BUFFER, "Main Command Buffers", commandBuffers);
     }
 
     void Renderer::freeCommandBuffers() {

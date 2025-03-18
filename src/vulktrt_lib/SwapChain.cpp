@@ -162,9 +162,7 @@ namespace lve {
         vkGetSwapchainImagesKHR(device.device(), swapChain, &imageCount, nullptr);
         swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(device.device(), swapChain, &imageCount, swapChainImages.data());
-        for(const auto [index, image] : swapChainImages | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_IMAGE, BC_UI64T(image), FORMAT("SwapChain Image {}", index).c_str());
-        }
+        device.setObjectNames(VK_OBJECT_TYPE_IMAGE, "SwapChain Image", swapChainImages);
 
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
@@ -268,9 +266,7 @@ namespace lve {
             VK_CHECK(vkCreateFramebuffer(device.device(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
                      "failed to create framebuffer!");
         }
-        for(const auto [index, value] : swapChainFramebuffers | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_FRAMEBUFFER, BC_UI64T(value), FORMAT("Framebuffer {}", index).c_str());
-        }
+        device.setObjectNames(VK_OBJECT_TYPE_FRAMEBUFFER, "Framebuffer", swapChainFramebuffers);
     }
 
     void SwapChain::createDepthResources() {
@@ -313,15 +309,9 @@ namespace lve {
             viewInfo.subresourceRange.layerCount = 1;
             VK_CHECK(vkCreateImageView(device.device(), &viewInfo, nullptr, &depthImageViews[i]), "failed to create texture image view!");
         }
-        for(const auto [index, value] : depthImages | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_IMAGE, BC_UI64T(value), FORMAT("Depth Image {}", index).c_str());
-        }
-        for(const auto [index, value] : depthImageViews | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_IMAGE_VIEW, BC_UI64T(value), FORMAT("Depth Image View {}", index).c_str());
-        }
-        for(const auto [index, value] : depthImageMemorys | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(value), FORMAT("Depth Image Memory {}", index).c_str());
-        }
+        device.setObjectNames(VK_OBJECT_TYPE_IMAGE, "Depth Image", depthImages);
+        device.setObjectNames(VK_OBJECT_TYPE_IMAGE_VIEW, "Depth Image View", depthImageViews);
+        device.setObjectNames(VK_OBJECT_TYPE_DEVICE_MEMORY, "Depth Image Memory", depthImageMemorys);
     }
 
     void SwapChain::createSyncObjects() {
@@ -343,15 +333,10 @@ namespace lve {
                                   vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]),
                                   "failed to create synchronization objects for a frame!");
         }
-        for(const auto [index, value] : imageAvailableSemaphores | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_SEMAPHORE, BC_UI64T(value), FORMAT("Image Available Semaphore {}", index).c_str());
-        }
-        for(const auto [index, value] : renderFinishedSemaphores | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_SEMAPHORE, BC_UI64T(value), FORMAT("Render Finished Semaphore {}", index).c_str());
-        }
-        for(const auto [index, value] : inFlightFences | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_FENCE, BC_UI64T(value), FORMAT("In Flight Fence {}", index).c_str());
-        }
+        device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Image Available Semaphore", imageAvailableSemaphores);
+        device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Render Finished Semaphore", renderFinishedSemaphores);
+        device.setObjectNames(VK_OBJECT_TYPE_FENCE, "In Flight Fence", inFlightFences);
+
     }
 
     VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {
