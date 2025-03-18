@@ -30,28 +30,29 @@ namespace lve {
         return VK_FALSE;
     }
 
-    VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
+    VkResult CreateDebugUtilsMessengerEXT(VkInstance instancein, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                           const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger) noexcept {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-        auto func = std::bit_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
+        auto func = std::bit_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instancein, "vkCreateDebugUtilsMessengerEXT"));
         // clang-format off
         if(func != nullptr) [[likely]] {
-            return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+            return func(instancein, pCreateInfo, pAllocator, pDebugMessenger);
         } else {
             return VK_ERROR_EXTENSION_NOT_PRESENT;
         }
         // clang-format on
     }
 
-    void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
+    void DestroyDebugUtilsMessengerEXT(VkInstance instancein, VkDebugUtilsMessengerEXT debugMessenger,
                                        const VkAllocationCallbacks *pAllocator) noexcept {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-        auto func = std::bit_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
-        if(func != nullptr) [[likely]] { func(instance, debugMessenger, pAllocator); }
+        auto func = std::bit_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instancein, "vkDestroyDebugUtilsMessengerEXT"));
+        if(func != nullptr) [[likely]] { func(instancein, debugMessenger, pAllocator); }
     }
 
     // class member functions
-    Device::Device(Window &windowe) : window{windowe} {
+    Device::Device(Window &windowe)
+        : window{windowe} {
         createInstance();
         setupDebugMessenger();
         createSurface();
@@ -69,6 +70,113 @@ namespace lve {
         vkDestroySurfaceKHR(instance, surface_, nullptr);
         vkDestroyInstance(instance, nullptr);
     }
+
+    // Wrapper per vkCmdBeginDebugUtilsLabelEXT
+    void Device::pcmdBeginLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) {
+        if(!enableValidationLayers) {return;}
+        auto func = std::bit_cast<PFN_vkCmdBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdBeginDebugUtilsLabelEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsLabelEXT label{};
+            label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+            label.pLabelName = labelName;
+            memcpy(label.color, color.data(), sizeof(float) * 4);
+            func(commandBuffer, &label);
+        }
+    }
+
+    // Wrapper per vkCmdInsertDebugUtilsLabelEXT
+    void Device::pcmdInsertLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
+                                const std::vector<float> &color) {
+        if(!enableValidationLayers) {return;}
+        auto func = std::bit_cast<PFN_vkCmdInsertDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdInsertDebugUtilsLabelEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsLabelEXT label{};
+            label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+            label.pLabelName = labelName;
+            memcpy(label.color, color.data(), sizeof(float) * 4);
+            func(commandBuffer, &label);
+        }
+    }
+
+    // Wrapper per vkCmdEndDebugUtilsLabelEXT
+    void Device::pcmdEndLabel(VkInstance instancein, VkCommandBuffer commandBuffer) {
+        if(!enableValidationLayers) {return;}
+        auto func = std::bit_cast<PFN_vkCmdEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdEndDebugUtilsLabelEXT"));
+        if(func != nullptr) { func(commandBuffer); }
+    }
+
+    // Wrapper per vkQueueBeginDebugUtilsLabelEXT
+    void Device::pqueueBeginLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) {
+        if(!enableValidationLayers) {return;}
+        auto func = std::bit_cast<PFN_vkQueueBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueBeginDebugUtilsLabelEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsLabelEXT label{};
+            label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+            label.pLabelName = labelName;
+            memcpy(label.color, color.data(), sizeof(float) * 4);
+            func(queue, &label);
+        }
+    }
+
+    // Wrapper per vkQueueInsertDebugUtilsLabelEXT
+    void Device::pqueueInsertLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) {
+        if(!enableValidationLayers) {return;}
+        auto func = std::bit_cast<PFN_vkQueueInsertDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueInsertDebugUtilsLabelEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsLabelEXT label{};
+            label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+            label.pLabelName = labelName;
+            memcpy(label.color, color.data(), sizeof(float) * 4);
+            func(queue, &label);
+        }
+    }
+
+    // Wrapper per vkQueueEndDebugUtilsLabelEXT
+    void Device::pqueueEndLabel(VkInstance instancein, VkQueue queue) {
+        if(!enableValidationLayers)  {return;}
+        auto func = std::bit_cast<PFN_vkQueueEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueEndDebugUtilsLabelEXT"));
+        if(func != nullptr) { func(queue); }
+    }
+
+    // Wrapper per vkSetDebugUtilsObjectNameEXT
+    void Device::psetObjectName(VkInstance instancein, VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+                               const char *objectName) {
+        if(!enableValidationLayers) {return;}
+        auto func = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(instancein, "vkSetDebugUtilsObjectNameEXT"));
+        if(func != nullptr) {
+            VkDebugUtilsObjectNameInfoEXT nameInfo{};
+            nameInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+            nameInfo.objectType = objectType;
+            nameInfo.objectHandle = objectHandle;
+            nameInfo.pObjectName = objectName;
+            func(device, &nameInfo);
+        }
+    }
+    void Device::cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) {
+        pcmdBeginLabel(instance, commandBuffer, labelName, color);
+    }
+    void Device::cmdEndLabel(VkCommandBuffer commandBuffer) {
+        pcmdEndLabel(instance, commandBuffer);
+    }
+    void Device::cmdInsertLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) {
+        pcmdInsertLabel(instance, commandBuffer, labelName, color);
+    }
+    void Device::queueBeginLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) {
+        pqueueBeginLabel(instance, queue, labelName, color);
+    }
+
+    void Device::queueEndLabel(VkQueue queue) {
+        pqueueEndLabel(instance, queue);
+    }
+    void Device::queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) {
+        pqueueInsertLabel(instance, queue, labelName, color);
+    }
+
+    void Device::setObjectName(VkDevice device, VkObjectType objectType, uint64_t objectHandle, const char *objectName) {
+        psetObjectName(instance, device, objectType, objectHandle, objectName);
+    }
+
+
 
     void Device::createInstance() {
         if(enableValidationLayers && !checkValidationLayerSupport()) {
@@ -193,6 +301,10 @@ namespace lve {
 #endif
 
         VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_), "failed to create logical device!");
+        auto device = device_;
+        auto dinstance = instance;
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_INSTANCE, reinterpret_cast<uint64_t>(dinstance), "Main Instance");
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_DEVICE, reinterpret_cast<uint64_t>(device), "Main Device");
 
         vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
         vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
@@ -207,6 +319,8 @@ namespace lve {
         poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
         VK_CHECK(vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool), "failed to create command pool!");
+
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_COMMAND_POOL, reinterpret_cast<uint64_t>(commandPool), "Main Command Pool");
     }
 
     void Device::createSurface() { window.createWindowSurface(instance, &surface_); }
@@ -235,7 +349,7 @@ namespace lve {
         createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
         createInfo.pfnUserCallback = debugCallback;
-        createInfo.pUserData = nullptr;  // Optional
+        createInfo.pUserData = nullptr; // Optional
     }
 
     void Device::setupDebugMessenger() {
@@ -274,6 +388,7 @@ namespace lve {
     }
 
     DISABLE_WARNINGS_PUSH(26481)
+
     std::vector<const char *> Device::getRequiredExtensions() const {
         uint32_t glfwExtensionCount = 0;
         const char **glfwExtensions = nullptr;
@@ -285,6 +400,7 @@ namespace lve {
 
         return extensions;
     }
+
     DISABLE_WARNINGS_POP()
 
     void Device::hasGflwRequiredInstanceExtensions() {
@@ -454,10 +570,14 @@ namespace lve {
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         vkBeginCommandBuffer(commandBuffer, &beginInfo);
+        pcmdBeginLabel(instance, commandBuffer, "Begin Single Time Commands", { 0.0f, 1.0f, 0.0f, 1.0f });
+
         return commandBuffer;
     }
 
     void Device::endSingleTimeCommands(VkCommandBuffer commandBuffer) noexcept {
+        // Chiude la label inserita
+        pcmdEndLabel(instance, commandBuffer);
         vkEndCommandBuffer(commandBuffer);
 
         VkSubmitInfo submitInfo{};
@@ -465,8 +585,10 @@ namespace lve {
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &commandBuffer;
 
+        pqueueBeginLabel(instance, graphicsQueue_, "Submit Single Time Command", { 1.0f, 1.0f, 1.0f, 1.0f });
         vkQueueSubmit(graphicsQueue_, 1, &submitInfo, VK_NULL_HANDLE);
         vkQueueWaitIdle(graphicsQueue_);
+        pqueueEndLabel(instance, graphicsQueue_);
 
         vkFreeCommandBuffers(device_, commandPool, 1, &commandBuffer);
     }
@@ -475,8 +597,8 @@ namespace lve {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
-        copyRegion.srcOffset = 0;  // Optional
-        copyRegion.dstOffset = 0;  // Optional
+        copyRegion.srcOffset = 0; // Optional
+        copyRegion.dstOffset = 0; // Optional
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
@@ -519,8 +641,10 @@ namespace lve {
 
         if(vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) { throw std::runtime_error("failed to bind image memory!"); }
     }
+
+
     DISABLE_WARNINGS_POP()
-}  // namespace lve
+} // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
