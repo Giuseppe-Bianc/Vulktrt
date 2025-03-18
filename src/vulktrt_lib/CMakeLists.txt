@@ -25,6 +25,10 @@ add_library(vulktrt_lib vulktrt.cpp
         ../../include/Vulktrt/Model.hpp
         GameObject.cpp
         ../../include/Vulktrt/GameObject.hpp
+        Renderer.cpp
+        ../../include/Vulktrt/Renderer.hpp
+        SimpleRenderSystem.cpp
+        ../../include/Vulktrt/SimpleRenderSystem.hpp
 )
 
 get_target_property(target_name vulktrt_lib NAME)

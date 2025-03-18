@@ -8,10 +8,9 @@
 #include "Device.hpp"
 #include "GameObject.hpp"
 #include "Model.hpp"
-#include "Pipeline.hpp"
-#include "SwapChain.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
+#include "Renderer.hpp"
 
 namespace lve {
     DISABLE_WARNINGS_PUSH(26447)
@@ -27,25 +26,10 @@ namespace lve {
 
     private:
         void loadGameObjects();
-        void createPipelineLayout();
-        void createPipeline();
-        void createCommandBuffers();
-        void freeCommandBuffers() noexcept;
-        void drawFrame();
-        void recreateSwapChain();
-        void recordCommandBuffer(int imageIndex);
-        void renderGameObjects(VkCommandBuffer commandBuffer);
 
         Window lveWindow{wwidth, wheight, wtile};
         Device lveDevice{lveWindow};
-        // SwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
-        std::unique_ptr<SwapChain> lveSwapChain;
-        /*Pipeline lvePipeline{lveDevice, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
-                             calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(),
-                             Pipeline::defaultPipelineConfigInfo(wwidth, wheight)};*/
-        std::unique_ptr<Pipeline> lvePipeline;
-        VkPipelineLayout pipelineLayout;
-        std::vector<VkCommandBuffer> commandBuffers;
+        Renderer lveRenderer{lveWindow, lveDevice};
         std::vector<GameObject> gameObjects;
     };
     DISABLE_WARNINGS_POP()
