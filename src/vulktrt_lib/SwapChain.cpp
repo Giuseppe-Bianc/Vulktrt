@@ -317,10 +317,10 @@ namespace lve {
         }
         for(const auto [index, value] : depthImageViews | std::views::enumerate) {
             device.setObjectName(VK_OBJECT_TYPE_IMAGE_VIEW, BC_UI64T(value), FORMAT("Depth Image View {}", index).c_str());
-            }
+        }
         for(const auto [index, value] : depthImageMemorys | std::views::enumerate) {
             device.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(value), FORMAT("Depth Image Memory {}", index).c_str());
-            }
+        }
     }
 
     void SwapChain::createSyncObjects() {
@@ -348,7 +348,7 @@ namespace lve {
         for(const auto [index, value] : renderFinishedSemaphores | std::views::enumerate) {
             device.setObjectName(VK_OBJECT_TYPE_SEMAPHORE, BC_UI64T(value), FORMAT("Render Finished Semaphore {}", index).c_str());
         }
-        for(const auto[index, value] : inFlightFences | std::views::enumerate) {
+        for(const auto [index, value] : inFlightFences | std::views::enumerate) {
             device.setObjectName(VK_OBJECT_TYPE_FENCE, BC_UI64T(value), FORMAT("In Flight Fence {}", index).c_str());
         }
     }
