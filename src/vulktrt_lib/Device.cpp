@@ -170,8 +170,8 @@ namespace lve {
         pqueueInsertLabel(instance, queue, labelName, color);
     }
 
-    void Device::setObjectName(VkDevice device, VkObjectType objectType, uint64_t objectHandle, const char *objectName) {
-        psetObjectName(instance, device, objectType, objectHandle, objectName);
+    void Device::setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) {
+        psetObjectName(instance, device_, objectType, objectHandle, objectName);
     }
 
     void Device::createInstance() {
@@ -301,6 +301,7 @@ namespace lve {
         auto dinstance = instance;
         psetObjectName(instance, device_, VK_OBJECT_TYPE_INSTANCE, reinterpret_cast<uint64_t>(dinstance), "Main Instance");
         psetObjectName(instance, device_, VK_OBJECT_TYPE_DEVICE, reinterpret_cast<uint64_t>(device), "Main Device");
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_PHYSICAL_DEVICE, reinterpret_cast<uint64_t>(physicalDevice), "Main Physical Device");
 
         vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
         vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);

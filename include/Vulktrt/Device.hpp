@@ -65,7 +65,7 @@ namespace lve {
         void queueBeginLabel(VkQueue queue, const char *labelName, const std::vector<float> &color);
         void queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color);
         void queueEndLabel(VkQueue queue);
-        void setObjectName(VkDevice device, VkObjectType objectType, uint64_t objectHandle, const char *objectName);
+        void setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName);
 
         VkPhysicalDeviceProperties properties;
 

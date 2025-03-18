@@ -44,7 +44,11 @@ namespace lve {
         const auto vertCode = readFile(vertFilepath);
         const auto fragCode = readFile(fragFilepath);
         createShaderModule(vertCode, &vertShaderModule);
+        lveDevice.setObjectName(VK_OBJECT_TYPE_SHADER_MODULE, reinterpret_cast<uint64_t>(vertShaderModule),
+                                "Vertex Shader Module");
         createShaderModule(fragCode, &fragShaderModule);
+        lveDevice.setObjectName(VK_OBJECT_TYPE_SHADER_MODULE, reinterpret_cast<uint64_t>(fragShaderModule),
+                                "Fragment Shader Module");
 
         std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages{};
         shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -94,6 +98,7 @@ namespace lve {
 
         VK_CHECK(vkCreateGraphicsPipelines(lveDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline),
                  "failed to create graphics pipeline");
+        lveDevice.setObjectName(VK_OBJECT_TYPE_PIPELINE, reinterpret_cast<uint64_t>(graphicsPipeline), "Main Graphics Pipeline");
     }
     DISABLE_WARNINGS_POP()
 
