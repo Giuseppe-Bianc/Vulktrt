@@ -336,7 +336,6 @@ namespace lve {
         device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Image Available Semaphore", imageAvailableSemaphores);
         device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Render Finished Semaphore", renderFinishedSemaphores);
         device.setObjectNames(VK_OBJECT_TYPE_FENCE, "In Flight Fence", inFlightFences);
-
     }
 
     VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {

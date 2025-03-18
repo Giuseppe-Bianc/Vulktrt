@@ -179,7 +179,6 @@ namespace lve {
         psetObjectName(instance, device_, objectType, objectHandle, objectName);
     }
 
-
     void Device::createInstance() {
         if(enableValidationLayers && !checkValidationLayerSupport()) {
             throw std::runtime_error("validation layers requested, but not available!");
