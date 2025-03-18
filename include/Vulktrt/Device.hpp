@@ -59,15 +59,13 @@ namespace lve {
         void createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags improperties, VkImage &image,
                                  VkDeviceMemory &imageMemory);
 
-        void cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName,
-                           const std::vector<float> &color);
-        void cmdInsertLabel(VkCommandBuffer commandBuffer, const char *labelName,
-                            const std::vector<float> &color);
+        void cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color);
+        void cmdInsertLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color);
         void cmdEndLabel(VkCommandBuffer commandBuffer);
         void queueBeginLabel(VkQueue queue, const char *labelName, const std::vector<float> &color);
         void queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color);
         void queueEndLabel(VkQueue queue);
-        void setObjectName(VkDevice device, VkObjectType objectType, uint64_t objectHandle, const char* objectName);
+        void setObjectName(VkDevice device, VkObjectType objectType, uint64_t objectHandle, const char *objectName);
 
         VkPhysicalDeviceProperties properties;
 
@@ -78,15 +76,13 @@ namespace lve {
         void pickPhysicalDevice();
         void createLogicalDevice();
         void createCommandPool();
-        void pcmdBeginLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
-                           const std::vector<float> &color);
-        void pcmdInsertLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
-                            const std::vector<float> &color);
+        void pcmdBeginLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color);
+        void pcmdInsertLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color);
         void pcmdEndLabel(VkInstance instancein, VkCommandBuffer commandBuffer);
         void pqueueBeginLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color);
         void pqueueInsertLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color);
         void pqueueEndLabel(VkInstance instancein, VkQueue queue);
-        void psetObjectName(VkInstance instancein, VkDevice device, VkObjectType objectType, uint64_t objectHandle, const char* objectName);
+        void psetObjectName(VkInstance instancein, VkDevice device, VkObjectType objectType, uint64_t objectHandle, const char *objectName);
 
         // helper functions
         bool isDeviceSuitable(VkPhysicalDevice device);

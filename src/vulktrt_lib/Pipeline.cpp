@@ -104,7 +104,6 @@ namespace lve {
         createInfo.pCode = std::bit_cast<const uint32_t *>(code.data());
 
         VK_CHECK(vkCreateShaderModule(lveDevice.device(), &createInfo, nullptr, shaderModule), "failed to create shader module!");
-
     }
 
     void Pipeline::bind(VkCommandBuffer commandBuffer) noexcept {

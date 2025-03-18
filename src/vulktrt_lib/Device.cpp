@@ -46,13 +46,13 @@ namespace lve {
     void DestroyDebugUtilsMessengerEXT(VkInstance instancein, VkDebugUtilsMessengerEXT debugMessenger,
                                        const VkAllocationCallbacks *pAllocator) noexcept {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-        auto func = std::bit_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instancein, "vkDestroyDebugUtilsMessengerEXT"));
+        auto func = std::bit_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+            vkGetInstanceProcAddr(instancein, "vkDestroyDebugUtilsMessengerEXT"));
         if(func != nullptr) [[likely]] { func(instancein, debugMessenger, pAllocator); }
     }
 
     // class member functions
-    Device::Device(Window &windowe)
-        : window{windowe} {
+    Device::Device(Window &windowe) : window{windowe} {
         createInstance();
         setupDebugMessenger();
         createSurface();
@@ -72,8 +72,9 @@ namespace lve {
     }
 
     // Wrapper per vkCmdBeginDebugUtilsLabelEXT
-    void Device::pcmdBeginLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) {
-        if(!enableValidationLayers) {return;}
+    void Device::pcmdBeginLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
+                                const std::vector<float> &color) {
+        if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkCmdBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdBeginDebugUtilsLabelEXT"));
         if(func != nullptr) {
             VkDebugUtilsLabelEXT label{};
@@ -86,8 +87,8 @@ namespace lve {
 
     // Wrapper per vkCmdInsertDebugUtilsLabelEXT
     void Device::pcmdInsertLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
-                                const std::vector<float> &color) {
-        if(!enableValidationLayers) {return;}
+                                 const std::vector<float> &color) {
+        if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkCmdInsertDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdInsertDebugUtilsLabelEXT"));
         if(func != nullptr) {
             VkDebugUtilsLabelEXT label{};
@@ -100,14 +101,14 @@ namespace lve {
 
     // Wrapper per vkCmdEndDebugUtilsLabelEXT
     void Device::pcmdEndLabel(VkInstance instancein, VkCommandBuffer commandBuffer) {
-        if(!enableValidationLayers) {return;}
+        if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkCmdEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdEndDebugUtilsLabelEXT"));
         if(func != nullptr) { func(commandBuffer); }
     }
 
     // Wrapper per vkQueueBeginDebugUtilsLabelEXT
     void Device::pqueueBeginLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) {
-        if(!enableValidationLayers) {return;}
+        if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkQueueBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueBeginDebugUtilsLabelEXT"));
         if(func != nullptr) {
             VkDebugUtilsLabelEXT label{};
@@ -120,8 +121,9 @@ namespace lve {
 
     // Wrapper per vkQueueInsertDebugUtilsLabelEXT
     void Device::pqueueInsertLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) {
-        if(!enableValidationLayers) {return;}
-        auto func = std::bit_cast<PFN_vkQueueInsertDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueInsertDebugUtilsLabelEXT"));
+        if(!enableValidationLayers) { return; }
+        auto func = std::bit_cast<PFN_vkQueueInsertDebugUtilsLabelEXT>(
+            vkGetInstanceProcAddr(instancein, "vkQueueInsertDebugUtilsLabelEXT"));
         if(func != nullptr) {
             VkDebugUtilsLabelEXT label{};
             label.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
@@ -133,15 +135,15 @@ namespace lve {
 
     // Wrapper per vkQueueEndDebugUtilsLabelEXT
     void Device::pqueueEndLabel(VkInstance instancein, VkQueue queue) {
-        if(!enableValidationLayers)  {return;}
+        if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkQueueEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueEndDebugUtilsLabelEXT"));
         if(func != nullptr) { func(queue); }
     }
 
     // Wrapper per vkSetDebugUtilsObjectNameEXT
     void Device::psetObjectName(VkInstance instancein, VkDevice device, VkObjectType objectType, uint64_t objectHandle,
-                               const char *objectName) {
-        if(!enableValidationLayers) {return;}
+                                const char *objectName) {
+        if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(instancein, "vkSetDebugUtilsObjectNameEXT"));
         if(func != nullptr) {
             VkDebugUtilsObjectNameInfoEXT nameInfo{};
@@ -155,9 +157,7 @@ namespace lve {
     void Device::cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) {
         pcmdBeginLabel(instance, commandBuffer, labelName, color);
     }
-    void Device::cmdEndLabel(VkCommandBuffer commandBuffer) {
-        pcmdEndLabel(instance, commandBuffer);
-    }
+    void Device::cmdEndLabel(VkCommandBuffer commandBuffer) { pcmdEndLabel(instance, commandBuffer); }
     void Device::cmdInsertLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) {
         pcmdInsertLabel(instance, commandBuffer, labelName, color);
     }
@@ -165,9 +165,7 @@ namespace lve {
         pqueueBeginLabel(instance, queue, labelName, color);
     }
 
-    void Device::queueEndLabel(VkQueue queue) {
-        pqueueEndLabel(instance, queue);
-    }
+    void Device::queueEndLabel(VkQueue queue) { pqueueEndLabel(instance, queue); }
     void Device::queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) {
         pqueueInsertLabel(instance, queue, labelName, color);
     }
@@ -175,8 +173,6 @@ namespace lve {
     void Device::setObjectName(VkDevice device, VkObjectType objectType, uint64_t objectHandle, const char *objectName) {
         psetObjectName(instance, device, objectType, objectHandle, objectName);
     }
-
-
 
     void Device::createInstance() {
         if(enableValidationLayers && !checkValidationLayerSupport()) {
@@ -350,7 +346,7 @@ namespace lve {
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT |
                                  VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT;
         createInfo.pfnUserCallback = debugCallback;
-        createInfo.pUserData = nullptr; // Optional
+        createInfo.pUserData = nullptr;  // Optional
     }
 
     void Device::setupDebugMessenger() {
@@ -571,7 +567,7 @@ namespace lve {
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         vkBeginCommandBuffer(commandBuffer, &beginInfo);
-        pcmdBeginLabel(instance, commandBuffer, "Begin Single Time Commands", { 0.0f, 1.0f, 0.0f, 1.0f });
+        pcmdBeginLabel(instance, commandBuffer, "Begin Single Time Commands", {0.0f, 1.0f, 0.0f, 1.0f});
 
         return commandBuffer;
     }
@@ -586,7 +582,7 @@ namespace lve {
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &commandBuffer;
 
-        pqueueBeginLabel(instance, graphicsQueue_, "Submit Single Time Command", { 1.0f, 1.0f, 1.0f, 1.0f });
+        pqueueBeginLabel(instance, graphicsQueue_, "Submit Single Time Command", {1.0f, 1.0f, 1.0f, 1.0f});
         vkQueueSubmit(graphicsQueue_, 1, &submitInfo, VK_NULL_HANDLE);
         vkQueueWaitIdle(graphicsQueue_);
         pqueueEndLabel(instance, graphicsQueue_);
@@ -598,8 +594,8 @@ namespace lve {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
-        copyRegion.srcOffset = 0; // Optional
-        copyRegion.dstOffset = 0; // Optional
+        copyRegion.srcOffset = 0;  // Optional
+        copyRegion.dstOffset = 0;  // Optional
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
@@ -643,9 +639,8 @@ namespace lve {
         if(vkBindImageMemory(device_, image, imageMemory, 0) != VK_SUCCESS) { throw std::runtime_error("failed to bind image memory!"); }
     }
 
-
     DISABLE_WARNINGS_POP()
-} // namespace lve
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-easily-swappable-parameters, *-use-anonymous-namespace, *-diagnostic-old-style-cast, *-pro-type-cstyle-cast, *-pro-type-member-init,*-member-init, *-pro-bounds-constant-array-index, *-qualified-auto, *-uppercase-literal-suffix)
