@@ -163,7 +163,7 @@ namespace lve {
         swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(device.device(), swapChain, &imageCount, swapChainImages.data());
         for(const auto [index, image] : swapChainImages | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_IMAGE, reinterpret_cast<uint64_t>(image), FORMAT("SwapChain Image {}", index).c_str());
+            device.setObjectName(VK_OBJECT_TYPE_IMAGE, BC_UI64T(image), FORMAT("SwapChain Image {}", index).c_str());
         }
 
         swapChainImageFormat = surfaceFormat.format;
@@ -247,7 +247,7 @@ namespace lve {
         renderPassInfo.pDependencies = &dependency;
 
         VK_CHECK(vkCreateRenderPass(device.device(), &renderPassInfo, nullptr, &renderPass), "failed to create render pass!");
-        device.setObjectName(VK_OBJECT_TYPE_RENDER_PASS, reinterpret_cast<uint64_t>(renderPass), "Main Render Pass");
+        device.setObjectName(VK_OBJECT_TYPE_RENDER_PASS, BC_UI64T(renderPass), "Main Render Pass");
     }
 
     void SwapChain::createFramebuffers() {
@@ -269,7 +269,7 @@ namespace lve {
                      "failed to create framebuffer!");
         }
         for(const auto [index, value] : swapChainFramebuffers | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_FRAMEBUFFER, reinterpret_cast<uint64_t>(value), FORMAT("Framebuffer {}", index).c_str());
+            device.setObjectName(VK_OBJECT_TYPE_FRAMEBUFFER, BC_UI64T(value), FORMAT("Framebuffer {}", index).c_str());
         }
     }
 
@@ -313,16 +313,14 @@ namespace lve {
             VK_CHECK(vkCreateImageView(device.device(), &viewInfo, nullptr, &depthImageViews[i]), "failed to create texture image view!");
         }
         for(const auto [index, value] : depthImages | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_IMAGE, reinterpret_cast<uint64_t>(value), FORMAT("Depth Image {}", index).c_str());
+            device.setObjectName(VK_OBJECT_TYPE_IMAGE, BC_UI64T(value), FORMAT("Depth Image {}", index).c_str());
         }
         for(const auto [index, value] : depthImageViews | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_IMAGE_VIEW, reinterpret_cast<uint64_t>(value),
-                                 FORMAT("Depth Image View {}", index).c_str());
-        }
+            device.setObjectName(VK_OBJECT_TYPE_IMAGE_VIEW, BC_UI64T(value), FORMAT("Depth Image View {}", index).c_str());
+            }
         for(const auto [index, value] : depthImageMemorys | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, reinterpret_cast<uint64_t>(value),
-                                 FORMAT("Depth Image Memory {}", index).c_str());
-        }
+            device.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(value), FORMAT("Depth Image Memory {}", index).c_str());
+            }
     }
 
     void SwapChain::createSyncObjects() {
@@ -345,15 +343,13 @@ namespace lve {
                                   "failed to create synchronization objects for a frame!");
         }
         for(const auto [index, value] : imageAvailableSemaphores | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_SEMAPHORE, reinterpret_cast<uint64_t>(value),
-                                 FORMAT("Image Available Semaphore {}", index).c_str());
+            device.setObjectName(VK_OBJECT_TYPE_SEMAPHORE, BC_UI64T(value), FORMAT("Image Available Semaphore {}", index).c_str());
         }
         for(const auto [index, value] : renderFinishedSemaphores | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_SEMAPHORE, reinterpret_cast<uint64_t>(value),
-                                 FORMAT("Render Finished Semaphore {}", index).c_str());
+            device.setObjectName(VK_OBJECT_TYPE_SEMAPHORE, BC_UI64T(value), FORMAT("Render Finished Semaphore {}", index).c_str());
         }
-        for(const auto [index, value] : inFlightFences | std::views::enumerate) {
-            device.setObjectName(VK_OBJECT_TYPE_FENCE, reinterpret_cast<uint64_t>(value), FORMAT("In Flight Fence {}", index).c_str());
+        for(const auto[index, value] : inFlightFences | std::views::enumerate) {
+            device.setObjectName(VK_OBJECT_TYPE_FENCE, BC_UI64T(value), FORMAT("In Flight Fence {}", index).c_str());
         }
     }
 

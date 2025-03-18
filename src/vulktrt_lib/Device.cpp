@@ -299,10 +299,9 @@ namespace lve {
         VK_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_), "failed to create logical device!");
         auto device = device_;
         auto dinstance = instance;
-        psetObjectName(instance, device_, VK_OBJECT_TYPE_INSTANCE, reinterpret_cast<uint64_t>(dinstance), "Main Instance");
-        psetObjectName(instance, device_, VK_OBJECT_TYPE_DEVICE, reinterpret_cast<uint64_t>(device), "Main Device");
-        psetObjectName(instance, device_, VK_OBJECT_TYPE_PHYSICAL_DEVICE, reinterpret_cast<uint64_t>(physicalDevice),
-                       "Main Physical Device");
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_INSTANCE, BC_UI64T(dinstance), "Main Instance");
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_DEVICE, BC_UI64T(device), "Main Device");
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_PHYSICAL_DEVICE, BC_UI64T(physicalDevice), "Main Physical Device");
 
         vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
         vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
@@ -318,7 +317,7 @@ namespace lve {
 
         VK_CHECK(vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool), "failed to create command pool!");
 
-        psetObjectName(instance, device_, VK_OBJECT_TYPE_COMMAND_POOL, reinterpret_cast<uint64_t>(commandPool), "Main Command Pool");
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_COMMAND_POOL, BC_UI64T(commandPool), "Main Command Pool");
     }
 
     void Device::createSurface() { window.createWindowSurface(instance, &surface_); }
