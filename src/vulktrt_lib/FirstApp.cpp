@@ -119,7 +119,8 @@ namespace lve {
 
         VK_CHECK(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
         for(const auto [index, comandbuffer] : commandBuffers | std::views::enumerate) {
-            lveDevice.setObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, reinterpret_cast<uint64_t>(comandbuffer), FORMAT("Main Command Buffer {}", index).c_str());
+            lveDevice.setObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, reinterpret_cast<uint64_t>(comandbuffer),
+                                    FORMAT("Main Command Buffer {}", index).c_str());
         }
     }
 

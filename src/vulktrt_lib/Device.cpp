@@ -301,7 +301,8 @@ namespace lve {
         auto dinstance = instance;
         psetObjectName(instance, device_, VK_OBJECT_TYPE_INSTANCE, reinterpret_cast<uint64_t>(dinstance), "Main Instance");
         psetObjectName(instance, device_, VK_OBJECT_TYPE_DEVICE, reinterpret_cast<uint64_t>(device), "Main Device");
-        psetObjectName(instance, device_, VK_OBJECT_TYPE_PHYSICAL_DEVICE, reinterpret_cast<uint64_t>(physicalDevice), "Main Physical Device");
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_PHYSICAL_DEVICE, reinterpret_cast<uint64_t>(physicalDevice),
+                       "Main Physical Device");
 
         vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
         vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
