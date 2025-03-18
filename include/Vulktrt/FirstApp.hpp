@@ -8,9 +8,9 @@
 #include "Device.hpp"
 #include "GameObject.hpp"
 #include "Model.hpp"
+#include "Renderer.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
-#include "Renderer.hpp"
 
 namespace lve {
     DISABLE_WARNINGS_PUSH(26447)

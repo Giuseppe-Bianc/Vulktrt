@@ -34,8 +34,7 @@ namespace lve {
         VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
         bool compareSwapFormats(const SwapChain &swapChainin) const {
-            return swapChainin.swapChainDepthFormat == swapChainDepthFormat &&
-                   swapChainin.swapChainImageFormat == swapChainImageFormat;
+            return swapChainin.swapChainDepthFormat == swapChainDepthFormat && swapChainin.swapChainImageFormat == swapChainImageFormat;
         }
 
     private:

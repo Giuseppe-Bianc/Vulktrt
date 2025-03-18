@@ -12,11 +12,9 @@
 
 namespace lve {
     DISABLE_WARNINGS_PUSH(26432 26447)
-    FirstApp::FirstApp() noexcept {
-        loadGameObjects();
-    }
+    FirstApp::FirstApp() noexcept { loadGameObjects(); }
 
-    FirstApp::~FirstApp() { }
+    FirstApp::~FirstApp() {}
     DISABLE_WARNINGS_POP()
 
     void FirstApp::run() {
@@ -25,7 +23,7 @@ namespace lve {
         while(!lveWindow.shouldClose()) [[likely]] {
             fpsCounter.frameInTitle(false, false);
             glfwPollEvents();
-            if (auto commandBuffer = lveRenderer.beginFrame()) {
+            if(auto commandBuffer = lveRenderer.beginFrame()) {
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
                 lveRenderer.endSwapChainRenderPass(commandBuffer);

@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 18/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 18/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // clang-format off
 // NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
 // clang-format on
@@ -23,7 +23,9 @@ namespace lve {
         }
         vkDeviceWaitIdle(lveDevice.device());
 
-        if(lveSwapChain == nullptr) { lveSwapChain = std::make_unique<SwapChain>(lveDevice, extent); } else {
+        if(lveSwapChain == nullptr) {
+            lveSwapChain = std::make_unique<SwapChain>(lveDevice, extent);
+        } else {
             std::shared_ptr<SwapChain> oldSwapChain = std::move(lveSwapChain);
             lveSwapChain = std::make_unique<SwapChain>(lveDevice, extent, oldSwapChain);
 
@@ -49,7 +51,7 @@ namespace lve {
     }
 
     void Renderer::freeCommandBuffers() {
-        vkFreeCommandBuffers(lveDevice.device(),lveDevice.getCommandPool(),C_UI32T(commandBuffers.size()), commandBuffers.data());
+        vkFreeCommandBuffers(lveDevice.device(), lveDevice.getCommandPool(), C_UI32T(commandBuffers.size()), commandBuffers.data());
         commandBuffers.clear();
     }
 
@@ -77,11 +79,10 @@ namespace lve {
     void Renderer::endFrame() {
         assert(isFrameStarted && "Can't call endFrame while frame is not in progress");
         auto commandBuffer = getCurrentCommandBuffer();
-        VK_CHECK(vkEndCommandBuffer(commandBuffer),"failed to record command buffer!");
+        VK_CHECK(vkEndCommandBuffer(commandBuffer), "failed to record command buffer!");
 
         auto result = lveSwapChain->submitCommandBuffers(&commandBuffer, &currentImageIndex);
-        if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
-           lveWindow.wasWindowResized()) {
+        if(result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || lveWindow.wasWindowResized()) {
             lveWindow.resetWindowResizedFlag();
             recreateSwapChain();
         } else if(result != VK_SUCCESS) {
@@ -94,7 +95,7 @@ namespace lve {
 
     void Renderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
         assert(isFrameStarted && "Can't call beginSwapChainRenderPass if frame is not in progress");
-        assert(commandBuffer == getCurrentCommandBuffer() &&"Can't begin render pass on command buffer from a different frame");
+        assert(commandBuffer == getCurrentCommandBuffer() && "Can't begin render pass on command buffer from a different frame");
 
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -126,13 +127,11 @@ namespace lve {
 
     void Renderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
         assert(isFrameStarted && "Can't call endSwapChainRenderPass if frame is not in progress");
-        assert(commandBuffer == getCurrentCommandBuffer() &&
-            "Can't end render pass on command buffer from a different frame");
+        assert(commandBuffer == getCurrentCommandBuffer() && "Can't end render pass on command buffer from a different frame");
         vkCmdEndRenderPass(commandBuffer);
     }
-}
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
 // clang-format on
-

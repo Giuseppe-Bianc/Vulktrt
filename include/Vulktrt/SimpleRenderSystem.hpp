@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 18/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 18/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 
 #pragma once
 #include "Device.hpp"
@@ -28,4 +28,4 @@ namespace lve {
         std::unique_ptr<Pipeline> lvePipeline;
         VkPipelineLayout pipelineLayout;
     };
-} // lve
+}  // namespace lve

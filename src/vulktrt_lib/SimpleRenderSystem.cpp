@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 18/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 18/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // clang-format off
 // NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
 // clang-format on
@@ -20,8 +20,7 @@ namespace lve {
     static inline constexpr auto glm2pi = glm::two_pi<float>();
     DISABLE_WARNINGS_POP()
 
-    SimpleRenderSystem::SimpleRenderSystem(Device &device, VkRenderPass renderPass)
-        : lveDevice{device} {
+    SimpleRenderSystem::SimpleRenderSystem(Device &device, VkRenderPass renderPass) : lveDevice{device} {
         createPipelineLayout();
         createPipeline(renderPass);
     }
@@ -73,7 +72,7 @@ namespace lve {
             obj.model->draw(commandBuffer);
         }
     }
-} // lve
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)

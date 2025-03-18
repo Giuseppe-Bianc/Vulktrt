@@ -1,5 +1,5 @@
 /*
-* Created by gbian on 09/03/2025.
+ * Created by gbian on 09/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
 // NOLINTBEGIN(*-include-cleaner)
@@ -17,7 +17,7 @@ namespace lve {
     DISABLE_WARNINGS_PUSH(26447)
     class Renderer {
     public:
-        Renderer(Window& window, Device& device) noexcept;
+        Renderer(Window &window, Device &device) noexcept;
         ~Renderer();
 
         Renderer(const Renderer &other) = delete;
