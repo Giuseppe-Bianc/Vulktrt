@@ -30,6 +30,7 @@ namespace lve {
         return VK_FALSE;
     }
 
+    // NOLINTBEGIN(*-use-internal-linkage)
     VkResult CreateDebugUtilsMessengerEXT(VkInstance instancein, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
                                           const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger) noexcept {
         // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
@@ -50,6 +51,7 @@ namespace lve {
             vkGetInstanceProcAddr(instancein, "vkDestroyDebugUtilsMessengerEXT"));
         if(func != nullptr) [[likely]] { func(instancein, debugMessenger, pAllocator); }
     }
+    // NOLINTEND(*-use-internal-linkage)
 
     // class member functions
     Device::Device(Window &windowe) : window{windowe} {
@@ -71,9 +73,10 @@ namespace lve {
         vkDestroyInstance(instance, nullptr);
     }
 
+    // NOLINTBEGIN(*-make-member-function-const, *-pro-bounds-array-to-pointer-decay, *-no-array-decay)
     // Wrapper per vkCmdBeginDebugUtilsLabelEXT
     void Device::pcmdBeginLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
-                                const std::vector<float> &color) {
+                                const std::vector<float> &color) noexcept {
         if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkCmdBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdBeginDebugUtilsLabelEXT"));
         if(func != nullptr) {
@@ -87,7 +90,7 @@ namespace lve {
 
     // Wrapper per vkCmdInsertDebugUtilsLabelEXT
     void Device::pcmdInsertLabel(VkInstance instancein, VkCommandBuffer commandBuffer, const char *labelName,
-                                 const std::vector<float> &color) {
+                                 const std::vector<float> &color) noexcept {
         if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkCmdInsertDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdInsertDebugUtilsLabelEXT"));
         if(func != nullptr) {
@@ -100,14 +103,14 @@ namespace lve {
     }
 
     // Wrapper per vkCmdEndDebugUtilsLabelEXT
-    void Device::pcmdEndLabel(VkInstance instancein, VkCommandBuffer commandBuffer) {
+    void Device::pcmdEndLabel(VkInstance instancein, VkCommandBuffer commandBuffer) noexcept {
         if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkCmdEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkCmdEndDebugUtilsLabelEXT"));
         if(func != nullptr) { func(commandBuffer); }
     }
 
     // Wrapper per vkQueueBeginDebugUtilsLabelEXT
-    void Device::pqueueBeginLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) {
+    void Device::pqueueBeginLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
         if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkQueueBeginDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueBeginDebugUtilsLabelEXT"));
         if(func != nullptr) {
@@ -120,7 +123,7 @@ namespace lve {
     }
 
     // Wrapper per vkQueueInsertDebugUtilsLabelEXT
-    void Device::pqueueInsertLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) {
+    void Device::pqueueInsertLabel(VkInstance instancein, VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
         if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkQueueInsertDebugUtilsLabelEXT>(
             vkGetInstanceProcAddr(instancein, "vkQueueInsertDebugUtilsLabelEXT"));
@@ -134,7 +137,7 @@ namespace lve {
     }
 
     // Wrapper per vkQueueEndDebugUtilsLabelEXT
-    void Device::pqueueEndLabel(VkInstance instancein, VkQueue queue) {
+    void Device::pqueueEndLabel(VkInstance instancein, VkQueue queue) noexcept {
         if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkQueueEndDebugUtilsLabelEXT>(vkGetInstanceProcAddr(instancein, "vkQueueEndDebugUtilsLabelEXT"));
         if(func != nullptr) { func(queue); }
@@ -142,7 +145,7 @@ namespace lve {
 
     // Wrapper per vkSetDebugUtilsObjectNameEXT
     void Device::psetObjectName(VkInstance instancein, VkDevice device, VkObjectType objectType, uint64_t objectHandle,
-                                const char *objectName) {
+                                const char *objectName) noexcept {
         if(!enableValidationLayers) { return; }
         auto func = std::bit_cast<PFN_vkSetDebugUtilsObjectNameEXT>(vkGetInstanceProcAddr(instancein, "vkSetDebugUtilsObjectNameEXT"));
         if(func != nullptr) {
@@ -154,23 +157,25 @@ namespace lve {
             func(device, &nameInfo);
         }
     }
-    void Device::cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) {
+    // NOLINTEND(*-make-member-function-const, *-pro-bounds-array-to-pointer-decay, *-no-array-decay)
+
+    void Device::cmdBeginLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept {
         pcmdBeginLabel(instance, commandBuffer, labelName, color);
     }
-    void Device::cmdEndLabel(VkCommandBuffer commandBuffer) { pcmdEndLabel(instance, commandBuffer); }
-    void Device::cmdInsertLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) {
+    void Device::cmdEndLabel(VkCommandBuffer commandBuffer) noexcept { pcmdEndLabel(instance, commandBuffer); }
+    void Device::cmdInsertLabel(VkCommandBuffer commandBuffer, const char *labelName, const std::vector<float> &color) noexcept {
         pcmdInsertLabel(instance, commandBuffer, labelName, color);
     }
-    void Device::queueBeginLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) {
+    void Device::queueBeginLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
         pqueueBeginLabel(instance, queue, labelName, color);
     }
 
-    void Device::queueEndLabel(VkQueue queue) { pqueueEndLabel(instance, queue); }
-    void Device::queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) {
+    void Device::queueEndLabel(VkQueue queue) noexcept { pqueueEndLabel(instance, queue); }
+    void Device::queueInsertLabel(VkQueue queue, const char *labelName, const std::vector<float> &color) noexcept {
         pqueueInsertLabel(instance, queue, labelName, color);
     }
 
-    void Device::setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) {
+    void Device::setObjectName(VkObjectType objectType, uint64_t objectHandle, const char *objectName) noexcept {
         psetObjectName(instance, device_, objectType, objectHandle, objectName);
     }
 
