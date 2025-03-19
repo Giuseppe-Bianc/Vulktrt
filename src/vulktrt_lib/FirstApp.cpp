@@ -106,7 +106,7 @@ namespace lve {
 
         gameObjects.push_back(std::move(cube));
     }
-} // namespace lve
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto, *-pro-type-union-access)
