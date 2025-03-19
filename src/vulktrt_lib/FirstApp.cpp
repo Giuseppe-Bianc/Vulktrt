@@ -6,8 +6,8 @@
 // NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto, *-pro-type-union-access)
 // clang-format on
 #include "Vulktrt/FirstApp.hpp"
-#include "Vulktrt/SimpleRenderSystem.hpp"
 #include "Vulktrt/Camera.hpp"
+#include "Vulktrt/SimpleRenderSystem.hpp"
 
 #include <Vulktrt/FPSCounter.hpp>
 

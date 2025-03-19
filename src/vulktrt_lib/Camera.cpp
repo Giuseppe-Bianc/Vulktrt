@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 19/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 19/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 
 #include "Vulktrt/Camera.hpp"
 
@@ -15,4 +15,4 @@ namespace lve {
         assert(glm::abs(aspect - fepsilon) > 0.0f);
         projectionMatrix = glm::perspective(fovy, aspect, near, far);
     }
-} // lve
+}  // namespace lve
