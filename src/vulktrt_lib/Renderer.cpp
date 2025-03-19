@@ -123,7 +123,6 @@ namespace lve {
         VkRect2D scissor{{0, 0}, lveSwapChain->getSwapChainExtent()};
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
     }
 
     void Renderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
