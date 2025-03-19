@@ -72,6 +72,7 @@ namespace lve {
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
         VK_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo), "failed to begin recording command buffer!");
+        lveDevice.setObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(commandBuffer), "Frame Comand Buffer");
         return commandBuffer;
     }
 
@@ -107,7 +108,7 @@ namespace lve {
         std::array<VkClearValue, 2> clearValues{};
         clearValues[0].color = {0.01f, 0.01f, 0.01f, 1.0f};
         clearValues[1].depthStencil = {1.0f, 0};
-        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+        renderPassInfo.clearValueCount = C_UI32T(clearValues.size());
         renderPassInfo.pClearValues = clearValues.data();
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
@@ -122,6 +123,7 @@ namespace lve {
         VkRect2D scissor{{0, 0}, lveSwapChain->getSwapChainExtent()};
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
     }
 
     void Renderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {

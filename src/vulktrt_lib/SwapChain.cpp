@@ -26,29 +26,30 @@ namespace lve {
     }
 
     SwapChain::~SwapChain() {
-        for(auto imageView : swapChainImageViews) { vkDestroyImageView(device.device(), imageView, nullptr); }
+        auto deviceDevice = device.device();
+        for(auto imageView : swapChainImageViews) { vkDestroyImageView(deviceDevice, imageView, nullptr); }
         swapChainImageViews.clear();
 
         if(swapChain != nullptr) {
-            vkDestroySwapchainKHR(device.device(), swapChain, nullptr);
+            vkDestroySwapchainKHR(deviceDevice, swapChain, nullptr);
             swapChain = nullptr;
         }
 
         for(size_t i = 0; i < depthImages.size(); i++) {
-            vkDestroyImageView(device.device(), depthImageViews[i], nullptr);
-            vkDestroyImage(device.device(), depthImages[i], nullptr);
-            vkFreeMemory(device.device(), depthImageMemorys[i], nullptr);
+            vkDestroyImageView(deviceDevice, depthImageViews[i], nullptr);
+            vkDestroyImage(deviceDevice, depthImages[i], nullptr);
+            vkFreeMemory(deviceDevice, depthImageMemorys[i], nullptr);
         }
 
-        for(auto framebuffer : swapChainFramebuffers) { vkDestroyFramebuffer(device.device(), framebuffer, nullptr); }
+        for(auto framebuffer : swapChainFramebuffers) { vkDestroyFramebuffer(deviceDevice, framebuffer, nullptr); }
 
-        vkDestroyRenderPass(device.device(), renderPass, nullptr);
+        vkDestroyRenderPass(deviceDevice, renderPass, nullptr);
 
         // cleanup synchronization objects
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroySemaphore(device.device(), renderFinishedSemaphores[i], nullptr);
-            vkDestroySemaphore(device.device(), imageAvailableSemaphores[i], nullptr);
-            vkDestroyFence(device.device(), inFlightFences[i], nullptr);
+            vkDestroySemaphore(deviceDevice, renderFinishedSemaphores[i], nullptr);
+            vkDestroySemaphore(deviceDevice, imageAvailableSemaphores[i], nullptr);
+            vkDestroyFence(deviceDevice, inFlightFences[i], nullptr);
         }
     }
 
@@ -154,6 +155,7 @@ namespace lve {
         createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
         VK_CHECK(vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain), "failed to create swap chain!");
+        device.setObjectName(VK_OBJECT_TYPE_SWAPCHAIN_KHR, BC_UI64T(swapChain), "sw swapchain");
 
         // we only specified a minimum number of images in the swap chain, so the implementation is
         // allowed to create a swap chain with more. That's why we'll first query the final number of
@@ -189,6 +191,7 @@ namespace lve {
             VK_CHECK(vkCreateImageView(device.device(), &viewInfo, nullptr, &swapChainImageViews[i]),
                      "failed to create texture image view!");
         }
+        device.setObjectNames(VK_OBJECT_TYPE_IMAGE_VIEW, "sw Image view", swapChainImageViews);
     }
 
     void SwapChain::createRenderPass() {
@@ -326,11 +329,11 @@ namespace lve {
         VkFenceCreateInfo fenceInfo = {};
         fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
+        auto deviceDevice = device.device();
         for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            VK_CHECK_SYNC_OBJECTS(vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
-                                  vkCreateSemaphore(device.device(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
-                                  vkCreateFence(device.device(), &fenceInfo, nullptr, &inFlightFences[i]),
+            VK_CHECK_SYNC_OBJECTS(vkCreateSemaphore(deviceDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
+                                  vkCreateSemaphore(deviceDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
+                                  vkCreateFence(deviceDevice, &fenceInfo, nullptr, &inFlightFences[i]),
                                   "failed to create synchronization objects for a frame!");
         }
         device.setObjectNames(VK_OBJECT_TYPE_SEMAPHORE, "Image Available Semaphore", imageAvailableSemaphores);

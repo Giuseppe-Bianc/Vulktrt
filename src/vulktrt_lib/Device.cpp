@@ -310,6 +310,8 @@ namespace lve {
 
         vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
         vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_QUEUE, BC_UI64T(graphicsQueue_), "Graphics Queue");
+        psetObjectName(instance, device_, VK_OBJECT_TYPE_QUEUE, BC_UI64T(presentQueue_), "Present Queue");
     }
 
     void Device::createCommandPool() {

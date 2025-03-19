@@ -29,6 +29,8 @@ namespace lve {
         void *data = nullptr;
         vkMapMemory(lveDevice.device(), vertexBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, vertices.data(), C_ST(bufferSize));
+        lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(vertexBuffer), "Model Vertex Buffer");
+        lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(vertexBufferMemory), "Model Vertex Buffer Memory");
         vkUnmapMemory(lveDevice.device(), vertexBufferMemory);
     }
 
