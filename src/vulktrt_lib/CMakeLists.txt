@@ -29,6 +29,8 @@ add_library(vulktrt_lib vulktrt.cpp
         ../../include/Vulktrt/Renderer.hpp
         SimpleRenderSystem.cpp
         ../../include/Vulktrt/SimpleRenderSystem.hpp
+        Camera.cpp
+        ../../include/Vulktrt/Camera.hpp
 )
 
 get_target_property(target_name vulktrt_lib NAME)

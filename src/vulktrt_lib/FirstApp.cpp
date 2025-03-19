@@ -7,6 +7,7 @@
 // clang-format on
 #include "Vulktrt/FirstApp.hpp"
 #include "Vulktrt/SimpleRenderSystem.hpp"
+#include "Vulktrt/Camera.hpp"
 
 #include <Vulktrt/FPSCounter.hpp>
 
@@ -19,13 +20,15 @@ namespace lve {
 
     void FirstApp::run() {
         SimpleRenderSystem simpleRenderSystem{lveDevice, lveRenderer.getSwapChainRenderPass()};
+        Camera camera{};
+        camera.setOrthographicProjection(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);
         FPSCounter fpsCounter{lveWindow.getGLFWWindow(), wtile};
         while(!lveWindow.shouldClose()) [[likely]] {
             fpsCounter.frameInTitle(false, false);
             glfwPollEvents();
             if(auto commandBuffer = lveRenderer.beginFrame()) {
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
                 lveRenderer.endSwapChainRenderPass(commandBuffer);
                 lveRenderer.endFrame();
             }
