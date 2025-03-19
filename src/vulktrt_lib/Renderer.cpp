@@ -72,13 +72,21 @@ namespace lve {
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
         VK_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo), "failed to begin recording command buffer!");
-        lveDevice.setObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(commandBuffer), "Frame Comand Buffer");
+        lveDevice.setObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(commandBuffer), "Frame Command Buffer");
+
+        // Begin command buffer label
+        lveDevice.cmdBeginLabel(commandBuffer, "Frame Command Buffer Begin", {0.0f, 1.0f, 0.0f, 1.0f});
+
         return commandBuffer;
     }
 
     void Renderer::endFrame() {
         assert(isFrameStarted && "Can't call endFrame while frame is not in progress");
         auto commandBuffer = getCurrentCommandBuffer();
+
+        // End command buffer label
+        lveDevice.cmdEndLabel(commandBuffer);
+
         VK_CHECK(vkEndCommandBuffer(commandBuffer), "failed to record command buffer!");
 
         auto result = lveSwapChain->submitCommandBuffers(&commandBuffer, &currentImageIndex);
@@ -113,6 +121,9 @@ namespace lve {
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
+        // Insert label in command buffer
+        lveDevice.cmdInsertLabel(commandBuffer, "Render Pass Begin", {0.0f, 0.0f, 1.0f, 1.0f});
+
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
@@ -128,6 +139,10 @@ namespace lve {
     void Renderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
         assert(isFrameStarted && "Can't call endSwapChainRenderPass if frame is not in progress");
         assert(commandBuffer == getCurrentCommandBuffer() && "Can't end render pass on command buffer from a different frame");
+
+        // Insert label in command buffer
+        lveDevice.cmdInsertLabel(commandBuffer, "Render Pass End", {1.0f, 0.0f, 0.0f, 1.0f});
+
         vkCmdEndRenderPass(commandBuffer);
     }
 }  // namespace lve

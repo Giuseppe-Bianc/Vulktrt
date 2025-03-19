@@ -9,18 +9,15 @@
 #include "headers.hpp"
 
 namespace lve {
-    struct Transform2dComponent {
-        glm::vec2 translation{};  // (position offset)
-        glm::vec2 scale{1.f, 1.f};
-        float rotation;
+    struct TransformComponent {
+        glm::vec3 translation{};  // (position offset)
+        glm::vec3 scale{1.f, 1.f, 1.f};
+        glm::vec3 rotation;
 
-        glm::mat2 mat2() const noexcept {
-            const float s = glm::sin(rotation);
-            const float c = glm::cos(rotation);
-            const glm::mat2 rotMatrix{{c, s}, {-s, c}};
-
-            const glm::mat2 scaleMat{{scale.x, .0f}, {.0f, scale.y}};
-            return rotMatrix * scaleMat;
+        glm::mat4 mat4() const noexcept {
+            glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation);
+            glm::mat4 rotationMatrix = glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z);
+            return transform * rotationMatrix * glm::scale(glm::mat4(1.0f), scale);
         }
     };
 
@@ -42,7 +39,7 @@ namespace lve {
         id_t getId() const noexcept { return id; }
         std::shared_ptr<Model> model{};
         glm::vec3 color{};
-        Transform2dComponent transform2d{};
+        TransformComponent transform{};
 
     private:
         GameObject(id_t idin) : id{idin} {}
