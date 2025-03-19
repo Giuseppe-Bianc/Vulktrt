@@ -45,7 +45,7 @@ namespace lve {
         Transform2dComponent transform2d{};
 
     private:
-        GameObject(id_t id) : id{id} {}
+        GameObject(id_t idin) : id{idin} {}
 
         id_t id;
     };

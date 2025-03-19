@@ -28,7 +28,7 @@ namespace lve {
 
         VkCommandBuffer getCurrentCommandBuffer() const {
             assert(isFrameStarted && "Cannot get command buffer when frame not in progress");
-            return commandBuffers[currentFrameIndex];
+            return commandBuffers[C_ST(currentFrameIndex)];
         }
 
         int getFrameIndex() const {

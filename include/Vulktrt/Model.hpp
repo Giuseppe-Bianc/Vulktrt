@@ -25,7 +25,7 @@ namespace lve {
         Model &operator=(const Model &other) = delete;
 
         void bind(VkCommandBuffer commandBuffer) noexcept;
-        void draw(VkCommandBuffer commandBuffer) noexcept;
+        void draw(VkCommandBuffer commandBuffer) const noexcept;
 
         void createVertexBuffer(const std::vector<Vertex> &vertices);
 

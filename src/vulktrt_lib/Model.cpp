@@ -2,7 +2,9 @@
  * Created by gbian on 15/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// clang-format off
+// NOLINTBEGIN(*-include-cleaner, *-pro-type-member-init, *-member-init, *-avoid-c-arrays,*-avoid-c-arrays, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
+// clang-format on
 #include "Vulktrt/Model.hpp"
 
 namespace lve {
@@ -38,7 +40,7 @@ namespace lve {
     }
     DISABLE_WARNINGS_POP()
 
-    void Model::draw(VkCommandBuffer commandBuffer) noexcept { vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0); }
+    void Model::draw(VkCommandBuffer commandBuffer) const noexcept { vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0); }
     DISABLE_WARNINGS_PUSH(26446)
     std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions() {
         std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
@@ -64,4 +66,6 @@ namespace lve {
     DISABLE_WARNINGS_POP()
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner)
+// clang-format off
+// NOLINTEND(*-include-cleaner, *-pro-type-member-init, *-member-init, *-avoid-c-arrays,*-avoid-c-arrays, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
+// clang-format on

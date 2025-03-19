@@ -2,7 +2,7 @@
  * Created by gbian on 03/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables)
+// NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables, *-qualified-auto)
 #include "Vulktrt/Monitor.hpp"
 
 #include <Vulktrt/Window.hpp>
@@ -114,4 +114,4 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables)
+// NOLINTEND(*-include-cleaner, *-easily-swappable-parameters, *-multiway-paths-covered, *-init-variables, *-qualified-auto)

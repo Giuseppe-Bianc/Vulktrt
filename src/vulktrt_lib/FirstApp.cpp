@@ -3,7 +3,7 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // clang-format off
-// NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto, *-pro-type-union-access)
 // clang-format on
 #include "Vulktrt/FirstApp.hpp"
 #include "Vulktrt/SimpleRenderSystem.hpp"
@@ -14,7 +14,7 @@ namespace lve {
     DISABLE_WARNINGS_PUSH(26432 26447)
     FirstApp::FirstApp() noexcept { loadGameObjects(); }
 
-    FirstApp::~FirstApp() {}
+    FirstApp::~FirstApp() = default;
     DISABLE_WARNINGS_POP()
 
     void FirstApp::run() {
@@ -51,5 +51,5 @@ namespace lve {
 }  // namespace lve
 
 // clang-format off
-// NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto, *-pro-type-union-access)
 // clang-format on

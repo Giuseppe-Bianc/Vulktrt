@@ -3,7 +3,7 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // clang-format off
-// NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto)
 // clang-format on
 #include "Vulktrt/Renderer.hpp"
 
@@ -29,7 +29,7 @@ namespace lve {
             std::shared_ptr<SwapChain> oldSwapChain = std::move(lveSwapChain);
             lveSwapChain = std::make_unique<SwapChain>(lveDevice, extent, oldSwapChain);
 
-            if(!oldSwapChain->compareSwapFormats(*lveSwapChain.get())) {
+            if(!oldSwapChain->compareSwapFormats(*lveSwapChain)) {
                 throw std::runtime_error("Swap chain image(or depth) format has changed!");
             }
         }
@@ -99,7 +99,7 @@ namespace lve {
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassInfo.renderPass = lveSwapChain->getRenderPass();
-        renderPassInfo.framebuffer = lveSwapChain->getFrameBuffer(currentImageIndex);
+        renderPassInfo.framebuffer = lveSwapChain->getFrameBuffer(NC_I(currentImageIndex));
 
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = lveSwapChain->getSwapChainExtent();
@@ -132,5 +132,5 @@ namespace lve {
 }  // namespace lve
 
 // clang-format off
-// NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto)
 // clang-format on
