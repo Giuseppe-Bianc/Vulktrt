@@ -4,10 +4,10 @@
  */
 
 #pragma once
+#include "Camera.hpp"
 #include "Device.hpp"
 #include "GameObject.hpp"
 #include "Pipeline.hpp"
-#include "Camera.hpp"
 
 namespace lve {
     class SimpleRenderSystem {
