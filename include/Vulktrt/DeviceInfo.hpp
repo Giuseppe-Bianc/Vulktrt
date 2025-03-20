@@ -8,6 +8,8 @@
 #include "headers.hpp"
 #include "vulkanToString.hpp"
 
+#include <vulkan/vk_enum_string_helper.h>
+
 DISABLE_WARNINGS_PUSH(26446 26482)
 static inline constexpr VkDeviceSize GB = 1024 * 1024 * 1024;
 static inline constexpr VkDeviceSize MB = 1024 * 1024;
@@ -104,6 +106,8 @@ static inline void printDeviceFeatures(VkPhysicalDevice device) {
     VLINFO("Geometry Shader:       {}", C_BOOL(features.geometryShader));
     VLINFO("Tessellation Shader:   {}", C_BOOL(features.tessellationShader));
     VLINFO("Multi Viewport:        {}", C_BOOL(features.multiViewport));
+    VLINFO("Sampler Anisotropy:    {}", C_BOOL(features.samplerAnisotropy));
+    VLINFO("Texture Compression:   {}", C_BOOL(features.textureCompressionBC));
     // Aggiungi altre features...
 }
 
@@ -157,6 +161,23 @@ static inline void printQueueFamilies(VkPhysicalDevice device) {
     }
 }
 
+
+static inline std::string uuid_to_string(const uint8_t pipelineCacheUUID[16]) {
+    // Break the 16-byte UUID into segments: 4-2-2-2-6 bytes.
+    const std::array<std::string, 5> segments = {
+        FORMAT("{:02x}{:02x}{:02x}{:02x}",
+                    pipelineCacheUUID[0], pipelineCacheUUID[1], pipelineCacheUUID[2], pipelineCacheUUID[3]),
+        FORMAT("{:02x}{:02x}", pipelineCacheUUID[4], pipelineCacheUUID[5]),
+        FORMAT("{:02x}{:02x}", pipelineCacheUUID[6], pipelineCacheUUID[7]),
+        FORMAT("{:02x}{:02x}", pipelineCacheUUID[8], pipelineCacheUUID[9]),
+        FORMAT("{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
+                    pipelineCacheUUID[10], pipelineCacheUUID[11], pipelineCacheUUID[12],
+                    pipelineCacheUUID[13], pipelineCacheUUID[14], pipelineCacheUUID[15])
+    };
+    return FORMAT("{}", FMT_JOIN(segments, "-"));
+}
+
+
 static inline void printPhysicalDeviceProperties(const VkPhysicalDeviceProperties &properties) {
     VLINFO("Device Name: {}", properties.deviceName);
     const auto apiVersion = properties.apiVersion;
@@ -165,15 +186,17 @@ static inline void printPhysicalDeviceProperties(const VkPhysicalDevicePropertie
     VLINFO("Driver Version: {}.{}.{}", VK_API_VERSION_MAJOR(driverVersion), VK_API_VERSION_MINOR(driverVersion),
            VK_API_VERSION_PATCH(driverVersion));
     VLINFO("Vendor ID: {}", getVendorName(properties.vendorID));
-    VLINFO("Device ID: {0}(0x{0:04X})", properties.deviceID);
+    VLINFO("Device ID: {0}({0:#x})", properties.deviceID);
     VLINFO("Device Type: {}", getDeviceType(properties.deviceType));
-    VLINFO("pipelineCacheUUID: {:02x}", FMT_JOIN(properties.pipelineCacheUUID, "-"));
+    VLINFO("pipelineCacheUUID: {}", uuid_to_string(properties.pipelineCacheUUID));
 
     // Add more properties as needed
 }
 
 static inline void printDeviceInfo(VkPhysicalDevice device, const VkPhysicalDeviceProperties &properties) {
     printPhysicalDeviceProperties(properties);
+    //string_VkDriverId
+    //printExtendedVulkanProperties(device);
     printDeviceFeatures(device);
     printMemoryInfo(device);
     printQueueFamilies(device);
