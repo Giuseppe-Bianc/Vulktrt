@@ -161,22 +161,17 @@ static inline void printQueueFamilies(VkPhysicalDevice device) {
     }
 }
 
-
 static inline std::string uuid_to_string(const uint8_t pipelineCacheUUID[16]) {
     // Break the 16-byte UUID into segments: 4-2-2-2-6 bytes.
     const std::array<std::string, 5> segments = {
-        FORMAT("{:02x}{:02x}{:02x}{:02x}",
-                    pipelineCacheUUID[0], pipelineCacheUUID[1], pipelineCacheUUID[2], pipelineCacheUUID[3]),
+        FORMAT("{:02x}{:02x}{:02x}{:02x}", pipelineCacheUUID[0], pipelineCacheUUID[1], pipelineCacheUUID[2], pipelineCacheUUID[3]),
         FORMAT("{:02x}{:02x}", pipelineCacheUUID[4], pipelineCacheUUID[5]),
         FORMAT("{:02x}{:02x}", pipelineCacheUUID[6], pipelineCacheUUID[7]),
         FORMAT("{:02x}{:02x}", pipelineCacheUUID[8], pipelineCacheUUID[9]),
-        FORMAT("{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}",
-                    pipelineCacheUUID[10], pipelineCacheUUID[11], pipelineCacheUUID[12],
-                    pipelineCacheUUID[13], pipelineCacheUUID[14], pipelineCacheUUID[15])
-    };
+        FORMAT("{:02x}{:02x}{:02x}{:02x}{:02x}{:02x}", pipelineCacheUUID[10], pipelineCacheUUID[11], pipelineCacheUUID[12],
+               pipelineCacheUUID[13], pipelineCacheUUID[14], pipelineCacheUUID[15])};
     return FORMAT("{}", FMT_JOIN(segments, "-"));
 }
-
 
 static inline void printPhysicalDeviceProperties(const VkPhysicalDeviceProperties &properties) {
     VLINFO("Device Name: {}", properties.deviceName);
@@ -195,8 +190,8 @@ static inline void printPhysicalDeviceProperties(const VkPhysicalDevicePropertie
 
 static inline void printDeviceInfo(VkPhysicalDevice device, const VkPhysicalDeviceProperties &properties) {
     printPhysicalDeviceProperties(properties);
-    //string_VkDriverId
-    //printExtendedVulkanProperties(device);
+    // string_VkDriverId
+    // printExtendedVulkanProperties(device);
     printDeviceFeatures(device);
     printMemoryInfo(device);
     printQueueFamilies(device);
