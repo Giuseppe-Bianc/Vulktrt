@@ -68,4 +68,16 @@ function(Vulktrt_setup_dependencies)
     )
   endif()
 
+  if (NOT TARGET CLI11::CLI11)
+    CPMAddPackage("gh:CLIUtils/CLI11@2.4.2")
+  endif ()
+
+  if (NOT TARGET tinyobjloader)
+    CPMAddPackage(
+            NAME tinyobjloader
+            GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader
+            GIT_TAG release # Use "master" for the latest version
+    )
+  endif ()
+
 endfunction()

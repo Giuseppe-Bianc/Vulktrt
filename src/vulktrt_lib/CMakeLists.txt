@@ -33,6 +33,7 @@ add_library(vulktrt_lib vulktrt.cpp
         ../../include/Vulktrt/Camera.hpp
         KeyboardMovementController.cpp
         ../../include/Vulktrt/KeyboardMovementController.hpp
+        ../../include/Vulktrt/utils.hpp
 )
 
 get_target_property(target_name vulktrt_lib NAME)
@@ -48,6 +49,7 @@ target_link_libraries(vulktrt_lib
         PUBLIC
         Vulkan::Vulkan
         glfw
+        tinyobjloader
         Vulktrt::vulktrt_lib_core
 )
 

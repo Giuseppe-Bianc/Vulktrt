@@ -6,10 +6,85 @@
 // NOLINTBEGIN(*-include-cleaner, *-pro-type-member-init, *-member-init, *-avoid-c-arrays,*-avoid-c-arrays, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
 // clang-format on
 #include "Vulktrt/Model.hpp"
+#include "Vulktrt/utils.hpp"
+
+namespace std {
+    template <>
+    struct hash<lve::Model::Vertex> {
+        size_t operator()(lve::Model::Vertex const &vertex) const {
+            size_t seed = 0;
+            lve::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
+            return seed;
+        }
+    };
+}
 
 namespace lve {
     static inline constexpr auto modelVertexs = sizeof(Model::Vertex);
     DISABLE_WARNINGS_PUSH(26432)
+
+    void Model::Builder::loadModel(const std::string &filepath) {
+        vnd::AutoTimer timer("loadModel");
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        std::string warn, err;
+
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) {
+            throw std::runtime_error(warn + err);
+        }
+
+        vertices.clear();
+        indices.clear();
+
+        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+        for (const auto &shape : shapes) {
+            for (const auto &[vertex_index, normal_index, texcoord_index] : shape.mesh.indices) {
+                Vertex vertex{};
+
+                if (vertex_index >= 0) {
+                    vertex.position = {
+                        attrib.vertices[3 * vertex_index + 0],
+                        attrib.vertices[3 * vertex_index + 1],
+                        attrib.vertices[3 * vertex_index + 2],
+                    };
+
+                    auto colorIndex = 3 * vertex_index + 2;
+                    if (colorIndex < attrib.colors.size()) {
+                        vertex.color = {
+                            attrib.colors[colorIndex - 2],
+                            attrib.colors[colorIndex - 1],
+                            attrib.colors[colorIndex - 0],
+                        };
+                    } else {
+                        vertex.color = {1.f, 1.f, 1.f};  // set default color
+                    }
+                }
+
+                if (normal_index >= 0) {
+                    vertex.normal = {
+                        attrib.normals[3 * normal_index + 0],
+                        attrib.normals[3 * normal_index + 1],
+                        attrib.normals[3 * normal_index + 2],
+                    };
+                }
+
+                if (texcoord_index >= 0) {
+                    vertex.uv = {
+                        attrib.texcoords[2 * texcoord_index + 0],
+                        attrib.texcoords[2 * texcoord_index + 1],
+                    };
+                }
+
+                if (uniqueVertices.count(vertex) == 0) {
+                    uniqueVertices[vertex] = C_UI32T(vertices.size());
+                    vertices.emplace_back(vertex);
+                }
+                indices.emplace_back(uniqueVertices[vertex]);
+            }
+        }
+    }
+
     Model::Model(Device &devicein, const Builder &builder) : lveDevice{devicein} {
         createVertexBuffers(builder.vertices);
         createIndexBuffers(builder.indices);
@@ -81,6 +156,15 @@ namespace lve {
     }
 
     DISABLE_WARNINGS_PUSH(26485)
+
+    std::unique_ptr<Model> Model::createModelFromFile(Device &device, const std::string &filepath) {
+        Builder builder{};
+        builder.loadModel(filepath);
+        //LINFO("Model loaded from file: {}", filepath);
+        LINFO("Model has {} vertices and {} indices", builder.vertices.size(), builder.indices.size());
+        return std::make_unique<Model>(device, builder);
+    }
+
     void Model::bind(VkCommandBuffer commandBuffer) noexcept {
         VkBuffer buffers[] = {vertexBuffer};
         const VkDeviceSize offsets[] = {0};

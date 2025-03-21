@@ -8,6 +8,7 @@
 #include <vulktrt_lib_core/vulktrt_lib_core.hpp>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <tiny_obj_loader.h>
 
 DISABLE_WARNINGS_PUSH(26426)
 static inline constexpr std::string_view wtile = Vulktrt::cmake::project_name;
@@ -53,4 +54,8 @@ inline fs::path calculateRelativePathToShaders(const fs::path &executablePath, c
 inline fs::path calculateRelativePathToTextures(const fs::path &executablePath, const fs::path &targetFile) {
     return calculateRelativePathToSrc(executablePath, targetFile, "textures");
 }
+inline fs::path calculateRelativePathToModels(const fs::path &executablePath, const fs::path &targetFile) {
+    return calculateRelativePathToSrc(executablePath, targetFile, "models");
+}
+
 // NOLINTEND(*-include-cleaner)
