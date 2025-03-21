@@ -14,11 +14,15 @@ namespace lve {
         glm::vec3 scale{1.f, 1.f, 1.f};
         glm::vec3 rotation;
 
+        // Matrix corrsponds to Translate * Ry * Rx * Rz * Scale
+        // Rotations correspond to Tait-bryan angles of Y(1), X(2), Z(3)
+        // https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
         glm::mat4 mat4() const noexcept {
             glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation);
-            glm::mat4 rotationMatrix = glm::eulerAngleXYZ(rotation.x, rotation.y, rotation.z);
+            glm::mat4 rotationMatrix = glm::eulerAngleYXZ(rotation.x, rotation.y, rotation.z);
             return transform * rotationMatrix * glm::scale(glm::mat4(1.0f), scale);
         }
+
     };
 
     class GameObject {

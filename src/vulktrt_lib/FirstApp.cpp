@@ -21,10 +21,13 @@ namespace lve {
     void FirstApp::run() {
         SimpleRenderSystem simpleRenderSystem{lveDevice, lveRenderer.getSwapChainRenderPass()};
         Camera camera{};
-        camera.setOrthographicProjection(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);
+        camera.setViewTarget(glm::vec3{-1.f, -2.f, 2.f}, glm::vec3{0.f, 0.f, 2.5f});
         FPSCounter fpsCounter{lveWindow.getGLFWWindow(), wtile};
         while(!lveWindow.shouldClose()) [[likely]] {
             fpsCounter.frameInTitle(false, false);
+            float aspect = lveRenderer.getAspectRatio();
+            // camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
+            camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
             glfwPollEvents();
             if(auto commandBuffer = lveRenderer.beginFrame()) {
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
@@ -104,7 +107,7 @@ namespace lve {
         std::shared_ptr<Model> lveModel = createCubeModel(lveDevice, {.0f, .0f, .0f});
         auto cube = GameObject::createGameObject();
         cube.model = lveModel;
-        cube.transform.translation = {.0f, .0f, .5f};
+        cube.transform.translation = {.0f, .0f, 2.5f};
         cube.transform.scale = {.5f, .5f, .5f};
 
         gameObjects.push_back(std::move(cube));
