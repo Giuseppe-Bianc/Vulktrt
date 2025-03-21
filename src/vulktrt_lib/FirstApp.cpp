@@ -9,8 +9,8 @@
 #include "Vulktrt/Camera.hpp"
 #include "Vulktrt/SimpleRenderSystem.hpp"
 
-#include <Vulktrt/FPSCounter.hpp>
 #include "Vulktrt/KeyboardMovementController.hpp"
+#include <Vulktrt/FPSCounter.hpp>
 
 namespace lve {
     DISABLE_WARNINGS_PUSH(26432 26447)

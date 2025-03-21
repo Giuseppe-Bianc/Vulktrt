@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 21/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 21/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
@@ -25,13 +25,13 @@ namespace lve {
             int lookDown = GLFW_KEY_DOWN;
         };
 
-        void moveInPlaneXZ(GLFWwindow* window, float dt, GameObject& gameObject);
+        void moveInPlaneXZ(GLFWwindow *window, float dt, GameObject &gameObject);
 
         KeyMappings keys{};
         float moveSpeed{3.f};
         float lookSpeed{1.5f};
     };
 
-} // lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)
