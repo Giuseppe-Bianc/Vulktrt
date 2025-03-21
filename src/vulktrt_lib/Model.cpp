@@ -58,7 +58,7 @@ namespace lve {
                             attrib.colors[colorIndex - 0],
                         };
                     } else {
-                        vertex.color = DEFAULT_COLOR; // set default color
+                        vertex.color = DEFAULT_COLOR;  // set default color
                     }
                 }
 
