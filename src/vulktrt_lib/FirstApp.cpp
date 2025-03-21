@@ -49,7 +49,8 @@ namespace lve {
     }
 
     void FirstApp::loadGameObjects() {
-        std::shared_ptr<Model> lveModel = Model::createModelFromFile(lveDevice, calculateRelativePathToModels(curentP,"smooth_vase.obj").string());
+        std::shared_ptr<Model> lveModel = Model::createModelFromFile(lveDevice,
+                                                                     calculateRelativePathToModels(curentP, "smooth_vase.obj").string());
         auto gameObj = GameObject::createGameObject();
         gameObj.model = lveModel;
         gameObj.transform.translation = {.0f, .0f, 2.5f};
