@@ -8,8 +8,7 @@
 namespace lve {
     static inline constexpr auto fepsilon = std::numeric_limits<float>::epsilon();
 
-    void Camera::setOrthographicProjection(
-        float left, float right, float top, float bottom, float near, float far) {
+    void Camera::setOrthographicProjection(float left, float right, float top, float bottom, float near, float far) {
         projectionMatrix = glm::mat4{1.0f};
         projectionMatrix[0][0] = 2.f / (right - left);
         projectionMatrix[1][1] = 2.f / (bottom - top);
@@ -28,7 +27,6 @@ namespace lve {
         projectionMatrix[2][2] = far / (far - near);
         projectionMatrix[2][3] = 1.f;
         projectionMatrix[3][2] = -(far * near) / (far - near);
-
     }
 
     void Camera::setViewDirection(const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &up) {
@@ -39,7 +37,6 @@ namespace lve {
         // Generate the view matrix using glm::lookAt
         viewMatrix = glm::lookAt(position, center, upf);
     }
-
 
     void Camera::setViewTarget(const glm::vec3 &position, const glm::vec3 &target, const glm::vec3 &up) {
         setViewDirection(position, target - position, up);

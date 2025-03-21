@@ -22,7 +22,6 @@ namespace lve {
             glm::mat4 rotationMatrix = glm::eulerAngleYXZ(rotation.x, rotation.y, rotation.z);
             return transform * rotationMatrix * glm::scale(glm::mat4(1.0f), scale);
         }
-
     };
 
     class GameObject {
