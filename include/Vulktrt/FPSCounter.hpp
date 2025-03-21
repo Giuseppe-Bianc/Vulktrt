@@ -14,6 +14,7 @@ public:
     void frameInTitle(bool vsync = false, bool showMax = true);
     void updateFPS() noexcept;
     [[nodiscard]] long double getFPS() const noexcept;
+    [[nodiscard]] long double getFrameTime() const noexcept { return frameTime; };
     [[nodiscard]] long double getMsPerFrame() const noexcept;
 
 private:
@@ -23,6 +24,8 @@ private:
     long double fps;
     long double max_fps = 0;
     long double ms_per_frame;
+    long double frameTime{};
+    long double totalTime{};
     GLFWwindow *m_window;
     std::string_view m_title;
     std::string ms_per_frameComposition;

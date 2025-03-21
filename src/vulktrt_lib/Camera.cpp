@@ -6,7 +6,6 @@
 #include "Vulktrt/Camera.hpp"
 
 namespace lve {
-    static inline constexpr auto fepsilon = std::numeric_limits<float>::epsilon();
 
     void Camera::setOrthographicProjection(float left, float right, float top, float bottom, float near, float far) {
         projectionMatrix = glm::mat4{1.0f};

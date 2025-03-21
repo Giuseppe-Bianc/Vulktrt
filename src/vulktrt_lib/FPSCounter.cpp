@@ -49,15 +49,19 @@ std::string FPSCounter::transformTime(const long double inputTimeMilli) noexcept
 DISABLE_WARNINGS_POP()
 
 void FPSCounter::updateFPS() noexcept {
+    const auto current_time = vnd::clock::now();
     frames++;
     const auto ldframes = C_LD(frames);
-    const auto current_time = vnd::clock::now();
     const auto time_step = vnd::TimeValues(ch::duration_cast<vnd::nanolld>(current_time - last_time).count());
-    if(const auto &time_steps = time_step.get_seconds(); time_steps >= 1.0L) {
-        last_time = current_time;
-        fps = ldframes / time_steps;
+    last_time = current_time;
+    frameTime = time_step.get_seconds();
+    totalTime += frameTime;
+
+    if(totalTime >= 1.0L) {
+        fps = ldframes / totalTime;
         ms_per_frame = time_step.get_millis() / ldframes;
         frames = 0;
+        totalTime = 0;
         max_fps = std::max(max_fps, fps);
     }
     ms_per_frameComposition = transformTime(ms_per_frame);

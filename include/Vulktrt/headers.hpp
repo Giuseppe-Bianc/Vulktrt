@@ -23,6 +23,8 @@ static inline constexpr auto aspectRatio = C_D(wfactor) / C_D(hfactor);
 static inline constexpr auto aspectRatiof = C_F(wfactor) / C_F(hfactor);
 static inline constexpr auto ui32tmax = C_UI32T(std::numeric_limits<uint32_t>::max());
 static inline constexpr auto uint64Max = C_UI64T(std::numeric_limits<uint64_t>::max());
+static inline constexpr auto fepsilon = std::numeric_limits<float>::epsilon();
+static inline constexpr auto glm2pi = glm::two_pi<float>();
 static inline const auto curentP = fs::current_path();
 DISABLE_WARNINGS_POP()
 

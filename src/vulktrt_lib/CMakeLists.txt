@@ -31,6 +31,8 @@ add_library(vulktrt_lib vulktrt.cpp
         ../../include/Vulktrt/SimpleRenderSystem.hpp
         Camera.cpp
         ../../include/Vulktrt/Camera.hpp
+        KeyboardMovementController.cpp
+        ../../include/Vulktrt/KeyboardMovementController.hpp
 )
 
 get_target_property(target_name vulktrt_lib NAME)

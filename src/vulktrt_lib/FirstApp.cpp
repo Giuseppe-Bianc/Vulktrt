@@ -10,6 +10,7 @@
 #include "Vulktrt/SimpleRenderSystem.hpp"
 
 #include <Vulktrt/FPSCounter.hpp>
+#include "Vulktrt/KeyboardMovementController.hpp"
 
 namespace lve {
     DISABLE_WARNINGS_PUSH(26432 26447)
@@ -18,17 +19,24 @@ namespace lve {
     FirstApp::~FirstApp() = default;
     DISABLE_WARNINGS_POP()
 
+    static inline constexpr auto fovr = glm::radians(50.f);
+
     void FirstApp::run() {
         SimpleRenderSystem simpleRenderSystem{lveDevice, lveRenderer.getSwapChainRenderPass()};
         Camera camera{};
         camera.setViewTarget(glm::vec3{-1.f, -2.f, 2.f}, glm::vec3{0.f, 0.f, 2.5f});
+        auto viewerObject = GameObject::createGameObject();
+        KeyboardMovementController cameraController{};
+
         FPSCounter fpsCounter{lveWindow.getGLFWWindow(), wtile};
         while(!lveWindow.shouldClose()) [[likely]] {
-            fpsCounter.frameInTitle(false, false);
-            float aspect = lveRenderer.getAspectRatio();
-            // camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
-            camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
             glfwPollEvents();
+            fpsCounter.frameInTitle(false, false);
+            auto frameTime = C_F(fpsCounter.getFrameTime());
+            cameraController.moveInPlaneXZ(lveWindow.getGLFWWindow(), frameTime, viewerObject);
+            camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+            float aspect = lveRenderer.getAspectRatio();
+            camera.setPerspectiveProjection(fovr, aspect, 0.1f, 10.f);
             if(auto commandBuffer = lveRenderer.beginFrame()) {
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
