@@ -18,7 +18,7 @@ namespace lve {
     Model::~Model() {
         vkDestroyBuffer(lveDevice.device(), vertexBuffer, nullptr);
         vkFreeMemory(lveDevice.device(), vertexBufferMemory, nullptr);
-        if (hasIndexBuffer) {
+        if(hasIndexBuffer) {
             vkDestroyBuffer(lveDevice.device(), indexBuffer, nullptr);
             vkFreeMemory(lveDevice.device(), indexBufferMemory, nullptr);
         }
@@ -32,14 +32,17 @@ namespace lve {
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
-        lveDevice.createBuffer(bufferSize,VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,stagingBufferMemory);
+        lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+                               stagingBufferMemory);
 
         void *data;
         vkMapMemory(lveDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, vertices.data(), C_ST(bufferSize));
         vkUnmapMemory(lveDevice.device(), stagingBufferMemory);
 
-        lveDevice.createBuffer( bufferSize,VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,vertexBuffer,vertexBufferMemory);
+        lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
         lveDevice.copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
         lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(vertexBuffer), "Model Vertex Buffer");
@@ -52,26 +55,26 @@ namespace lve {
         indexCount = static_cast<uint32_t>(indices.size());
         hasIndexBuffer = indexCount > 0;
 
-        if (!hasIndexBuffer) {
-            return;
-        }
+        if(!hasIndexBuffer) { return; }
 
         VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
-        lveDevice.createBuffer(bufferSize,VK_BUFFER_USAGE_TRANSFER_SRC_BIT,VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,stagingBuffer,stagingBufferMemory);
+        lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+                               stagingBufferMemory);
 
         void *data;
         vkMapMemory(lveDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, indices.data(), C_ST(bufferSize));
         vkUnmapMemory(lveDevice.device(), stagingBufferMemory);
 
-        lveDevice.createBuffer(bufferSize,VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,indexBuffer,indexBufferMemory);
+        lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
         lveDevice.copyBuffer(stagingBuffer, indexBuffer, bufferSize);
         lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(indexBuffer), "Model Index Buffer");
         lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(indexBufferMemory), "Model Index Buffer Memory");
-
 
         vkDestroyBuffer(lveDevice.device(), stagingBuffer, nullptr);
         vkFreeMemory(lveDevice.device(), stagingBufferMemory, nullptr);
@@ -83,14 +86,12 @@ namespace lve {
         const VkDeviceSize offsets[] = {0};
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 
-        if (hasIndexBuffer) {
-            vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-        }
+        if(hasIndexBuffer) { vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32); }
     }
     DISABLE_WARNINGS_POP()
 
-    void Model::draw(VkCommandBuffer commandBuffer)  const noexcept {
-        if (hasIndexBuffer) {
+    void Model::draw(VkCommandBuffer commandBuffer) const noexcept {
+        if(hasIndexBuffer) {
             vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
         } else {
             vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);

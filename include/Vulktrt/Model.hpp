@@ -44,6 +44,6 @@ namespace lve {
         VkDeviceMemory indexBufferMemory;
         std::uint32_t indexCount;
     };
-} // namespace lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)
