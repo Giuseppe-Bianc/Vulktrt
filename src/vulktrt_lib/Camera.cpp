@@ -10,12 +10,15 @@ namespace lve {
 
     void Camera::setOrthographicProjection(float left, float right, float top, float bottom, float near, float far) {
         projectionMatrix = glm::mat4{1.0f};
-        projectionMatrix[0][0] = 2.f / (right - left);
-        projectionMatrix[1][1] = 2.f / (bottom - top);
-        projectionMatrix[2][2] = 1.f / (far - near);
-        projectionMatrix[3][0] = -(right + left) / (right - left);
-        projectionMatrix[3][1] = -(bottom + top) / (bottom - top);
-        projectionMatrix[3][2] = -near / (far - near);
+        const auto range = far - near;
+        const auto rl = right - left;
+        const auto tb = top - bottom;
+        projectionMatrix[0][0] = 2.f / rl;
+        projectionMatrix[1][1] = 2.f / tb;
+        projectionMatrix[2][2] = 1.f / range;
+        projectionMatrix[3][0] = -(right + left) /rl;
+        projectionMatrix[3][1] = -(bottom + top) / tb;
+        projectionMatrix[3][2] = -near / range;
     }
 
     void Camera::setPerspectiveProjection(float fovy, float aspect, float near, float far) {
