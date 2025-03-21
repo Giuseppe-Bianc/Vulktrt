@@ -16,7 +16,7 @@ namespace lve {
         projectionMatrix[0][0] = 2.f / rl;
         projectionMatrix[1][1] = 2.f / tb;
         projectionMatrix[2][2] = 1.f / range;
-        projectionMatrix[3][0] = -(right + left) /rl;
+        projectionMatrix[3][0] = -(right + left) / rl;
         projectionMatrix[3][1] = -(bottom + top) / tb;
         projectionMatrix[3][2] = -near / range;
     }
