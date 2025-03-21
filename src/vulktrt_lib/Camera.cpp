@@ -2,7 +2,7 @@
  * Created by gbian on 19/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-uppercase-literal-suffix, *-pro-type-union-access)
 #include "Vulktrt/Camera.hpp"
 
 namespace lve {
@@ -69,4 +69,4 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner)
+// NOLINTEND(*-include-cleaner, *-easily-swappable-parameters, *-uppercase-literal-suffix, *-pro-type-union-access)
