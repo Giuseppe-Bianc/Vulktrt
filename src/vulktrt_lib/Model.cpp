@@ -16,7 +16,7 @@ namespace std {
             return seed;
         }
     };
-} // namespace std
+}  // namespace std
 
 namespace lve {
     static inline constexpr glm::vec3 DEFAULT_COLOR = {1.f, 1.f, 1.f};
@@ -81,8 +81,7 @@ namespace lve {
         }
     }
 
-    Model::Model(Device &devicein, const Builder &builder)
-        : lveDevice{devicein} {
+    Model::Model(Device &devicein, const Builder &builder) : lveDevice{devicein} {
         createVertexBuffers(builder.vertices);
         createIndexBuffers(builder.indices);
     }
@@ -205,7 +204,7 @@ namespace lve {
     }
 
     DISABLE_WARNINGS_POP()
-} // namespace lve
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-pro-type-member-init, *-member-init, *-avoid-c-arrays,*-avoid-c-arrays, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)

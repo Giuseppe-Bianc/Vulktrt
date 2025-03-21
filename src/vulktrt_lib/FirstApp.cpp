@@ -50,7 +50,8 @@ namespace lve {
 
     void FirstApp::loadGameObjects() {
         const auto scalevector = glm::vec3{3.f, 1.5f, 3.f};
-        std::shared_ptr<Model> lveModel = Model::createModelFromFile(lveDevice, calculateRelativePathToModels(curentP, "flat_vase.obj").string());
+        std::shared_ptr<Model> lveModel = Model::createModelFromFile(lveDevice,
+                                                                     calculateRelativePathToModels(curentP, "flat_vase.obj").string());
         auto flatVase = GameObject::createGameObject();
         flatVase.model = lveModel;
         flatVase.transform.translation = {-.5f, .5f, 2.5f};
