@@ -19,6 +19,7 @@ namespace std {
 }  // namespace std
 
 namespace lve {
+    static inline constexpr glm::vec3 DEFAULT_COLOR = {1.f, 1.f, 1.f};
     static inline constexpr auto modelVertexs = sizeof(Model::Vertex);
     DISABLE_WARNINGS_PUSH(26432)
 
@@ -31,8 +32,11 @@ namespace lve {
 
         if(!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) { throw std::runtime_error(warn + err); }
 
+        size_t estimatedSize = attrib.vertices.size() / 3;
         vertices.clear();
         indices.clear();
+        vertices.reserve(estimatedSize);
+        indices.reserve(attrib.vertices.size());
 
         std::unordered_map<Vertex, uint32_t> uniqueVertices{};
         for(const auto &shape : shapes) {
@@ -54,7 +58,7 @@ namespace lve {
                             attrib.colors[colorIndex - 0],
                         };
                     } else {
-                        vertex.color = {1.f, 1.f, 1.f};  // set default color
+                        vertex.color = DEFAULT_COLOR; // set default color
                     }
                 }
 
