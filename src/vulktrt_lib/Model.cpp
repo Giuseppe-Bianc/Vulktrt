@@ -77,7 +77,7 @@ namespace lve {
                     };
                 }
 
-                if(uniqueVertices.count(vertex) == 0) {
+                if(!uniqueVertices.contains(vertex)) {
                     uniqueVertices[vertex] = C_UI32T(vertices.size());
                     vertices.emplace_back(vertex);
                 }
