@@ -4,8 +4,8 @@
  */
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
-#include "Device.hpp"
 #include "Buffer.hpp"
+#include "Device.hpp"
 
 namespace lve {
     class Model {

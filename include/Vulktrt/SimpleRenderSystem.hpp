@@ -6,9 +6,9 @@
 #pragma once
 #include "Camera.hpp"
 #include "Device.hpp"
+#include "FrameInfo.hpp"
 #include "GameObject.hpp"
 #include "Pipeline.hpp"
-#include "FrameInfo.hpp"
 
 namespace lve {
     class SimpleRenderSystem {
@@ -19,7 +19,7 @@ namespace lve {
         SimpleRenderSystem(const SimpleRenderSystem &) = delete;
         SimpleRenderSystem &operator=(const SimpleRenderSystem &) = delete;
 
-        void renderGameObjects(FrameInfo& frameInfo, std::vector<GameObject> &gameObjects);
+        void renderGameObjects(FrameInfo &frameInfo, std::vector<GameObject> &gameObjects);
 
     private:
         void createPipelineLayout();

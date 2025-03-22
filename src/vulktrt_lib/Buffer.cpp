@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 22/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 22/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #include "Vulktrt/Buffer.hpp"
 
@@ -21,16 +21,15 @@ namespace lve {
     }
 
     Buffer::Buffer(Device &device, VkDeviceSize instanceSize, uint32_t instanceCount, VkBufferUsageFlags usageFlags,
-                   VkMemoryPropertyFlags memoryPropertyFlags,  const std::string &objectName,VkDeviceSize minOffsetAlignment)
-        : lveDevice{device}, instanceCount{instanceCount}, instanceSize{instanceSize}, usageFlags{usageFlags},
-          memoryPropertyFlags{memoryPropertyFlags} {
+                   VkMemoryPropertyFlags memoryPropertyFlags, const std::string &objectName, VkDeviceSize minOffsetAlignment)
+      : lveDevice{device}, instanceCount{instanceCount}, instanceSize{instanceSize}, usageFlags{usageFlags},
+        memoryPropertyFlags{memoryPropertyFlags} {
         alignmentSize = getAlignment(instanceSize, minOffsetAlignment);
         bufferSize = alignmentSize * instanceCount;
         static int bufferIndex = 0;
         device.createBuffer(bufferSize, usageFlags, memoryPropertyFlags, buffer, memory);
-        lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(memory), FORMAT("{} Memory {}", objectName,bufferIndex).c_str());
-        lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), FORMAT("{} {}", objectName,bufferIndex++).c_str());
-
+        lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(memory), FORMAT("{} Memory {}", objectName, bufferIndex).c_str());
+        lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), FORMAT("{} {}", objectName, bufferIndex++).c_str());
     }
 
     Buffer::~Buffer() {
@@ -135,7 +134,7 @@ namespace lve {
      * @return VkDescriptorBufferInfo of specified offset and range
      */
     VkDescriptorBufferInfo Buffer::descriptorInfo(VkDeviceSize size, VkDeviceSize offset) {
-        return VkDescriptorBufferInfo{ buffer, offset, size };
+        return VkDescriptorBufferInfo{buffer, offset, size};
     }
 
     /**
@@ -174,6 +173,6 @@ namespace lve {
      * @return VkResult of the invalidate call
      */
     VkResult Buffer::invalidateIndex(int index) { return invalidate(alignmentSize, index * alignmentSize); }
-} // lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

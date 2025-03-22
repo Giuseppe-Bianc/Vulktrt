@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 22/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 22/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
@@ -14,6 +14,6 @@ namespace lve {
         VkCommandBuffer commandBuffer;
         Camera camera;
     };
-}
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)

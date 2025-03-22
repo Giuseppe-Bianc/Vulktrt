@@ -6,9 +6,9 @@
 // NOLINTBEGIN(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto, *-pro-type-union-access)
 // clang-format on
 #include "Vulktrt/FirstApp.hpp"
+#include "Vulktrt/Buffer.hpp"
 #include "Vulktrt/Camera.hpp"
 #include "Vulktrt/SimpleRenderSystem.hpp"
-#include "Vulktrt/Buffer.hpp"
 
 #include "Vulktrt/KeyboardMovementController.hpp"
 #include <Vulktrt/FPSCounter.hpp>
@@ -29,8 +29,9 @@ namespace lve {
 
     void FirstApp::run() {
         std::vector<std::unique_ptr<Buffer>> uboBuffers{SwapChain::MAX_FRAMES_IN_FLIGHT};
-        for(int i = 0; i <uboBuffers.size() ; ++i) {
-            uboBuffers[i] = std::make_unique<Buffer>(lveDevice, GlobalUBOsize, 1,VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT , FORMAT("Global UBO {}", i));
+        for(int i = 0; i < uboBuffers.size(); ++i) {
+            uboBuffers[i] = std::make_unique<Buffer>(lveDevice, GlobalUBOsize, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                                                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, FORMAT("Global UBO {}", i));
             uboBuffers[i]->map();
         }
 
@@ -50,7 +51,7 @@ namespace lve {
             float aspect = lveRenderer.getAspectRatio();
             camera.setPerspectiveProjection(fovr, aspect, 0.1f, 10.f);
             if(auto commandBuffer = lveRenderer.beginFrame()) {
-                int  frameIndex = lveRenderer.getFrameIndex();
+                int frameIndex = lveRenderer.getFrameIndex();
                 FrameInfo frameInfo{frameIndex, frameTime, commandBuffer, camera};
                 GlobalUBO ubo{};
                 ubo.ProjectionView = camera.getProjection() * camera.getView();

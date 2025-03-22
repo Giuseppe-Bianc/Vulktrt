@@ -140,7 +140,6 @@ namespace lve {
         assert(isFrameStarted && "Can't call endSwapChainRenderPass if frame is not in progress");
         assert(commandBuffer == getCurrentCommandBuffer() && "Can't end render pass on command buffer from a different frame");
 
-
         vkCmdEndRenderPass(commandBuffer);
         // Insert label in command buffer
         lveDevice.cmdInsertLabel(commandBuffer, "Render Pass End", {1.0f, 0.0f, 0.0f, 1.0f});

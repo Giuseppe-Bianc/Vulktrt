@@ -1,23 +1,16 @@
 /*
-* Created by gbian on 22/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 22/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 #include "Device.hpp"
 
-
 namespace lve {
     class Buffer {
     public:
-        Buffer(
-            Device &device,
-            VkDeviceSize instanceSize,
-            uint32_t instanceCount,
-            VkBufferUsageFlags usageFlags,
-            VkMemoryPropertyFlags memoryPropertyFlags,
-            const std::string &objectName = "Buffer",
-            VkDeviceSize minOffsetAlignment = 1);
+        Buffer(Device &device, VkDeviceSize instanceSize, uint32_t instanceCount, VkBufferUsageFlags usageFlags,
+               VkMemoryPropertyFlags memoryPropertyFlags, const std::string &objectName = "Buffer", VkDeviceSize minOffsetAlignment = 1);
         ~Buffer();
 
         Buffer(const Buffer &) = delete;
@@ -60,6 +53,6 @@ namespace lve {
         VkBufferUsageFlags usageFlags;
         VkMemoryPropertyFlags memoryPropertyFlags;
     };
-} // lve
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner)
