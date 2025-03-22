@@ -13,9 +13,6 @@ namespace lve {
         Camera() = default;
         ~Camera() = default;
 
-        Camera(const Camera &other) = delete;
-        Camera &operator=(const Camera &other) = delete;
-
         void setOrthographicProjection(float left, float right, float bottom, float top, float near, float far);
         void setPerspectiveProjection(float fov, float aspect, float near, float far);
 

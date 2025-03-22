@@ -34,6 +34,9 @@ add_library(vulktrt_lib vulktrt.cpp
         KeyboardMovementController.cpp
         ../../include/Vulktrt/KeyboardMovementController.hpp
         ../../include/Vulktrt/utils.hpp
+        Buffer.cpp
+        ../../include/Vulktrt/Buffer.hpp
+        FrameInfo.hpp
 )
 
 get_target_property(target_name vulktrt_lib NAME)

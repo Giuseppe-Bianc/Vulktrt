@@ -119,10 +119,10 @@ namespace lve {
         renderPassInfo.clearValueCount = C_UI32T(clearValues.size());
         renderPassInfo.pClearValues = clearValues.data();
 
+        lveDevice.cmdInsertLabel(commandBuffer, "Render Pass Begin", {0.0f, 0.0f, 1.0f, 1.0f});
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
         // Insert label in command buffer
-        lveDevice.cmdInsertLabel(commandBuffer, "Render Pass Begin", {0.0f, 0.0f, 1.0f, 1.0f});
 
         VkViewport viewport{};
         viewport.x = 0.0f;
@@ -140,10 +140,10 @@ namespace lve {
         assert(isFrameStarted && "Can't call endSwapChainRenderPass if frame is not in progress");
         assert(commandBuffer == getCurrentCommandBuffer() && "Can't end render pass on command buffer from a different frame");
 
-        // Insert label in command buffer
-        lveDevice.cmdInsertLabel(commandBuffer, "Render Pass End", {1.0f, 0.0f, 0.0f, 1.0f});
 
         vkCmdEndRenderPass(commandBuffer);
+        // Insert label in command buffer
+        lveDevice.cmdInsertLabel(commandBuffer, "Render Pass End", {1.0f, 0.0f, 0.0f, 1.0f});
     }
 }  // namespace lve
 

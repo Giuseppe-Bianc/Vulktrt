@@ -8,20 +8,32 @@
 #include "Vulktrt/FirstApp.hpp"
 #include "Vulktrt/Camera.hpp"
 #include "Vulktrt/SimpleRenderSystem.hpp"
+#include "Vulktrt/Buffer.hpp"
 
 #include "Vulktrt/KeyboardMovementController.hpp"
 #include <Vulktrt/FPSCounter.hpp>
 
 namespace lve {
+    struct GlobalUBO {
+        glm::mat4 ProjectionView{1.f};
+        glm::vec3 lightDirection = glm::normalize(glm::vec3{1.f, -3.f, -1.f});
+    };
     DISABLE_WARNINGS_PUSH(26432 26447)
     FirstApp::FirstApp() noexcept { loadGameObjects(); }
 
     FirstApp::~FirstApp() = default;
     DISABLE_WARNINGS_POP()
 
+    static inline constexpr auto GlobalUBOsize = sizeof(GlobalUBO);
     static inline constexpr auto fovr = glm::radians(50.f);
 
     void FirstApp::run() {
+        std::vector<std::unique_ptr<Buffer>> uboBuffers{SwapChain::MAX_FRAMES_IN_FLIGHT};
+        for(int i = 0; i <uboBuffers.size() ; ++i) {
+            uboBuffers[i] = std::make_unique<Buffer>(lveDevice, GlobalUBOsize, 1,VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT , FORMAT("Global UBO {}", i));
+            uboBuffers[i]->map();
+        }
+
         SimpleRenderSystem simpleRenderSystem{lveDevice, lveRenderer.getSwapChainRenderPass()};
         Camera camera{};
         camera.setViewTarget(glm::vec3{-1.f, -2.f, 2.f}, glm::vec3{0.f, 0.f, 2.5f});
@@ -38,8 +50,15 @@ namespace lve {
             float aspect = lveRenderer.getAspectRatio();
             camera.setPerspectiveProjection(fovr, aspect, 0.1f, 10.f);
             if(auto commandBuffer = lveRenderer.beginFrame()) {
+                int  frameIndex = lveRenderer.getFrameIndex();
+                FrameInfo frameInfo{frameIndex, frameTime, commandBuffer, camera};
+                GlobalUBO ubo{};
+                ubo.ProjectionView = camera.getProjection() * camera.getView();
+                uboBuffers[frameIndex]->writeToBuffer(&ubo);
+                uboBuffers[frameIndex]->flush();
+
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+                simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
                 lveRenderer.endSwapChainRenderPass(commandBuffer);
                 lveRenderer.endFrame();
             }

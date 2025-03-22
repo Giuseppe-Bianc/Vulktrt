@@ -5,6 +5,7 @@
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 #include "Device.hpp"
+#include "Buffer.hpp"
 
 namespace lve {
     class Model {
@@ -29,7 +30,7 @@ namespace lve {
         };
 
         Model(Device &devicein, const Builder &builder);
-        ~Model();
+        ~Model() = default;
 
         Model(const Model &other) = delete;
         Model &operator=(const Model &other) = delete;
@@ -44,12 +45,11 @@ namespace lve {
 
     private:
         Device &lveDevice;
-        VkBuffer vertexBuffer;
-        VkDeviceMemory vertexBufferMemory;
+
+        std::unique_ptr<Buffer> vertexBuffer;
         std::uint32_t vertexCount;
         bool hasIndexBuffer{false};
-        VkBuffer indexBuffer;
-        VkDeviceMemory indexBufferMemory;
+        std::unique_ptr<Buffer> indexBuffer;
         std::uint32_t indexCount;
     };
 }  // namespace lve

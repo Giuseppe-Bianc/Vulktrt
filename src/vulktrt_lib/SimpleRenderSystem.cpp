@@ -54,10 +54,10 @@ namespace lve {
             calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(), pipelineConfig);
     }
 
-    void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<GameObject> &gameObjects, const Camera &camera) {
-        lvePipeline->bind(commandBuffer);
+    void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo, std::vector<GameObject> &gameObjects) {
+        lvePipeline->bind(frameInfo.commandBuffer);
 
-        auto projectionView = camera.getProjection() * camera.getView();
+        auto projectionView = frameInfo.camera.getProjection() * frameInfo.camera.getView();
 
         for(auto &obj : gameObjects) {
             SimplePushConstantData push{};
@@ -65,9 +65,9 @@ namespace lve {
             push.transform = projectionView * modelMatrix;
             push.normalMatrix = glm::mat4(obj.transform.normalMatrix());
 
-            vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, spcds, &push);
-            obj.model->bind(commandBuffer);
-            obj.model->draw(commandBuffer);
+            vkCmdPushConstants(frameInfo.commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, spcds, &push);
+            obj.model->bind(frameInfo.commandBuffer);
+            obj.model->draw(frameInfo.commandBuffer);
         }
     }
 }  // namespace lve
