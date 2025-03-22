@@ -19,7 +19,7 @@ namespace lve {
     DISABLE_WARNINGS_POP()
 
     SimpleRenderSystem::SimpleRenderSystem(Device &device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
-        : lveDevice{device} {
+      : lveDevice{device} {
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
     }
@@ -60,15 +60,8 @@ namespace lve {
     void SimpleRenderSystem::renderGameObjects(FrameInfo &frameInfo, std::vector<GameObject> &gameObjects) {
         lvePipeline->bind(frameInfo.commandBuffer);
 
-        vkCmdBindDescriptorSets(
-            frameInfo.commandBuffer,
-            VK_PIPELINE_BIND_POINT_GRAPHICS,
-            pipelineLayout,
-            0,
-            1,
-            &frameInfo.globalDescriptorSet,
-            0,
-            nullptr);
+        vkCmdBindDescriptorSets(frameInfo.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
+                                &frameInfo.globalDescriptorSet, 0, nullptr);
 
         for(auto &obj : gameObjects) {
             SimplePushConstantData push{};
@@ -81,7 +74,7 @@ namespace lve {
             obj.model->draw(frameInfo.commandBuffer);
         }
     }
-} // namespace lve
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-diagnostic-missing-braces, *-avoid-magic-numbers,*-magic-numbers, *-uppercase-literal-suffix, *-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)

@@ -23,9 +23,9 @@ namespace lve {
 
     FirstApp::FirstApp() noexcept {
         globalPool = DescriptorPool::Builder(lveDevice)
-                     .setMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
-                     .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
-                     .build();
+                         .setMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
+                         .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
+                         .build();
         lveDevice.setObjectName(VK_OBJECT_TYPE_DESCRIPTOR_POOL, BC_UI64T(globalPool->getDescriptorPool()), "Global Descriptor Pool");
         loadGameObjects();
     }
@@ -44,20 +44,18 @@ namespace lve {
             uboBuffers[i]->map();
         }
         auto globalSetLayout =
-            DescriptorSetLayout::Builder(lveDevice)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
-            .build();
+            DescriptorSetLayout::Builder(lveDevice).addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT).build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
         for(int i = 0; i < globalDescriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
-            DescriptorWriter(*globalSetLayout, *globalPool)
-                .writeBuffer(0, &bufferInfo)
-                .build(globalDescriptorSets[i]);
-            lveDevice.setObjectName(VK_OBJECT_TYPE_DESCRIPTOR_SET, BC_UI64T(globalDescriptorSets[i]), FORMAT("Global Descriptor Set {}", i).c_str());
+            DescriptorWriter(*globalSetLayout, *globalPool).writeBuffer(0, &bufferInfo).build(globalDescriptorSets[i]);
+            lveDevice.setObjectName(VK_OBJECT_TYPE_DESCRIPTOR_SET, BC_UI64T(globalDescriptorSets[i]),
+                                    FORMAT("Global Descriptor Set {}", i).c_str());
         }
 
-        lveDevice.setObjectName(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, BC_UI64T(globalSetLayout->getDescriptorSetLayout()), "Global Descriptor Set Layout");
+        lveDevice.setObjectName(VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, BC_UI64T(globalSetLayout->getDescriptorSetLayout()),
+                                "Global Descriptor Set Layout");
         SimpleRenderSystem simpleRenderSystem{lveDevice, lveRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
         Camera camera{};
         camera.setViewTarget(glm::vec3{-1.f, -2.f, 2.f}, glm::vec3{0.f, 0.f, 2.5f});

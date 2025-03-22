@@ -1,7 +1,7 @@
 /*
-* Created by gbian on 22/03/2025.
-* Copyright (c) 2025 All rights reserved.
-*/
+ * Created by gbian on 22/03/2025.
+ * Copyright (c) 2025 All rights reserved.
+ */
 
 #pragma once
 
@@ -9,18 +9,12 @@
 
 namespace lve {
     class DescriptorSetLayout {
-    public
-    :
+    public:
         class Builder {
         public:
-            Builder(Device &lveDevice)
-                : lveDevice{lveDevice} {}
+            Builder(Device &lveDevice) : lveDevice{lveDevice} {}
 
-            Builder &addBinding(
-                uint32_t binding,
-                VkDescriptorType descriptorType,
-                VkShaderStageFlags stageFlags,
-                uint32_t count = 1);
+            Builder &addBinding(uint32_t binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, uint32_t count = 1);
             std::unique_ptr<DescriptorSetLayout> build() const;
 
         private:
@@ -28,16 +22,14 @@ namespace lve {
             std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings{};
         };
 
-        DescriptorSetLayout(
-            Device &lveDevice, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings);
+        DescriptorSetLayout(Device &lveDevice, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings);
         ~DescriptorSetLayout();
         DescriptorSetLayout(const DescriptorSetLayout &) = delete;
         DescriptorSetLayout &operator=(const DescriptorSetLayout &) = delete;
 
         VkDescriptorSetLayout getDescriptorSetLayout() const { return descriptorSetLayout; }
 
-    private
-    :
+    private:
         Device &lveDevice;
         VkDescriptorSetLayout descriptorSetLayout;
         std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings;
@@ -49,8 +41,7 @@ namespace lve {
     public:
         class Builder {
         public:
-            Builder(Device &lveDevice)
-                : lveDevice{lveDevice} {}
+            Builder(Device &lveDevice) : lveDevice{lveDevice} {}
 
             Builder &addPoolSize(VkDescriptorType descriptorType, uint32_t count);
             Builder &setPoolFlags(VkDescriptorPoolCreateFlags flags);
@@ -64,17 +55,13 @@ namespace lve {
             VkDescriptorPoolCreateFlags poolFlags = 0;
         };
 
-        DescriptorPool(
-            Device &lveDevice,
-            uint32_t maxSets,
-            VkDescriptorPoolCreateFlags poolFlags,
-            const std::vector<VkDescriptorPoolSize> &poolSizes);
+        DescriptorPool(Device &lveDevice, uint32_t maxSets, VkDescriptorPoolCreateFlags poolFlags,
+                       const std::vector<VkDescriptorPoolSize> &poolSizes);
         ~DescriptorPool();
         DescriptorPool(const DescriptorPool &) = delete;
         DescriptorPool &operator=(const DescriptorPool &) = delete;
 
-        bool allocateDescriptor(
-            const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet &descriptor) const;
+        bool allocateDescriptor(const VkDescriptorSetLayout descriptorSetLayout, VkDescriptorSet &descriptor) const;
 
         void freeDescriptors(std::vector<VkDescriptorSet> &descriptors) const;
 
@@ -104,4 +91,4 @@ namespace lve {
         DescriptorPool &pool;
         std::vector<VkWriteDescriptorSet> writes;
     };
-} // lve
+}  // namespace lve
