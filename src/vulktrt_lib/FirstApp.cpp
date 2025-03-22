@@ -37,6 +37,7 @@ namespace lve {
     static inline constexpr auto fovr = glm::radians(50.f);
 
     void FirstApp::run() {
+        vnd::Timer timer{"Global Descriptor Set Layout"};
         std::vector<std::unique_ptr<Buffer>> uboBuffers{SwapChain::MAX_FRAMES_IN_FLIGHT};
         for(int i = 0; i < uboBuffers.size(); ++i) {
             uboBuffers[i] = std::make_unique<Buffer>(lveDevice, GlobalUBOsize, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,

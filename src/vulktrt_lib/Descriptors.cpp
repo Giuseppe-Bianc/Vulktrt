@@ -2,8 +2,8 @@
  * Created by gbian on 22/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
-#include "../../include/Vulktrt/Descriptors.hpp"
+// NOLINTBEGIN(*-include-cleaner)
+#include "Vulktrt/Descriptors.hpp"
 
 namespace lve {
     // *************** Descriptor Set Layout Builder *********************
@@ -29,16 +29,14 @@ namespace lve {
     DescriptorSetLayout::DescriptorSetLayout(Device &lveDevice, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings)
       : lveDevice{lveDevice}, bindings{bindings} {
         std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{};
-        for(auto kv : bindings) { setLayoutBindings.push_back(kv.second); }
+        for(auto kv : bindings) { setLayoutBindings.emplace_back(kv.second); }
 
         VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
         descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
+        descriptorSetLayoutInfo.bindingCount = C_UI32T(setLayoutBindings.size());
         descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
 
-        if(vkCreateDescriptorSetLayout(lveDevice.device(), &descriptorSetLayoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create descriptor set layout!");
-        }
+        VK_CHECK(vkCreateDescriptorSetLayout(lveDevice.device(), &descriptorSetLayoutInfo, nullptr, &descriptorSetLayout), "failed to create descriptor set layout!");
     }
 
     DescriptorSetLayout::~DescriptorSetLayout() { vkDestroyDescriptorSetLayout(lveDevice.device(), descriptorSetLayout, nullptr); }
@@ -71,14 +69,12 @@ namespace lve {
       : lveDevice{lveDevice} {
         VkDescriptorPoolCreateInfo descriptorPoolInfo{};
         descriptorPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        descriptorPoolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+        descriptorPoolInfo.poolSizeCount = C_UI32T(poolSizes.size());
         descriptorPoolInfo.pPoolSizes = poolSizes.data();
         descriptorPoolInfo.maxSets = maxSets;
         descriptorPoolInfo.flags = poolFlags;
 
-        if(vkCreateDescriptorPool(lveDevice.device(), &descriptorPoolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create descriptor pool!");
-        }
+        VK_CHECK(vkCreateDescriptorPool(lveDevice.device(), &descriptorPoolInfo, nullptr, &descriptorPool), "failed to create descriptor pool!");
     }
 
     DescriptorPool::~DescriptorPool() { vkDestroyDescriptorPool(lveDevice.device(), descriptorPool, nullptr); }
@@ -97,7 +93,7 @@ namespace lve {
     }
 
     void DescriptorPool::freeDescriptors(std::vector<VkDescriptorSet> &descriptors) const {
-        vkFreeDescriptorSets(lveDevice.device(), descriptorPool, static_cast<uint32_t>(descriptors.size()), descriptors.data());
+        vkFreeDescriptorSets(lveDevice.device(), descriptorPool, C_UI32T(descriptors.size()), descriptors.data());
     }
 
     void DescriptorPool::resetPool() { vkResetDescriptorPool(lveDevice.device(), descriptorPool, 0); }
@@ -120,7 +116,7 @@ namespace lve {
         write.pBufferInfo = bufferInfo;
         write.descriptorCount = 1;
 
-        writes.push_back(write);
+        writes.emplace_back(write);
         return *this;
     }
 
@@ -138,7 +134,7 @@ namespace lve {
         write.pImageInfo = imageInfo;
         write.descriptorCount = 1;
 
-        writes.push_back(write);
+        writes.emplace_back(write);
         return *this;
     }
 
@@ -154,3 +150,5 @@ namespace lve {
         vkUpdateDescriptorSets(pool.lveDevice.device(), C_UI32T(writes.size()), writes.data(), 0, nullptr);
     }
 }  // namespace lve
+
+// NOLINTEND(*-include-cleaner)

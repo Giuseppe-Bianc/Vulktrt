@@ -12,7 +12,7 @@ namespace lve {
     public:
         class Builder {
         public:
-            Builder(Device &lveDevice) : lveDevice{lveDevice} {}
+            explicit Builder(Device &lveDevice) : lveDevice{lveDevice} {}
 
             Builder &addBinding(uint32_t binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, uint32_t count = 1);
             std::unique_ptr<DescriptorSetLayout> build() const;
@@ -41,7 +41,7 @@ namespace lve {
     public:
         class Builder {
         public:
-            Builder(Device &lveDevice) : lveDevice{lveDevice} {}
+            explicit Builder(Device &lveDevice) : lveDevice{lveDevice} {}
 
             Builder &addPoolSize(VkDescriptorType descriptorType, uint32_t count);
             Builder &setPoolFlags(VkDescriptorPoolCreateFlags flags);

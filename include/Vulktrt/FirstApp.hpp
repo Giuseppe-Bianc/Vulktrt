@@ -33,6 +33,7 @@ namespace lve {
         Renderer lveRenderer{lveWindow, lveDevice};
         std::unique_ptr<DescriptorPool> globalPool{};
         std::vector<GameObject> gameObjects;
+        bool printTime = true;
     };
     DISABLE_WARNINGS_POP()
 }  // namespace lve
