@@ -37,6 +37,8 @@ add_library(vulktrt_lib vulktrt.cpp
         Buffer.cpp
         ../../include/Vulktrt/Buffer.hpp
         FrameInfo.hpp
+        Descriptors.cpp
+        ../../include/Vulktrt/Descriptors.hpp
 )
 
 get_target_property(target_name vulktrt_lib NAME)

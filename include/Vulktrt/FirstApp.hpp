@@ -11,6 +11,7 @@
 #include "Renderer.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
+#include "Descriptors.hpp"
 
 namespace lve {
     DISABLE_WARNINGS_PUSH(26447)
@@ -30,6 +31,7 @@ namespace lve {
         Window lveWindow{wwidth, wheight, wtile};
         Device lveDevice{lveWindow};
         Renderer lveRenderer{lveWindow, lveDevice};
+        std::unique_ptr<DescriptorPool> globalPool{};
         std::vector<GameObject> gameObjects;
     };
     DISABLE_WARNINGS_POP()
