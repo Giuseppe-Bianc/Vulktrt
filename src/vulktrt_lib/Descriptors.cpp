@@ -36,7 +36,8 @@ namespace lve {
         descriptorSetLayoutInfo.bindingCount = C_UI32T(setLayoutBindings.size());
         descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
 
-        VK_CHECK(vkCreateDescriptorSetLayout(lveDevice.device(), &descriptorSetLayoutInfo, nullptr, &descriptorSetLayout), "failed to create descriptor set layout!");
+        VK_CHECK(vkCreateDescriptorSetLayout(lveDevice.device(), &descriptorSetLayoutInfo, nullptr, &descriptorSetLayout),
+                 "failed to create descriptor set layout!");
     }
 
     DescriptorSetLayout::~DescriptorSetLayout() { vkDestroyDescriptorSetLayout(lveDevice.device(), descriptorSetLayout, nullptr); }
@@ -74,7 +75,8 @@ namespace lve {
         descriptorPoolInfo.maxSets = maxSets;
         descriptorPoolInfo.flags = poolFlags;
 
-        VK_CHECK(vkCreateDescriptorPool(lveDevice.device(), &descriptorPoolInfo, nullptr, &descriptorPool), "failed to create descriptor pool!");
+        VK_CHECK(vkCreateDescriptorPool(lveDevice.device(), &descriptorPoolInfo, nullptr, &descriptorPool),
+                 "failed to create descriptor pool!");
     }
 
     DescriptorPool::~DescriptorPool() { vkDestroyDescriptorPool(lveDevice.device(), descriptorPool, nullptr); }
