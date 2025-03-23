@@ -19,7 +19,7 @@ namespace std {
 }  // namespace std
 
 namespace lve {
-    //static inline constexpr glm::vec3 DEFAULT_COLOR = {1.f, 1.f, 1.f};
+    // static inline constexpr glm::vec3 DEFAULT_COLOR = {1.f, 1.f, 1.f};
     static inline constexpr auto modelVertexs = sizeof(Model::Vertex);
     DISABLE_WARNINGS_PUSH(26432)
 
@@ -72,7 +72,7 @@ namespace lve {
                     auto texcoord_index2 = C_ST(2 * texcoord_index);
                     vertex.uv = {
                         attrib.texcoords[texcoord_index2 + 0],
-                        attrib.texcoords[texcoord_index2+ 1],
+                        attrib.texcoords[texcoord_index2 + 1],
                     };
                 }
 

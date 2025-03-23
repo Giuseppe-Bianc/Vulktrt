@@ -26,7 +26,8 @@ namespace lve {
 
     // *************** Descriptor Set Layout *********************
 
-    DescriptorSetLayout::DescriptorSetLayout(Device &lveDevice,const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> & bindingsin)
+    DescriptorSetLayout::DescriptorSetLayout(Device &lveDevice,
+                                             const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> &bindingsin)
       : lveDevice{lveDevice}, bindings{bindingsin} {
         std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{bindingsin.size()};
         for(auto kv : bindingsin) { setLayoutBindings.emplace_back(kv.second); }
