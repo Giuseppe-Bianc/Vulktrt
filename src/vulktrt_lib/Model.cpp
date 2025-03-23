@@ -99,7 +99,9 @@ namespace lve {
         const VkDeviceSize bufferSize = svertexSize * vertexCount;
         auto vertexSize = C_UI32T(svertexSize);
 
-        Buffer stagingBuffer{lveDevice, vertexSize, vertexCount,
+        Buffer stagingBuffer{lveDevice,
+                             vertexSize,
+                             vertexCount,
                              VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                              "Vertex Model Staging Buffer"};
@@ -110,7 +112,7 @@ namespace lve {
         vertexBuffer = std::make_unique<Buffer>(lveDevice, vertexSize, vertexCount,
                                                 VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                                                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, "Model Vertex Buffer");
-        lveDevice.copyBuffer(stagingBuffer.getBuffer(),  vertexBuffer->getBuffer(), bufferSize);
+        lveDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer->getBuffer(), bufferSize);
         // lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(vertexBufferBuffer), "Model Vertex Buffer");
     }
 
@@ -124,7 +126,9 @@ namespace lve {
         const VkDeviceSize bufferSize = sindexSize * indexCount;
         auto indexSize = C_UI32T(sindexSize);
 
-        Buffer stagingBuffer{lveDevice, indexSize, indexCount,
+        Buffer stagingBuffer{lveDevice,
+                             indexSize,
+                             indexCount,
                              VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                              "Index Model Staging Buffer"};

@@ -22,7 +22,7 @@ namespace lve {
             std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings{};
         };
 
-        DescriptorSetLayout(Device &lveDevicein,const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> &bindingsin);
+        DescriptorSetLayout(Device &lveDevicein, const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> &bindingsin);
         ~DescriptorSetLayout();
         DescriptorSetLayout(const DescriptorSetLayout &) = delete;
         DescriptorSetLayout &operator=(const DescriptorSetLayout &) = delete;
@@ -92,4 +92,4 @@ namespace lve {
         std::vector<VkWriteDescriptorSet> writes;
     };
 }  // namespace lve
-// NOLINTEND(*-include-cleaner)
+   // NOLINTEND(*-include-cleaner)
