@@ -10,7 +10,7 @@
 
 namespace std {
     template <> struct hash<lve::Model::Vertex> {
-        size_t operator()(lve::Model::Vertex const &vertex) const {
+        size_t operator()(lve::Model::Vertex const &vertex) const noexcept {
             size_t seed = 0;
             lve::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
             return seed;
@@ -99,9 +99,7 @@ namespace lve {
         const VkDeviceSize bufferSize = svertexSize * vertexCount;
         auto vertexSize = C_UI32T(svertexSize);
 
-        Buffer stagingBuffer{lveDevice,
-                             vertexSize,
-                             vertexCount,
+        Buffer stagingBuffer{lveDevice, vertexSize, vertexCount,
                              VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                              "Vertex Model Staging Buffer"};
@@ -112,9 +110,8 @@ namespace lve {
         vertexBuffer = std::make_unique<Buffer>(lveDevice, vertexSize, vertexCount,
                                                 VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                                                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, "Model Vertex Buffer");
-        auto vertexBufferBuffer = vertexBuffer->getBuffer();
-        lveDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBufferBuffer, bufferSize);
-        // lveDevice.setObjectName(VK_OBJECT_TYPE_B<LeftMouse>UFFER, BC_UI64T(vertexBufferBuffer), "Model Vertex Buffer");
+        lveDevice.copyBuffer(stagingBuffer.getBuffer(),  vertexBuffer->getBuffer(), bufferSize);
+        // lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(vertexBufferBuffer), "Model Vertex Buffer");
     }
 
     void Model::createIndexBuffers(const std::vector<uint32_t> &indices) {
@@ -127,9 +124,7 @@ namespace lve {
         const VkDeviceSize bufferSize = sindexSize * indexCount;
         auto indexSize = C_UI32T(sindexSize);
 
-        Buffer stagingBuffer{lveDevice,
-                             indexSize,
-                             indexCount,
+        Buffer stagingBuffer{lveDevice, indexSize, indexCount,
                              VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                              "Index Model Staging Buffer"};
@@ -140,9 +135,7 @@ namespace lve {
                                                VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
                                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, "Model Index Buffer");
 
-        auto indexBufferBuffer = indexBuffer->getBuffer();
-        lveDevice.copyBuffer(stagingBuffer.getBuffer(), indexBufferBuffer, bufferSize);
-        // lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(indexBufferBuffer), "Model Index Buffer");
+        lveDevice.copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
     }
 
     DISABLE_WARNINGS_PUSH(26485)

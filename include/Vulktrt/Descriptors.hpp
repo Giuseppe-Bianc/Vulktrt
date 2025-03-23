@@ -2,7 +2,7 @@
  * Created by gbian on 22/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-
+// NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
 #include "Device.hpp"
@@ -22,7 +22,7 @@ namespace lve {
             std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings{};
         };
 
-        DescriptorSetLayout(Device &lveDevice, const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> &bindingsin);
+        DescriptorSetLayout(Device &lveDevicein,const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> &bindingsin);
         ~DescriptorSetLayout();
         DescriptorSetLayout(const DescriptorSetLayout &) = delete;
         DescriptorSetLayout &operator=(const DescriptorSetLayout &) = delete;
@@ -92,3 +92,4 @@ namespace lve {
         std::vector<VkWriteDescriptorSet> writes;
     };
 }  // namespace lve
+// NOLINTEND(*-include-cleaner)
