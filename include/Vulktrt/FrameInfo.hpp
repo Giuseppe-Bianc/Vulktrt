@@ -6,14 +6,16 @@
 #pragma once
 
 #include "Camera.hpp"
+#include "GameObject.hpp"
 
 namespace lve {
     struct FrameInfo {
         int frameIndex;
         float frameTime;
         VkCommandBuffer commandBuffer;
-        Camera camera;
+        Camera &camera;
         VkDescriptorSet globalDescriptorSet;
+        GameObject::Map &gameObjects;
     };
 }  // namespace lve
 

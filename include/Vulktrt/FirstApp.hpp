@@ -32,7 +32,7 @@ namespace lve {
         Device lveDevice{lveWindow};
         Renderer lveRenderer{lveWindow, lveDevice};
         std::unique_ptr<DescriptorPool> globalPool{};
-        std::vector<GameObject> gameObjects;
+        GameObject::Map gameObjects;
         bool printTime = true;
     };
     DISABLE_WARNINGS_POP()

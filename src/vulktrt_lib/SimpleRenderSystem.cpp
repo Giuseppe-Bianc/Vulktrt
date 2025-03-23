@@ -57,14 +57,15 @@ namespace lve {
             calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(), pipelineConfig);
     }
 
-    void SimpleRenderSystem::renderGameObjects(FrameInfo &frameInfo, std::vector<GameObject> &gameObjects) {
+    void SimpleRenderSystem::renderGameObjects(FrameInfo &frameInfo) {
         lvePipeline->bind(frameInfo.commandBuffer);
 
         vkCmdBindDescriptorSets(frameInfo.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
                                 &frameInfo.globalDescriptorSet, 0, nullptr);
 
-        for(auto &obj : gameObjects) {
+        for(auto &[index, obj] : frameInfo.gameObjects) {
             SimplePushConstantData push{};
+            if(obj.model == nullptr) { continue; }
             push.modelMatrix = obj.transform.mat4();
             push.normalMatrix = glm::mat4(obj.transform.normalMatrix());
 

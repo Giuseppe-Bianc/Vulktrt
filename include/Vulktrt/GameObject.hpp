@@ -24,6 +24,7 @@ namespace lve {
     class GameObject {
     public:
         using id_t = std::uint32_t;
+        using Map = std::unordered_map<id_t, GameObject>;
 
         static GameObject createGameObject() {
             static id_t currentId = 0;
