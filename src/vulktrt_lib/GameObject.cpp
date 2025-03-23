@@ -2,7 +2,7 @@
  * Created by gbian on 17/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// NOLINTBEGIN(*-include-cleaner, *-uppercase-literal-suffix, *-pro-type-union-access)
 #include "Vulktrt/GameObject.hpp"
 
 namespace lve {
@@ -14,4 +14,4 @@ namespace lve {
     glm::mat3 TransformComponent::normalMatrix() const noexcept { return glm::mat3(glm::transpose(glm::inverse(mat4()))); }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner)
+// NOLINTEND(*-include-cleaner, *-uppercase-literal-suffix, *-pro-type-union-access)

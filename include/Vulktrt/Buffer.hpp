@@ -9,8 +9,8 @@
 namespace lve {
     class Buffer {
     public:
-        Buffer(Device &device, VkDeviceSize instanceSize, uint32_t instanceCount, VkBufferUsageFlags usageFlags,
-               VkMemoryPropertyFlags memoryPropertyFlags, const std::string &objectName = "Buffer", VkDeviceSize minOffsetAlignment = 1);
+        Buffer(Device &device, VkDeviceSize instanceSizein, uint32_t instanceCountin, VkBufferUsageFlags usageFlagsin,
+               VkMemoryPropertyFlags memoryPropertyFlagsin, const std::string &objectName = "Buffer", VkDeviceSize minOffsetAlignment = 1);
         ~Buffer();
 
         Buffer(const Buffer &) = delete;

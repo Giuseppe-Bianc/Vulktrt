@@ -2,7 +2,9 @@
  * Created by gbian on 22/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// clang-format off
+// NOLINTBEGIN(*-include-cleaner,*-easily-swappable-parameters, *-prefer-member-initializer, *-uppercase-literal-suffix,*-diagnostic-uninitialized)
+// clang-format on
 #include "Vulktrt/Buffer.hpp"
 
 namespace lve {
@@ -20,14 +22,14 @@ namespace lve {
         return instanceSize;
     }
 
-    Buffer::Buffer(Device &device, VkDeviceSize instanceSize, uint32_t instanceCount, VkBufferUsageFlags usageFlags,
-                   VkMemoryPropertyFlags memoryPropertyFlags, const std::string &objectName, VkDeviceSize minOffsetAlignment)
-      : lveDevice{device}, instanceCount{instanceCount}, instanceSize{instanceSize}, usageFlags{usageFlags},
-        memoryPropertyFlags{memoryPropertyFlags} {
+    Buffer::Buffer(Device &device, VkDeviceSize instanceSizein, uint32_t instanceCountin, VkBufferUsageFlags usageFlagsin,
+                   VkMemoryPropertyFlags memoryPropertyFlagsin, const std::string &objectName, VkDeviceSize minOffsetAlignment)
+      : lveDevice{device}, instanceCount{instanceCountin}, instanceSize{instanceSizein}, usageFlags{usageFlagsin},
+        memoryPropertyFlags{memoryPropertyFlagsin} {
         alignmentSize = getAlignment(instanceSize, minOffsetAlignment);
         bufferSize = alignmentSize * instanceCount;
         static int bufferIndex = 0;
-        device.createBuffer(bufferSize, usageFlags, memoryPropertyFlags, buffer, memory);
+        device.createBuffer(bufferSize, usageFlagsin, memoryPropertyFlagsin, buffer, memory);
         lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(memory), FORMAT("{} Memory {}", objectName, bufferIndex).c_str());
         lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), FORMAT("{} {}", objectName, bufferIndex++).c_str());
     }
@@ -79,7 +81,7 @@ namespace lve {
         if(size == VK_WHOLE_SIZE) {
             memcpy(mapped, data, bufferSize);
         } else {
-            char *memOffset = (char *)mapped;
+            char *memOffset = std::bit_cast<char *>(mapped);
             memOffset += offset;
             memcpy(memOffset, data, size);
         }
@@ -144,7 +146,7 @@ namespace lve {
      * @param index Used in offset calculation
      *
      */
-    void Buffer::writeToIndex(void *data, int index) { writeToBuffer(data, instanceSize, index * alignmentSize); }
+    void Buffer::writeToIndex(void *data, int index) { writeToBuffer(data, instanceSize, C_UL(index) * alignmentSize); }
 
     /**
      *  Flush the memory range at index * alignmentSize of the buffer to make it visible to the device
@@ -152,7 +154,7 @@ namespace lve {
      * @param index Used in offset calculation
      *
      */
-    VkResult Buffer::flushIndex(int index) { return flush(alignmentSize, index * alignmentSize); }
+    VkResult Buffer::flushIndex(int index) { return flush(alignmentSize, C_UL(index) * alignmentSize); }
 
     /**
      * Create a buffer info descriptor
@@ -161,7 +163,7 @@ namespace lve {
      *
      * @return VkDescriptorBufferInfo for instance at index
      */
-    VkDescriptorBufferInfo Buffer::descriptorInfoForIndex(int index) { return descriptorInfo(alignmentSize, index * alignmentSize); }
+    VkDescriptorBufferInfo Buffer::descriptorInfoForIndex(int index) { return descriptorInfo(alignmentSize, C_UL(index) * alignmentSize); }
 
     /**
      * Invalidate a memory range of the buffer to make it visible to the host
@@ -172,7 +174,9 @@ namespace lve {
      *
      * @return VkResult of the invalidate call
      */
-    VkResult Buffer::invalidateIndex(int index) { return invalidate(alignmentSize, index * alignmentSize); }
+    VkResult Buffer::invalidateIndex(int index) { return invalidate(alignmentSize, C_UL(index) * alignmentSize); }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner)
+// clang-format off
+// NOLINTEND(*-include-cleaner,*-easily-swappable-parameters, *-prefer-member-initializer, *-uppercase-literal-suffix,*-diagnostic-uninitialized)
+// clang-format on

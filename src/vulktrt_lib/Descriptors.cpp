@@ -2,7 +2,7 @@
  * Created by gbian on 22/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner)
+// NOLINTBEGIN(*-include-cleaner, *-misplaced-const, *-easily-swappable-parameters,*-pro-type-member-init,*-member-init)
 #include "Vulktrt/Descriptors.hpp"
 
 namespace lve {
@@ -26,10 +26,10 @@ namespace lve {
 
     // *************** Descriptor Set Layout *********************
 
-    DescriptorSetLayout::DescriptorSetLayout(Device &lveDevice, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings)
-      : lveDevice{lveDevice}, bindings{bindings} {
-        std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{};
-        for(auto kv : bindings) { setLayoutBindings.emplace_back(kv.second); }
+    DescriptorSetLayout::DescriptorSetLayout(Device &lveDevice,const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> & bindingsin)
+      : lveDevice{lveDevice}, bindings{bindingsin} {
+        std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings{bindingsin.size()};
+        for(auto kv : bindingsin) { setLayoutBindings.emplace_back(kv.second); }
 
         VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
         descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -102,7 +102,7 @@ namespace lve {
 
     // *************** Descriptor Writer *********************
 
-    DescriptorWriter::DescriptorWriter(DescriptorSetLayout &setLayout, DescriptorPool &pool) : setLayout{setLayout}, pool{pool} {}
+    DescriptorWriter::DescriptorWriter(DescriptorSetLayout &setLayoutin, DescriptorPool &poolin) : setLayout{setLayoutin}, pool{poolin} {}
 
     DescriptorWriter &DescriptorWriter::writeBuffer(uint32_t binding, VkDescriptorBufferInfo *bufferInfo) {
         assert(setLayout.bindings.count(binding) == 1 && "Layout does not contain specified binding");
@@ -153,4 +153,4 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner)
+// NOLINTEND(*-include-cleaner, *-misplaced-const, *-easily-swappable-parameters, *-pro-type-member-init,*-member-init)

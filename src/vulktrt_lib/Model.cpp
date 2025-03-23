@@ -3,7 +3,7 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // clang-format off
-// NOLINTBEGIN(*-include-cleaner, *-pro-type-member-init, *-member-init, *-avoid-c-arrays,*-avoid-c-arrays, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
+// NOLINTBEGIN(*-include-cleaner, *-pro-type-member-init, *-member-init, *-avoid-c-arrays,*-avoid-c-arrays, *-pro-bounds-array-to-pointer-decay,*-no-array-decay, *-qualified-auto, *-diagnostic-old-style-cast)
 // clang-format on
 #include "Vulktrt/Model.hpp"
 #include "Vulktrt/utils.hpp"
@@ -19,7 +19,7 @@ namespace std {
 }  // namespace std
 
 namespace lve {
-    static inline constexpr glm::vec3 DEFAULT_COLOR = {1.f, 1.f, 1.f};
+    //static inline constexpr glm::vec3 DEFAULT_COLOR = {1.f, 1.f, 1.f};
     static inline constexpr auto modelVertexs = sizeof(Model::Vertex);
     DISABLE_WARNINGS_PUSH(26432)
 
@@ -28,7 +28,8 @@ namespace lve {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
-        std::string warn, err;
+        std::string warn;
+        std::string err;
 
         if(!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) { throw std::runtime_error(warn + err); }
 
@@ -44,31 +45,34 @@ namespace lve {
                 Vertex vertex{};
 
                 if(vertex_index >= 0) {
+                    auto vertex_index3 = C_ST(3 * vertex_index);
                     vertex.position = {
-                        attrib.vertices[3 * vertex_index + 0],
-                        attrib.vertices[3 * vertex_index + 1],
-                        attrib.vertices[3 * vertex_index + 2],
+                        attrib.vertices[vertex_index3 + 0],
+                        attrib.vertices[vertex_index3 + 1],
+                        attrib.vertices[vertex_index3 + 2],
                     };
 
                     vertex.color = {
-                        attrib.colors[3 * vertex_index + 0],
-                        attrib.colors[3 * vertex_index + 1],
-                        attrib.colors[3 * vertex_index + 2],
+                        attrib.colors[vertex_index3 + 0],
+                        attrib.colors[vertex_index3 + 1],
+                        attrib.colors[vertex_index3 + 2],
                     };
                 }
 
                 if(normal_index >= 0) {
+                    auto normal_index3 = C_ST(3 * normal_index);
                     vertex.normal = {
-                        attrib.normals[3 * normal_index + 0],
-                        attrib.normals[3 * normal_index + 1],
-                        attrib.normals[3 * normal_index + 2],
+                        attrib.normals[normal_index3 + 0],
+                        attrib.normals[normal_index3 + 1],
+                        attrib.normals[normal_index3 + 2],
                     };
                 }
 
                 if(texcoord_index >= 0) {
+                    auto texcoord_index2 = C_ST(2 * texcoord_index);
                     vertex.uv = {
-                        attrib.texcoords[2 * texcoord_index + 0],
-                        attrib.texcoords[2 * texcoord_index + 1],
+                        attrib.texcoords[texcoord_index2 + 0],
+                        attrib.texcoords[texcoord_index2+ 1],
                     };
                 }
 
@@ -103,14 +107,14 @@ namespace lve {
                              "Vertex Model Staging Buffer"};
 
         stagingBuffer.map();
-        stagingBuffer.writeToBuffer((void *)vertices.data());
+        stagingBuffer.writeToBuffer(std::bit_cast<void *>(vertices.data()));
 
         vertexBuffer = std::make_unique<Buffer>(lveDevice, vertexSize, vertexCount,
                                                 VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                                                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, "Model Vertex Buffer");
         auto vertexBufferBuffer = vertexBuffer->getBuffer();
         lveDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBufferBuffer, bufferSize);
-        // lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(vertexBufferBuffer), "Model Vertex Buffer");
+        // lveDevice.setObjectName(VK_OBJECT_TYPE_B<LeftMouse>UFFER, BC_UI64T(vertexBufferBuffer), "Model Vertex Buffer");
     }
 
     void Model::createIndexBuffers(const std::vector<uint32_t> &indices) {
@@ -131,7 +135,7 @@ namespace lve {
                              "Index Model Staging Buffer"};
 
         stagingBuffer.map();
-        stagingBuffer.writeToBuffer((void *)indices.data());
+        stagingBuffer.writeToBuffer(std::bit_cast<void *>(indices.data()));
         indexBuffer = std::make_unique<Buffer>(lveDevice, indexSize, indexCount,
                                                VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
                                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, "Model Index Buffer");
@@ -193,5 +197,5 @@ namespace lve {
 }  // namespace lve
 
 // clang-format off
-// NOLINTEND(*-include-cleaner, *-pro-type-member-init, *-member-init, *-avoid-c-arrays,*-avoid-c-arrays, *-pro-bounds-array-to-pointer-decay,*-no-array-decay)
+// NOLINTEND(*-include-cleaner, *-pro-type-member-init, *-member-init, *-avoid-c-arrays,*-avoid-c-arrays, *-pro-bounds-array-to-pointer-decay,*-no-array-decay, *-qualified-auto, *-diagnostic-old-style-cast)
 // clang-format on

@@ -36,7 +36,7 @@ add_library(vulktrt_lib vulktrt.cpp
         ../../include/Vulktrt/utils.hpp
         Buffer.cpp
         ../../include/Vulktrt/Buffer.hpp
-        FrameInfo.hpp
+        ../../include/Vulktrt/FrameInfo.hpp
         Descriptors.cpp
         ../../include/Vulktrt/Descriptors.hpp
 )

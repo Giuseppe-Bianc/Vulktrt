@@ -39,7 +39,7 @@ namespace lve {
     void FirstApp::run() {
         vnd::Timer timer{"Global Descriptor Set Layout"};
         std::vector<std::unique_ptr<Buffer>> uboBuffers{SwapChain::MAX_FRAMES_IN_FLIGHT};
-        for(int i = 0; i < uboBuffers.size(); ++i) {
+        for(size_t i = 0; i < uboBuffers.size(); ++i) {
             uboBuffers[i] = std::make_unique<Buffer>(lveDevice, GlobalUBOsize, 1, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, FORMAT("Global UBO {}", i));
             uboBuffers[i]->map();
@@ -48,7 +48,7 @@ namespace lve {
             DescriptorSetLayout::Builder(lveDevice).addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT).build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
-        for(int i = 0; i < globalDescriptorSets.size(); i++) {
+        for(size_t i = 0; i < globalDescriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
             DescriptorWriter(*globalSetLayout, *globalPool).writeBuffer(0, &bufferInfo).build(globalDescriptorSets[i]);
             lveDevice.setObjectName(VK_OBJECT_TYPE_DESCRIPTOR_SET, BC_UI64T(globalDescriptorSets[i]),
@@ -73,8 +73,8 @@ namespace lve {
             float aspect = lveRenderer.getAspectRatio();
             camera.setPerspectiveProjection(fovr, aspect, 0.1f, 10.f);
             if(auto commandBuffer = lveRenderer.beginFrame()) {
-                int frameIndex = lveRenderer.getFrameIndex();
-                FrameInfo frameInfo{frameIndex, frameTime, commandBuffer, camera, globalDescriptorSets[frameIndex]};
+                auto frameIndex = C_ST(lveRenderer.getFrameIndex());
+                FrameInfo frameInfo{C_I(frameIndex), frameTime, commandBuffer, camera, globalDescriptorSets[frameIndex]};
                 GlobalUBO ubo{};
                 ubo.ProjectionView = camera.getProjection() * camera.getView();
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);

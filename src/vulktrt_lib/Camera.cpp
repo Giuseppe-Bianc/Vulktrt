@@ -2,12 +2,14 @@
  * Created by gbian on 19/03/2025.
  * Copyright (c) 2025 All rights reserved.
  */
-// NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-uppercase-literal-suffix, *-pro-type-union-access)
+// clang-format off
+// NOLINTBEGIN(*-include-cleaner, *-easily-swappable-parameters, *-uppercase-literal-suffix, *-pro-type-union-access,*-avoid-magic-numbers,*-magic-numbers)
+// clang-format on
 #include "Vulktrt/Camera.hpp"
 
 namespace lve {
 
-    void Camera::setOrthographicProjection(float left, float right, float top, float bottom, float near, float far) {
+    void Camera::setOrthographicProjection(float left, float right, float bottom, float top, float near, float far) {
         projectionMatrix = glm::mat4{1.0f};
         const auto range = far - near;
         const auto rl = right - left;
@@ -22,7 +24,7 @@ namespace lve {
 
     void Camera::setPerspectiveProjection(float fovy, float aspect, float near, float far) {
         assert(glm::abs(aspect - fepsilon) > 0.0f);
-        const float tanHalfFovy = tan(fovy / 2.f);
+        const auto tanHalfFovy = C_F(std::tan(fovy / 2.f));
         const auto range = far - near;
         projectionMatrix = glm::mat4{0.0f};
         projectionMatrix[0][0] = 1.f / (aspect * tanHalfFovy);
@@ -71,4 +73,6 @@ namespace lve {
     }
 }  // namespace lve
 
-// NOLINTEND(*-include-cleaner, *-easily-swappable-parameters, *-uppercase-literal-suffix, *-pro-type-union-access)
+// clang-format off
+// NOLINTEND(*-include-cleaner, *-easily-swappable-parameters, *-uppercase-literal-suffix, *-pro-type-union-access,*-avoid-magic-numbers,*-magic-numbers)
+// clang-format on

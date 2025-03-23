@@ -12,7 +12,7 @@ namespace lve {
     public:
         class Builder {
         public:
-            explicit Builder(Device &lveDevice) : lveDevice{lveDevice} {}
+            explicit Builder(Device &lveDevicein) : lveDevice{lveDevicein} {}
 
             Builder &addBinding(uint32_t binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, uint32_t count = 1);
             std::unique_ptr<DescriptorSetLayout> build() const;
@@ -22,7 +22,7 @@ namespace lve {
             std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings{};
         };
 
-        DescriptorSetLayout(Device &lveDevice, std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> bindings);
+        DescriptorSetLayout(Device &lveDevice, const std::unordered_map<uint32_t, VkDescriptorSetLayoutBinding> &bindingsin);
         ~DescriptorSetLayout();
         DescriptorSetLayout(const DescriptorSetLayout &) = delete;
         DescriptorSetLayout &operator=(const DescriptorSetLayout &) = delete;
@@ -41,7 +41,7 @@ namespace lve {
     public:
         class Builder {
         public:
-            explicit Builder(Device &lveDevice) : lveDevice{lveDevice} {}
+            explicit Builder(Device &lveDevicein) : lveDevice{lveDevicein} {}
 
             Builder &addPoolSize(VkDescriptorType descriptorType, uint32_t count);
             Builder &setPoolFlags(VkDescriptorPoolCreateFlags flags);
@@ -78,7 +78,7 @@ namespace lve {
 
     class DescriptorWriter {
     public:
-        DescriptorWriter(DescriptorSetLayout &setLayout, DescriptorPool &pool);
+        DescriptorWriter(DescriptorSetLayout &setLayoutin, DescriptorPool &poolin);
 
         DescriptorWriter &writeBuffer(uint32_t binding, VkDescriptorBufferInfo *bufferInfo);
         DescriptorWriter &writeImage(uint32_t binding, VkDescriptorImageInfo *imageInfo);

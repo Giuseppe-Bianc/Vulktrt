@@ -3,7 +3,7 @@
  * Copyright (c) 2025 All rights reserved.
  */
 // clang-format off
-// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-pro-type-reinterpret-cast, *-uppercase-literal-suffix,*-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// NOLINTBEGIN(*-include-cleaner, *-signed-bitwise, *-pro-type-reinterpret-cast, *-uppercase-literal-suffix,*-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto)
 // clang-format on
 #include "Vulktrt/Pipeline.hpp"
 
@@ -185,5 +185,5 @@ namespace lve {
 }  // namespace lve
 
 // clang-format off
-// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-pro-type-reinterpret-cast, *-uppercase-literal-suffix,*-uppercase-literal-suffix, *-pro-type-member-init,*-member-init)
+// NOLINTEND(*-include-cleaner, *-signed-bitwise, *-pro-type-reinterpret-cast, *-uppercase-literal-suffix,*-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto)
 // clang-format on
