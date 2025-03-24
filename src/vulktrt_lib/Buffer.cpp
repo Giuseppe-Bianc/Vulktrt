@@ -8,6 +8,11 @@
 #include "Vulktrt/Buffer.hpp"
 
 namespace lve {
+    void Buffer::rename(const std::string &newObjectName) {
+        lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(memory), FORMAT("{} Memory", newObjectName).c_str());
+        lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), newObjectName.c_str());
+    }
+
     /**
      * Returns the minimum instance size required to be compatible with devices minOffsetAlignment
      *
@@ -28,10 +33,10 @@ namespace lve {
         memoryPropertyFlags{memoryPropertyFlagsin} {
         alignmentSize = getAlignment(instanceSize, minOffsetAlignment);
         bufferSize = alignmentSize * instanceCount;
-        static int bufferIndex = 0;
+        //static int bufferIndex = 0;
         device.createBuffer(bufferSize, usageFlagsin, memoryPropertyFlagsin, buffer, memory);
-        lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(memory), FORMAT("{} Memory {}", objectName, bufferIndex).c_str());
-        lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), FORMAT("{} {}", objectName, bufferIndex++).c_str());
+        lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(memory), FORMAT("{} Memory", objectName).c_str());
+        lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), FORMAT("{}", objectName).c_str());
     }
 
     Buffer::~Buffer() {

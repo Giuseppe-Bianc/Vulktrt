@@ -152,7 +152,9 @@ namespace lve {
         return std::make_unique<Model>(device, builder);
     }
 
-    void Model::bind(VkCommandBuffer commandBuffer) noexcept {
+    void Model::bind(VkCommandBuffer commandBuffer, const std::string& name) noexcept {
+        vertexBuffer->rename(FORMAT("Model Vertex buffer {}", name));
+        indexBuffer->rename(FORMAT("Model Index buffer {}", name));
         VkBuffer buffers[] = {vertexBuffer->getBuffer()};
         const VkDeviceSize offsets[] = {0};
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);

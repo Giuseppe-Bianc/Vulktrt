@@ -37,7 +37,7 @@ namespace lve {
         VkBufferUsageFlags getUsageFlags() const { return usageFlags; }
         VkMemoryPropertyFlags getMemoryPropertyFlags() const { return memoryPropertyFlags; }
         VkDeviceSize getBufferSize() const { return bufferSize; }
-
+        void rename(const std::string &newObjectName);
     private:
         static VkDeviceSize getAlignment(VkDeviceSize instanceSize, VkDeviceSize minOffsetAlignment);
 
@@ -52,6 +52,7 @@ namespace lve {
         VkDeviceSize alignmentSize;
         VkBufferUsageFlags usageFlags;
         VkMemoryPropertyFlags memoryPropertyFlags;
+        std::string objectName;
     };
 }  // namespace lve
 

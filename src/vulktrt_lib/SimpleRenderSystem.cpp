@@ -73,7 +73,7 @@ namespace lve {
 
             vkCmdPushConstants(frameInfo.commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, spcds,
                                &push);
-            obj.model->bind(frameInfo.commandBuffer);
+            obj.model->bind(frameInfo.commandBuffer, std::to_string(index));
             obj.model->draw(frameInfo.commandBuffer);
         }
     }

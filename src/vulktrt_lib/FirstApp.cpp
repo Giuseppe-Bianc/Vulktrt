@@ -16,7 +16,8 @@
 namespace lve {
     DISABLE_WARNINGS_PUSH(4324)
     struct GlobalUBO {
-        glm::mat4 projectionView{1.f};
+        glm::mat4 projection{1.f};
+        glm::mat4 view{1.f};
         glm::vec4 ambientLightColor{1.f, 1.f, 1.f, .02f};  // w is intensity
         glm::vec3 lightPosition{-1.f};
         alignas(16) glm::vec4 lightColor{1.f};  // w is light intensity
@@ -80,7 +81,8 @@ namespace lve {
                 auto frameIndex = C_ST(lveRenderer.getFrameIndex());
                 FrameInfo frameInfo{C_I(frameIndex), frameTime, commandBuffer, camera, globalDescriptorSets[frameIndex], gameObjects};
                 GlobalUBO ubo{};
-                ubo.projectionView = camera.getProjection() * camera.getView();
+                ubo.projection = camera.getProjection();
+                ubo.view = camera.getView();
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
