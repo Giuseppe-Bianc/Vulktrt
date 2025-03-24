@@ -15,7 +15,7 @@ namespace lve {
         if(glfwGetKey(window, keys.lookUp) == GLFW_PRESS) { rotate.x += 1.f; }
         if(glfwGetKey(window, keys.lookDown) == GLFW_PRESS) { rotate.x -= 1.f; }
 
-        if(glm::dot(rotate, rotate) > fepsilon) { gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate); }
+        if(glm::length2(rotate) > fepsilon) { gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate); }
 
         // limit pitch values between about +/- 85ish degrees
         gameObject.transform.rotation.x = glm::clamp(gameObject.transform.rotation.x, -1.5f, 1.5f);
@@ -34,7 +34,7 @@ namespace lve {
         if(glfwGetKey(window, keys.moveUp) == GLFW_PRESS) { moveDir += upDir; }
         if(glfwGetKey(window, keys.moveDown) == GLFW_PRESS) { moveDir -= upDir; }
 
-        if(glm::dot(moveDir, moveDir) > fepsilon) { gameObject.transform.translation += moveSpeed * dt * glm::normalize(moveDir); }
+        if(glm::length2(moveDir) > fepsilon) { gameObject.transform.translation += moveSpeed * dt * glm::normalize(moveDir); }
     }
 
 }  // namespace lve

@@ -26,11 +26,12 @@ namespace lve {
         if(lveSwapChain == nullptr) {
             lveSwapChain = std::make_unique<SwapChain>(lveDevice, extent);
         } else {
+            // Using move semantics to transfer ownership to a shared pointer
             std::shared_ptr<SwapChain> oldSwapChain = std::move(lveSwapChain);
             lveSwapChain = std::make_unique<SwapChain>(lveDevice, extent, oldSwapChain);
 
             if(!oldSwapChain->compareSwapFormats(*lveSwapChain)) {
-                throw std::runtime_error("Swap chain image(or depth) format has changed!");
+                throw std::runtime_error("Swap chain image (or depth) format has changed!");
             }
         }
     }
@@ -42,7 +43,7 @@ namespace lve {
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandPool = lveDevice.getCommandPool();
-        allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
+        allocInfo.commandBufferCount = C_UI32T(commandBuffers.size());
 
         VK_CHECK(vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()), "failed to allocate command buffers!");
         // lveDevice.setObjectsName(VK_OBJECT_TYPE_COMMAND_BUFFER, "Main Command Buffers", commandBuffers);
@@ -74,7 +75,7 @@ namespace lve {
         VK_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo), "failed to begin recording command buffer!");
         lveDevice.setObjectName(VK_OBJECT_TYPE_COMMAND_BUFFER, BC_UI64T(commandBuffer), "Frame Command Buffer");
 
-        // Begin command buffer label
+        // Begin command buffer label for debugging.
         lveDevice.cmdBeginLabel(commandBuffer, "Frame Command Buffer Begin", {0.0f, 1.0f, 0.0f, 1.0f});
 
         return commandBuffer;
@@ -108,10 +109,13 @@ namespace lve {
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassInfo.renderPass = lveSwapChain->getRenderPass();
-        renderPassInfo.framebuffer = lveSwapChain->getFrameBuffer(NC_I(currentImageIndex));
 
+        // Cache the framebuffer and extent to avoid redundant calls.
+        auto currentFramebuffer = lveSwapChain->getFrameBuffer(NC_I(currentImageIndex));
+        auto swapChainExtent = lveSwapChain->getSwapChainExtent();
+        renderPassInfo.framebuffer = currentFramebuffer;
         renderPassInfo.renderArea.offset = {0, 0};
-        renderPassInfo.renderArea.extent = lveSwapChain->getSwapChainExtent();
+        renderPassInfo.renderArea.extent = swapChainExtent;
 
         std::array<VkClearValue, 2> clearValues{};
         clearValues[0].color = {0.01f, 0.01f, 0.01f, 1.0f};
@@ -122,16 +126,15 @@ namespace lve {
         lveDevice.cmdInsertLabel(commandBuffer, "Render Pass Begin", {0.0f, 0.0f, 1.0f, 1.0f});
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        // Insert label in command buffer
-
+        // Set viewport and scissor using the cached extent.
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = C_F(lveSwapChain->getSwapChainExtent().width);
-        viewport.height = C_F(lveSwapChain->getSwapChainExtent().height);
+        viewport.width = C_F(swapChainExtent.width);
+        viewport.height = C_F(swapChainExtent.height);
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
-        VkRect2D scissor{{0, 0}, lveSwapChain->getSwapChainExtent()};
+        VkRect2D scissor{{0, 0}, swapChainExtent};
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
     }
@@ -141,7 +144,6 @@ namespace lve {
         assert(commandBuffer == getCurrentCommandBuffer() && "Can't end render pass on command buffer from a different frame");
 
         vkCmdEndRenderPass(commandBuffer);
-        // Insert label in command buffer
         lveDevice.cmdInsertLabel(commandBuffer, "Render Pass End", {1.0f, 0.0f, 0.0f, 1.0f});
     }
 }  // namespace lve

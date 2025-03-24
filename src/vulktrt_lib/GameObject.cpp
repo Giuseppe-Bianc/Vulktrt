@@ -7,11 +7,19 @@
 
 namespace lve {
     glm::mat4 TransformComponent::mat4() const noexcept {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation);
-        glm::mat4 rotationMatrix = glm::eulerAngleYXZ(rotation.x, rotation.y, rotation.z);
-        return transform * rotationMatrix * glm::scale(glm::mat4(1.0f), scale);
+        glm::mat4 model(1.0f);
+        // Apply translation
+        model = glm::translate(glm::mat4(1.0f), translation);
+        // Apply rotation (using Euler angles in YXZ order)
+        model *= glm::eulerAngleYXZ(rotation.x, rotation.y, rotation.z);
+        // Apply scaling
+        model = glm::scale(model, scale);
+        return model;
     }
-    glm::mat3 TransformComponent::normalMatrix() const noexcept { return glm::mat3(glm::transpose(glm::inverse(mat4()))); }
-}  // namespace lve
+
+    glm::mat3 TransformComponent::normalMatrix() noexcept {
+        return glm::mat3(glm::inverseTranspose(mat4()));
+    }
+} // namespace lve
 
 // NOLINTEND(*-include-cleaner, *-uppercase-literal-suffix, *-pro-type-union-access)

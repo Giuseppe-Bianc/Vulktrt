@@ -19,7 +19,7 @@ namespace lve {
     DISABLE_WARNINGS_POP()
 
     SimpleRenderSystem::SimpleRenderSystem(Device &device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
-      : lveDevice{device} {
+        : lveDevice{device} {
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
     }
@@ -52,9 +52,10 @@ namespace lve {
         Pipeline::defaultPipelineConfigInfo(pipelineConfig);
         pipelineConfig.renderPass = renderPass;
         pipelineConfig.pipelineLayout = pipelineLayout;
-        lvePipeline = std::make_unique<Pipeline>(
-            lveDevice, calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
-            calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string(), pipelineConfig);
+        // Cache shader paths or resolve them only once if possible.
+        auto vertShaderPath = calculateRelativePathToShaders(curentP, "simple_shader.vert.opt.rmp.spv").string();
+        auto fragShaderPath = calculateRelativePathToShaders(curentP, "simple_shader.frag.opt.rmp.spv").string();
+        lvePipeline = std::make_unique<Pipeline>(lveDevice, vertShaderPath, fragShaderPath, pipelineConfig);
     }
 
     void SimpleRenderSystem::renderGameObjects(FrameInfo &frameInfo) {
@@ -62,15 +63,16 @@ namespace lve {
 
         vkCmdBindDescriptorSets(frameInfo.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
                                 &frameInfo.globalDescriptorSet, 0, nullptr);
-
         for(auto &[index, obj] : frameInfo.gameObjects) {
-            SimplePushConstantData push{};
             if(obj.model == nullptr) { continue; }
+
+            lveDevice.cmdInsertLabel(frameInfo.commandBuffer, FORMAT("Rendering Object {}", index).c_str(), {0.5f, 1.0f, 0.025f, 1.0f});
+            SimplePushConstantData push{};
             push.modelMatrix = obj.transform.mat4();
             push.normalMatrix = glm::mat4(obj.transform.normalMatrix());
 
-            vkCmdPushConstants(frameInfo.commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, spcds,
-                               &push);
+            vkCmdPushConstants(frameInfo.commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
+                               spcds, &push);
             obj.model->bind(frameInfo.commandBuffer);
             obj.model->draw(frameInfo.commandBuffer);
         }
