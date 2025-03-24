@@ -17,9 +17,7 @@ namespace lve {
         return model;
     }
 
-    glm::mat3 TransformComponent::normalMatrix() noexcept {
-        return glm::mat3(glm::inverseTranspose(mat4()));
-    }
-} // namespace lve
+    glm::mat3 TransformComponent::normalMatrix() noexcept { return glm::mat3(glm::inverseTranspose(mat4())); }
+}  // namespace lve
 
 // NOLINTEND(*-include-cleaner, *-uppercase-literal-suffix, *-pro-type-union-access)

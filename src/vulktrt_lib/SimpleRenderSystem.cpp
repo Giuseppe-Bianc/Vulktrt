@@ -19,7 +19,7 @@ namespace lve {
     DISABLE_WARNINGS_POP()
 
     SimpleRenderSystem::SimpleRenderSystem(Device &device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout)
-        : lveDevice{device} {
+      : lveDevice{device} {
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
     }
@@ -71,8 +71,8 @@ namespace lve {
             push.modelMatrix = obj.transform.mat4();
             push.normalMatrix = glm::mat4(obj.transform.normalMatrix());
 
-            vkCmdPushConstants(frameInfo.commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
-                               spcds, &push);
+            vkCmdPushConstants(frameInfo.commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, spcds,
+                               &push);
             obj.model->bind(frameInfo.commandBuffer);
             obj.model->draw(frameInfo.commandBuffer);
         }

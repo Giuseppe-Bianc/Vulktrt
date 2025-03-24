@@ -12,7 +12,9 @@ namespace lve {
 
     Pipeline::Pipeline(Device &device, const std::string &vertFilepath, const std::string &fragFilepath,
                        const PipelineConfigInfo &configInfo)
-        : lveDevice{device} { createGraphicsPipeline(vertFilepath, fragFilepath, configInfo); }
+      : lveDevice{device} {
+        createGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
+    }
 
     Pipeline::~Pipeline() {
         auto dev = lveDevice.device();
@@ -55,30 +57,24 @@ namespace lve {
 
         // Use std::array to avoid dynamic allocation overhead for a fixed number of shader stages.
         std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages{};
-        shaderStages[0] = VkPipelineShaderStageCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-            .stage = VK_SHADER_STAGE_VERTEX_BIT,
-            .module = vertShaderModule,
-            .pName = "main"
-        };
-        shaderStages[1] = VkPipelineShaderStageCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-            .stage = VK_SHADER_STAGE_FRAGMENT_BIT,
-            .module = fragShaderModule,
-            .pName = "main"
-        };
+        shaderStages[0] = VkPipelineShaderStageCreateInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                                                          .stage = VK_SHADER_STAGE_VERTEX_BIT,
+                                                          .module = vertShaderModule,
+                                                          .pName = "main"};
+        shaderStages[1] = VkPipelineShaderStageCreateInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                                                          .stage = VK_SHADER_STAGE_FRAGMENT_BIT,
+                                                          .module = fragShaderModule,
+                                                          .pName = "main"};
 
         // Retrieve binding and attribute descriptions once.
         auto bindingDescriptions = Model::Vertex::getBindingDescriptions();
         auto attributeDescriptions = Model::Vertex::getAttributeDescriptions();
 
-        VkPipelineVertexInputStateCreateInfo vertexInputInfo{
-            .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-            .vertexBindingDescriptionCount = C_UI32T(bindingDescriptions.size()),
-            .pVertexBindingDescriptions = bindingDescriptions.data(),
-            .vertexAttributeDescriptionCount = C_UI32T(attributeDescriptions.size()),
-            .pVertexAttributeDescriptions = attributeDescriptions.data()
-        };
+        VkPipelineVertexInputStateCreateInfo vertexInputInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+                                                             .vertexBindingDescriptionCount = C_UI32T(bindingDescriptions.size()),
+                                                             .pVertexBindingDescriptions = bindingDescriptions.data(),
+                                                             .vertexAttributeDescriptionCount = C_UI32T(attributeDescriptions.size()),
+                                                             .pVertexAttributeDescriptions = attributeDescriptions.data()};
 
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -108,14 +104,11 @@ namespace lve {
     DISABLE_WARNINGS_POP()
 
     void Pipeline::createShaderModule(const std::vector<char> &code, VkShaderModule *shaderModule) {
-        VkShaderModuleCreateInfo createInfo{
-            .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-            .codeSize = code.size(),
-            .pCode = std::bit_cast<const uint32_t *>(code.data())
-        };
+        VkShaderModuleCreateInfo createInfo{.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+                                            .codeSize = code.size(),
+                                            .pCode = std::bit_cast<const uint32_t *>(code.data())};
 
-        VK_CHECK(vkCreateShaderModule(lveDevice.device(), &createInfo, nullptr, shaderModule),
-                 "failed to create shader module!");
+        VK_CHECK(vkCreateShaderModule(lveDevice.device(), &createInfo, nullptr, shaderModule), "failed to create shader module!");
     }
 
     void Pipeline::bind(VkCommandBuffer commandBuffer) noexcept {
@@ -126,16 +119,13 @@ namespace lve {
         configInfo.inputAssemblyInfo = VkPipelineInputAssemblyStateCreateInfo{
             .sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
             .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-            .primitiveRestartEnable = VK_FALSE
-        };
+            .primitiveRestartEnable = VK_FALSE};
 
-        configInfo.viewportInfo = VkPipelineViewportStateCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-            .viewportCount = 1,
-            .pViewports = nullptr,
-            .scissorCount = 1,
-            .pScissors = nullptr
-        };
+        configInfo.viewportInfo = VkPipelineViewportStateCreateInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+                                                                    .viewportCount = 1,
+                                                                    .pViewports = nullptr,
+                                                                    .scissorCount = 1,
+                                                                    .pScissors = nullptr};
 
         configInfo.rasterizationInfo = VkPipelineRasterizationStateCreateInfo{
             .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
@@ -148,18 +138,15 @@ namespace lve {
             .depthBiasConstantFactor = 0.0f,
             .depthBiasClamp = 0.0f,
             .depthBiasSlopeFactor = 0.0f,
-            .lineWidth = 1.0f
-        };
+            .lineWidth = 1.0f};
 
-        configInfo.multisampleInfo = VkPipelineMultisampleStateCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-            .rasterizationSamples = VK_SAMPLE_COUNT_1_BIT,
-            .sampleShadingEnable = VK_FALSE,
-            .minSampleShading = 1.0f,
-            .pSampleMask = nullptr,
-            .alphaToCoverageEnable = VK_FALSE,
-            .alphaToOneEnable = VK_FALSE
-        };
+        configInfo.multisampleInfo = VkPipelineMultisampleStateCreateInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+                                                                          .rasterizationSamples = VK_SAMPLE_COUNT_1_BIT,
+                                                                          .sampleShadingEnable = VK_FALSE,
+                                                                          .minSampleShading = 1.0f,
+                                                                          .pSampleMask = nullptr,
+                                                                          .alphaToCoverageEnable = VK_FALSE,
+                                                                          .alphaToOneEnable = VK_FALSE};
 
         configInfo.colorBlendAttachment = VkPipelineColorBlendAttachmentState{
             .blendEnable = VK_FALSE,
@@ -169,18 +156,14 @@ namespace lve {
             .srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE,
             .dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO,
             .alphaBlendOp = VK_BLEND_OP_ADD,
-            .colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT |
-                              VK_COLOR_COMPONENT_A_BIT
-        };
+            .colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
 
-        configInfo.colorBlendInfo = VkPipelineColorBlendStateCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-            .logicOpEnable = VK_FALSE,
-            .logicOp = VK_LOGIC_OP_COPY,
-            .attachmentCount = 1,
-            .pAttachments = &configInfo.colorBlendAttachment,
-            .blendConstants = {0.0f, 0.0f, 0.0f, 0.0f}
-        };
+        configInfo.colorBlendInfo = VkPipelineColorBlendStateCreateInfo{.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+                                                                        .logicOpEnable = VK_FALSE,
+                                                                        .logicOp = VK_LOGIC_OP_COPY,
+                                                                        .attachmentCount = 1,
+                                                                        .pAttachments = &configInfo.colorBlendAttachment,
+                                                                        .blendConstants = {0.0f, 0.0f, 0.0f, 0.0f}};
 
         configInfo.depthStencilInfo = VkPipelineDepthStencilStateCreateInfo{
             .sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
@@ -203,7 +186,7 @@ namespace lve {
             .pDynamicStates = configInfo.dynamicStateEnables.data(),
         };
     }
-} // namespace lve
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-signed-bitwise, *-pro-type-reinterpret-cast, *-uppercase-literal-suffix,*-uppercase-literal-suffix, *-pro-type-member-init,*-member-init, *-qualified-auto)

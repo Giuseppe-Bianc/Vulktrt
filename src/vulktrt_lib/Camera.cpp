@@ -31,9 +31,9 @@ namespace lve {
     void Camera::setViewYXZ(const glm::vec3 &position, const glm::vec3 &rotation) {
         glm::mat4 rotationMatrix = glm::eulerAngleZXY(rotation.z, rotation.x, rotation.y);
         // Set the view matrix using the position and the rotation matrix
-        viewMatrix  = glm::translate(glm::mat4(1.0f), -position) * rotationMatrix;
+        viewMatrix = glm::translate(glm::mat4(1.0f), -position) * rotationMatrix;
     }
-} // namespace lve
+}  // namespace lve
 
 // clang-format off
 // NOLINTEND(*-include-cleaner, *-easily-swappable-parameters, *-uppercase-literal-suffix, *-pro-type-union-access,*-avoid-magic-numbers,*-magic-numbers)

@@ -27,25 +27,21 @@ namespace lve {
 
     SwapChain::~SwapChain() {
         const auto dev = device.device();
-        for (const auto &imageView : swapChainImageViews) {
-            vkDestroyImageView(dev, imageView, nullptr);
-        }
+        for(const auto &imageView : swapChainImageViews) { vkDestroyImageView(dev, imageView, nullptr); }
         // vkDestroySwapchainKHR should only be called if swapChain is valid.
-        if (swapChain != VK_NULL_HANDLE) {
+        if(swapChain != VK_NULL_HANDLE) {
             vkDestroySwapchainKHR(dev, swapChain, nullptr);
             swapChain = VK_NULL_HANDLE;
         }
-        for (size_t i = 0; i < depthImages.size(); i++) {
+        for(size_t i = 0; i < depthImages.size(); i++) {
             vkDestroyImageView(dev, depthImageViews[i], nullptr);
             vkDestroyImage(dev, depthImages[i], nullptr);
             vkFreeMemory(dev, depthImageMemorys[i], nullptr);
         }
-        for (const auto &framebuffer : swapChainFramebuffers) {
-            vkDestroyFramebuffer(dev, framebuffer, nullptr);
-        }
+        for(const auto &framebuffer : swapChainFramebuffers) { vkDestroyFramebuffer(dev, framebuffer, nullptr); }
         vkDestroyRenderPass(dev, renderPass, nullptr);
         // Cleanup synchronization objects
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(dev, renderFinishedSemaphores[i], nullptr);
             vkDestroySemaphore(dev, imageAvailableSemaphores[i], nullptr);
             vkDestroyFence(dev, inFlightFences[i], nullptr);
@@ -54,14 +50,13 @@ namespace lve {
 
     VkResult SwapChain::acquireNextImage(uint32_t *imageIndex) noexcept {
         vkWaitForFences(device.device(), 1, &inFlightFences[currentFrame], VK_TRUE, uint64Max);
-        return vkAcquireNextImageKHR(device.device(), swapChain, uint64Max,
-                                     imageAvailableSemaphores[currentFrame],
-                                     VK_NULL_HANDLE, imageIndex);
+        return vkAcquireNextImageKHR(device.device(), swapChain, uint64Max, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE,
+                                     imageIndex);
     }
 
     DISABLE_WARNINGS_PUSH(26429 26461)
     VkResult SwapChain::submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex) {
-        if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
+        if(imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
             vkWaitForFences(device.device(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
         }
         imagesInFlight[*imageIndex] = inFlightFences[currentFrame];
@@ -69,8 +64,8 @@ namespace lve {
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-        const VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
-        const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+        const VkSemaphore waitSemaphores[] = {imageAvailableSemaphores[currentFrame]};
+        const VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
         submitInfo.waitSemaphoreCount = 1;
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
@@ -78,7 +73,7 @@ namespace lve {
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = buffers;
 
-        const VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
+        const VkSemaphore signalSemaphores[] = {renderFinishedSemaphores[currentFrame]};
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
@@ -129,11 +124,11 @@ namespace lve {
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
         const auto indices = device.findPhysicalQueueFamilies();
-        std::array<std::uint32_t, 2> queueFamilyIndices = { indices.graphicsFamily, indices.presentFamily };
+        std::array<std::uint32_t, 2> queueFamilyIndices = {indices.graphicsFamily, indices.presentFamily};
 
-        if (indices.graphicsFamily != indices.presentFamily) {
+        if(indices.graphicsFamily != indices.presentFamily) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-            createInfo.queueFamilyIndexCount =C_UI32T(queueFamilyIndices.size());
+            createInfo.queueFamilyIndexCount = C_UI32T(queueFamilyIndices.size());
             createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
         } else {
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -167,14 +162,14 @@ namespace lve {
     void SwapChain::createImageViews() {
         swapChainImageViews.resize(swapChainImages.size());
         const auto dev = device.device();
-        for (size_t i = 0; i < swapChainImages.size(); i++) {
+        for(size_t i = 0; i < swapChainImages.size(); i++) {
             VkImageViewCreateInfo viewInfo{};
             viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
             viewInfo.image = swapChainImages[i];
             viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
             viewInfo.format = swapChainImageFormat;
-            viewInfo.components = { VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY,
-                                    VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY };
+            viewInfo.components = {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY,
+                                   VK_COMPONENT_SWIZZLE_IDENTITY};
             viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
             viewInfo.subresourceRange.baseMipLevel = 0;
             viewInfo.subresourceRange.levelCount = 1;
@@ -228,7 +223,7 @@ namespace lve {
         dependency.srcAccessMask = 0;
         dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 
-        std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
+        std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
         VkRenderPassCreateInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
         renderPassInfo.attachmentCount = C_UI32T(attachments.size());
@@ -245,8 +240,8 @@ namespace lve {
     void SwapChain::createFramebuffers() {
         swapChainFramebuffers.resize(imageCount());
         const auto dev = device.device();
-        for (size_t i = 0; i < imageCount(); i++) {
-            std::array<VkImageView, 2> attachments = { swapChainImageViews[i], depthImageViews[i] };
+        for(size_t i = 0; i < imageCount(); i++) {
+            std::array<VkImageView, 2> attachments = {swapChainImageViews[i], depthImageViews[i]};
             auto [width, height] = getSwapChainExtent();
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -256,8 +251,7 @@ namespace lve {
             framebufferInfo.width = width;
             framebufferInfo.height = height;
             framebufferInfo.layers = 1;
-            VK_CHECK(vkCreateFramebuffer(dev, &framebufferInfo, nullptr, &swapChainFramebuffers[i]),
-                     "failed to create framebuffer!");
+            VK_CHECK(vkCreateFramebuffer(dev, &framebufferInfo, nullptr, &swapChainFramebuffers[i]), "failed to create framebuffer!");
         }
         device.setObjectNames(VK_OBJECT_TYPE_FRAMEBUFFER, "Framebuffer", swapChainFramebuffers);
     }
@@ -272,7 +266,7 @@ namespace lve {
         depthImageMemorys.resize(count);
         depthImageViews.resize(count);
 
-        for (size_t i = 0; i < count; i++) {
+        for(size_t i = 0; i < count; i++) {
             VkImageCreateInfo imageInfo{};
             imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -323,7 +317,7 @@ namespace lve {
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
         const auto dev = device.device();
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             VK_CHECK_SYNC_OBJECTS(vkCreateSemaphore(dev, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]),
                                   vkCreateSemaphore(dev, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]),
                                   vkCreateFence(dev, &fenceInfo, nullptr, &inFlightFences[i]),
