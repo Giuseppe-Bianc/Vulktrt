@@ -113,9 +113,9 @@ namespace lve {
         floor.model = lveModel;
         floor.transform.translation = {.5f, .5f, 0.f};
         floor.transform.scale = {3.f, 1.f, 3.f};
-        gameObjects.emplace(flatVase.getId(),std::move(flatVase));
-        gameObjects.emplace(smoothVase.getId(),std::move(smoothVase));
-        gameObjects.emplace(floor.getId(),std::move(floor));
+        gameObjects.emplace(flatVase.getId(), std::move(flatVase));
+        gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
+        gameObjects.emplace(floor.getId(), std::move(floor));
     }
 }  // namespace lve
 
