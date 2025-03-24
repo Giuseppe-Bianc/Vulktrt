@@ -33,7 +33,7 @@ namespace lve {
         memoryPropertyFlags{memoryPropertyFlagsin} {
         alignmentSize = getAlignment(instanceSize, minOffsetAlignment);
         bufferSize = alignmentSize * instanceCount;
-        //static int bufferIndex = 0;
+        // static int bufferIndex = 0;
         device.createBuffer(bufferSize, usageFlagsin, memoryPropertyFlagsin, buffer, memory);
         lveDevice.setObjectName(VK_OBJECT_TYPE_DEVICE_MEMORY, BC_UI64T(memory), FORMAT("{} Memory", objectName).c_str());
         lveDevice.setObjectName(VK_OBJECT_TYPE_BUFFER, BC_UI64T(buffer), FORMAT("{}", objectName).c_str());

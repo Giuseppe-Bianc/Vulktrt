@@ -37,7 +37,7 @@ namespace lve {
 
         static std::unique_ptr<Model> createModelFromFile(Device &device, const std::string &filepath);
 
-        void bind(VkCommandBuffer commandBuffer, const std::string& name) noexcept;
+        void bind(VkCommandBuffer commandBuffer, const std::string &name) noexcept;
         void draw(VkCommandBuffer commandBuffer) const noexcept;
 
         void createVertexBuffers(const std::vector<Vertex> &vertices);
